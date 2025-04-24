@@ -37,6 +37,9 @@ dependencies {
     //Database
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
+    //jakarta
+    implementation("jakarta.validation:jakarta.validation-api:3.0.0")
+    implementation("org.hibernate.validator:hibernate-validator:6.2.0.Final")
 }
 
 
