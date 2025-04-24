@@ -9,5 +9,4 @@ class NmnbBackApplicationTests {
     @Test
     fun contextLoads() {
     }
-
 }
