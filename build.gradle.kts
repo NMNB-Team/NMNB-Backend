@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt") version "1.9.25"
     id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.7"
+    id("com.diffplug.spotless").version("6.19.0")
 }
 
 group = "cv"
@@ -38,6 +39,29 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
 }
 
+
+val querydslDir = file("build/generated/querydsl")
+
+kapt {
+    arguments {
+        arg("querydsl.generated", querydslDir.absolutePath)
+    }
+}
+
+sourceSets {
+    named("main") {
+        kotlin {
+            srcDirs(querydslDir)
+        }
+    }
+}
+
+tasks.named("clean") {
+    doLast {
+        file(querydslDir).deleteRecursively()
+    }
+}
+
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
@@ -56,4 +80,35 @@ allOpen {
 
 noArg {
     annotation("jakarta.persistence.Entity")
+}
+
+
+tasks.register<Copy>("updateGitHooks") {
+    from(File(rootProject.rootDir, ".script/pre-commit"))
+    into(File(rootProject.rootDir, ".git/hooks"))
+
+    doLast {
+        val osName = System.getProperty("os.name").lowercase()
+        val command = if (osName.contains("windows")) {
+            arrayOf("cmd", "/c", "chmod -R +x .git/hooks/")
+        } else {
+            arrayOf("chmod", "-R", "+x", ".git/hooks/")
+        }
+        Runtime.getRuntime().exec(command)
+    }
+}
+
+tasks.named("compileKotlin") {
+    dependsOn("spotlessApply")
+    dependsOn("updateGitHooks")
+}
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        ktlint()
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
 }
