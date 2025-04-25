@@ -2,7 +2,7 @@ package cv.nmnb.domain.user.domain
 
 import cv.nmnb.domain.post.domain.Post
 import cv.nmnb.global.common.domain.BaseEntity
-import cv.nmnb.global.utils.IDUtils
+import cv.nmnb.global.generator.annotation.UserId
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -25,8 +25,9 @@ class User(
     var companionAnimal: String? = null,
 ) : BaseEntity() {
     @Id
+    @field:UserId
     @Column(name = "user_id")
-    val id: String = IDUtils.customIdGenerator()
+    val id: String? = null
 
     @Enumerated(EnumType.STRING)
     var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET
