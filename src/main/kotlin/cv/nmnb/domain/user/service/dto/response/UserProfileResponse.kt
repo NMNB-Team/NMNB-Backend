@@ -1,13 +1,13 @@
 package cv.nmnb.domain.user.service.dto.response
 
 import cv.nmnb.domain.user.domain.User
-import java.time.LocalDateTime
+import cv.nmnb.global.utils.DateTimeUtils
 
 data class UserProfileResponse(
     val nickName: String,
     val profileImage: String,
     val hasAnimal: Boolean,
-    val createdAt: LocalDateTime?,
+    val createdAt: String,
 ) {
     companion object {
         fun of(user: User): UserProfileResponse {
@@ -15,7 +15,7 @@ data class UserProfileResponse(
                 nickName = user.nickName,
                 profileImage = user.profileImage,
                 hasAnimal = user.hasAnimal,
-                createdAt = user.createdAt,
+                createdAt = DateTimeUtils.formatDate(user.createdAt),
             )
         }
     }
