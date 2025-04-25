@@ -42,6 +42,8 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator:6.2.0.Final")
     //nanoid
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+    //swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 }
 
 
