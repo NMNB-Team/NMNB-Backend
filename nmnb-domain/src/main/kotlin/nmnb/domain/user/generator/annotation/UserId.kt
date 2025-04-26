@@ -1,6 +1,6 @@
 package cv.nmnb.global.generator.annotation
 
-import cv.nmnb.global.generator.CustomIdGenerator
+import nmnb.domain.user.generator.CustomIdGenerator
 import org.hibernate.annotations.IdGeneratorType
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)

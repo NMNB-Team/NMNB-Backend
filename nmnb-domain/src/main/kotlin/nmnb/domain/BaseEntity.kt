@@ -1,4 +1,4 @@
-package cv.nmnb.global.common.domain
+package nmnb.domain
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

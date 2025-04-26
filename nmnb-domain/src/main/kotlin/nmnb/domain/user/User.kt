@@ -1,7 +1,5 @@
-package cv.nmnb.domain.user.domain
+package nmnb.domain.user
 
-import cv.nmnb.domain.post.domain.Post
-import cv.nmnb.global.common.domain.BaseEntity
 import cv.nmnb.global.generator.annotation.UserId
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -12,6 +10,8 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import nmnb.domain.BaseEntity
+import nmnb.domain.post.Post
 
 @Entity
 @Table(name = "users")

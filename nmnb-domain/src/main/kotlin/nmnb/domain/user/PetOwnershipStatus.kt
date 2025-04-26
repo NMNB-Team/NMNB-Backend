@@ -1,4 +1,4 @@
-package cv.nmnb.domain.user.domain
+package nmnb.domain.user
 
 enum class PetOwnershipStatus {
     HAS_PET,

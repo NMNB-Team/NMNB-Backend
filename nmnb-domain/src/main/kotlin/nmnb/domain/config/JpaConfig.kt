@@ -1,4 +1,4 @@
-package cv.nmnb.global.config
+package nmnb.domain.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing

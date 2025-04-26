@@ -1,4 +1,4 @@
-package cv.nmnb.global.generator
+package nmnb.domain.user.generator
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import org.hibernate.engine.spi.SharedSessionContractImplementor
