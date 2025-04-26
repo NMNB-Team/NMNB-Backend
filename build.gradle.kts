@@ -44,6 +44,9 @@ dependencies {
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     //swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    //security
+    implementation ("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 
