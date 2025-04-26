@@ -1,7 +1,7 @@
-package cv.nmnb.global.response.exception
+package nmnb.common.response.exception
 
-import cv.nmnb.global.response.base.BaseErrorCode
-import cv.nmnb.global.response.dto.ErrorReasonDTO
+import nmnb.common.response.base.BaseErrorCode
+import nmnb.common.response.dto.ErrorReasonDTO
 
 open class GeneralException(
     private val code: BaseErrorCode,

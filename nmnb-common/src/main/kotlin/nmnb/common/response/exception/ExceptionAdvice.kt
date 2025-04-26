@@ -1,10 +1,10 @@
-package cv.nmnb.global.response.exception
+package nmnb.common.response.exception
 
-import cv.nmnb.global.response.base.BaseResponse
-import cv.nmnb.global.response.dto.ErrorReasonDTO
-import cv.nmnb.global.response.status.ErrorStatus
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
+import nmnb.common.response.base.BaseResponse
+import nmnb.common.response.dto.ErrorReasonDTO
+import nmnb.common.response.status.ErrorStatus
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity

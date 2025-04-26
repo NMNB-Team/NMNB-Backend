@@ -1,4 +1,4 @@
-package cv.nmnb.global.config
+package nmnb.common.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

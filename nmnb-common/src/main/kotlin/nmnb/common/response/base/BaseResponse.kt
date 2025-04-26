@@ -1,4 +1,4 @@
-package cv.nmnb.global.response.base
+package nmnb.common.response.base
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty

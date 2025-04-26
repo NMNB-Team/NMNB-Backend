@@ -1,7 +1,7 @@
-package cv.nmnb.global.response.status
+package nmnb.common.response.status
 
-import cv.nmnb.global.response.base.BaseErrorCode
-import cv.nmnb.global.response.dto.ErrorReasonDTO
+import nmnb.common.response.base.BaseErrorCode
+import nmnb.common.response.dto.ErrorReasonDTO
 import org.springframework.http.HttpStatus
 
 enum class ErrorStatus(

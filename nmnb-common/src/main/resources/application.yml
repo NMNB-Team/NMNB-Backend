@@ -1,13 +1,3 @@
-spring:
-  application:
-    name: nmnb
-  profiles:
-    active: local
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
-
 cloud:
   aws:
     credentials:

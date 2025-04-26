@@ -1,4 +1,4 @@
-package cv.nmnb.global.response.dto
+package nmnb.common.response.dto
 
 import org.springframework.http.HttpStatus
 

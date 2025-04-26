@@ -1,7 +1,7 @@
-package cv.nmnb.global.response.status
+package nmnb.common.response.status
 
-import cv.nmnb.global.response.base.BaseCode
-import cv.nmnb.global.response.dto.ReasonDTO
+import nmnb.common.response.base.BaseCode
+import nmnb.common.response.dto.ReasonDTO
 import org.springframework.http.HttpStatus
 
 enum class SuccessStatus(
