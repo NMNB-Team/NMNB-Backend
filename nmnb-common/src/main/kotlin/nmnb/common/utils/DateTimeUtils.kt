@@ -1,4 +1,4 @@
-package cv.nmnb.global.utils
+package nmnb.common.utils
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

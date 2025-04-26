@@ -1,7 +1,7 @@
-package cv.nmnb.domain.user.service
+package nmnb.application.user.service
 
-import cv.nmnb.domain.user.domain.User
-import cv.nmnb.domain.user.service.dto.response.UserProfileResponse
+import nmnb.application.user.service.dto.response.UserProfileResponse
+import nmnb.domain.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

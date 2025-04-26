@@ -1,7 +1,7 @@
-package cv.nmnb.domain.user.service.dto.response
+package nmnb.application.user.service.dto.response
 
-import cv.nmnb.domain.user.domain.User
-import cv.nmnb.global.utils.DateTimeUtils
+import nmnb.common.utils.DateTimeUtils
+import nmnb.domain.user.User
 
 data class UserProfileResponse(
     val nickName: String,

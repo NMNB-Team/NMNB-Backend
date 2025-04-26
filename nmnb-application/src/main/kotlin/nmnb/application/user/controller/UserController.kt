@@ -1,14 +1,14 @@
-package cv.nmnb.domain.user.controller
+package nmnb.application.user.controller
 
-import cv.nmnb.domain.user.domain.User
-import cv.nmnb.domain.user.service.UserService
-import cv.nmnb.domain.user.service.dto.response.UserProfileResponse
-import cv.nmnb.global.response.base.BaseResponse
-import cv.nmnb.global.response.status.SuccessStatus
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import nmnb.application.user.service.UserService
+import nmnb.application.user.service.dto.response.UserProfileResponse
+import nmnb.common.response.base.BaseResponse
+import nmnb.common.response.status.SuccessStatus
+import nmnb.domain.user.User
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

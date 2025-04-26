@@ -1,9 +1,9 @@
-package cv.nmnb.domain.user.service
+package nmnb.application.user.service
 
-import cv.nmnb.IntegrationTestSupport
-import cv.nmnb.domain.user.domain.PetOwnershipStatus.HAS_PET
-import cv.nmnb.domain.user.domain.User
-import org.assertj.core.api.Assertions.assertThat
+import nmnb.application.IntegrationTestSupport
+import nmnb.domain.user.PetOwnershipStatus
+import nmnb.domain.user.User
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,15 +18,15 @@ class UserServiceImplTest(
         val user = User.fixture(
             id = "test",
             companionAnimal = "nmnb",
-            petOwnershipStatus = HAS_PET,
+            petOwnershipStatus = PetOwnershipStatus.HAS_PET,
         )
 
         // when
         val result = userService.getProfile(user)
 
         // then
-        assertThat(result.nickName).isEqualTo(user.nickName)
-        assertThat(result.profileImage).isEqualTo(user.profileImage)
-        assertThat(result.hasAnimal).isEqualTo(user.hasAnimal)
+        Assertions.assertThat(result.nickName).isEqualTo(user.nickName)
+        Assertions.assertThat(result.profileImage).isEqualTo(user.profileImage)
+        Assertions.assertThat(result.hasAnimal).isEqualTo(user.hasAnimal)
     }
 }

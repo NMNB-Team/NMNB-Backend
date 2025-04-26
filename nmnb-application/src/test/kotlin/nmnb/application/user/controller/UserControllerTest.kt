@@ -1,8 +1,8 @@
-package cv.nmnb.domain.user.controller
+package nmnb.application.user.controller
 
-import cv.nmnb.ControllerTestSupport
-import cv.nmnb.domain.user.service.dto.response.UserProfileResponse
-import cv.nmnb.global.response.status.SuccessStatus
+import nmnb.application.ControllerTestSupport
+import nmnb.application.user.service.dto.response.UserProfileResponse
+import nmnb.common.response.status.SuccessStatus
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
