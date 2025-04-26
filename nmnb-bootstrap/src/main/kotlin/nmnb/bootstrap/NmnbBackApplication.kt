@@ -1,9 +1,9 @@
-package cv.nmnb
+package nmnb.bootstrap
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["nmnb"])
 class NmnbBackApplication
 
 fun main(args: Array<String>) {
