@@ -13,6 +13,14 @@ dependencies {
 
     //swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+
+    //security
+    implementation ("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    // Database
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j")
 }
 
 val querydslDir = file("build/generated/querydsl")
