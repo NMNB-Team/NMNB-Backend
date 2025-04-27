@@ -11,10 +11,6 @@ dependencies {
 
     //nanoid
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
-
-    // Database
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("com.mysql:mysql-connector-j")
 }
 
 allOpen {
