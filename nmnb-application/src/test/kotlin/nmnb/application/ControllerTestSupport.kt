@@ -1,5 +1,6 @@
 package nmnb.application
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import nmnb.application.like.controller.LikeController
 import nmnb.application.like.service.LikeService
 import nmnb.application.user.controller.UserController
@@ -20,6 +21,9 @@ import org.springframework.test.web.servlet.MockMvc
 abstract class ControllerTestSupport {
     @Autowired
     protected lateinit var mockMvc: MockMvc
+
+    @Autowired
+    protected lateinit var objectMapper: ObjectMapper
 
     @MockBean
     protected lateinit var userService: UserService
