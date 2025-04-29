@@ -6,7 +6,7 @@ import nmnb.domain.like.LikeCacheKey
 import nmnb.domain.post.Post
 import nmnb.domain.post.repository.PostRepository
 import nmnb.domain.user.User
-import nmnb.domain.user.UserRepository
+import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
