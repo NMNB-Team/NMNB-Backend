@@ -11,6 +11,10 @@ dependencies {
 
     //nanoid
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+
+    // querydsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 }
 
 allOpen {
@@ -22,6 +26,29 @@ allOpen {
 noArg {
     annotation("jakarta.persistence.Entity")
 }
+
+val querydslDir = file("build/generated/querydsl")
+
+kapt {
+    arguments {
+        arg("querydsl.generated", querydslDir.absolutePath)
+    }
+}
+
+sourceSets {
+    named("main") {
+        kotlin {
+            srcDirs(files(querydslDir))
+        }
+    }
+}
+
+tasks.named("clean") {
+    doLast {
+        file(querydslDir).deleteRecursively()
+    }
+}
+
 tasks.bootJar {
     enabled = false
 }

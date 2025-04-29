@@ -26,29 +26,16 @@ dependencies {
     // Database
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
+
+    // querydsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    implementation("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    implementation("jakarta.persistence:jakarta.persistence-api")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 }
 
-val querydslDir = file("build/generated/querydsl")
-
-kapt {
-    arguments {
-        arg("querydsl.generated", querydslDir.absolutePath)
-    }
-}
-
-sourceSets {
-    named("main") {
-        kotlin {
-            srcDirs(querydslDir)
-        }
-    }
-}
-
-tasks.named("clean") {
-    doLast {
-        file(querydslDir).deleteRecursively()
-    }
-}
 tasks.bootJar {
     enabled = false
 }
