@@ -31,4 +31,15 @@ class Post(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     val id: Long? = null
+
+    companion object {
+        fun fixture(
+            url: String = "url",
+            thumbnailUrl: String = "thumbnail",
+            description: String? = null,
+            user: User = User.fixture(),
+        ): Post {
+            return Post(url, thumbnailUrl, description, user)
+        }
+    }
 }
