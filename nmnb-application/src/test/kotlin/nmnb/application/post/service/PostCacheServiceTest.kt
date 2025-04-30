@@ -46,4 +46,22 @@ class PostCacheServiceTest(
         val cachedValue = cache?.get(SimpleKey.EMPTY)?.get()
         assertThat(cachedValue).isEqualTo(ids)
     }
+
+    @DisplayName("Seed에 따라 결과를 고정하고, 캐시에 저장되어 두 번째 호출부터는 실제 메서드가 호출되지 않는다")
+    @Test
+    fun getShuffledIdsWithCache() {
+        // given
+        val ids = listOf(1L, 2L, 3L, 4L, 5L)
+        val seed1 = 1234
+        val seed2 = 5678
+
+        // when
+        val result1 = postCacheService.getShuffledIds(ids, seed1)
+        val result2 = postCacheService.getShuffledIds(ids, seed1)
+        val result3 = postCacheService.getShuffledIds(ids, seed2)
+
+        // then
+        assertThat(result1).isEqualTo(result2)
+        assertThat(result1).isNotEqualTo(result3)
+    }
 }
