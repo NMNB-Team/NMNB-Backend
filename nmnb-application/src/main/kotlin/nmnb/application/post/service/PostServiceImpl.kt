@@ -3,11 +3,11 @@ package nmnb.application.post.service
 import nmnb.application.post.service.dto.request.PostPageServiceRequest
 import nmnb.application.post.service.dto.response.PostInfoResponse
 import nmnb.application.post.service.dto.response.PostPageResponse
+import nmnb.application.post.utils.RandomSelector
 import nmnb.domain.post.Post
 import nmnb.domain.post.repository.PostRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.random.Random
 
 @Transactional(readOnly = true)
 @Service
@@ -16,10 +16,10 @@ class PostServiceImpl(
 ) : PostService {
     override fun getPostPage(request: PostPageServiceRequest): PostPageResponse {
         val allPostIds = fetchAllPostIds()
-        val shuffledPostIds = shufflePostIds(allPostIds, request.seed)
+        val shuffledPostIds = RandomSelector.shuffleIds(allPostIds, request.seed)
 
         val startIndex = request.cursor + 1
-        val extractedIds = extractPageIds(shuffledPostIds, startIndex, request.size)
+        val extractedIds = RandomSelector.extractPageIds(shuffledPostIds, startIndex, request.size)
 
         return toPostPageResponse(extractedIds, shuffledPostIds, startIndex)
     }
@@ -38,14 +38,6 @@ class PostServiceImpl(
 
     private fun fetchAllPostIds(): List<Long> {
         return postRepository.findAllPostId()
-    }
-
-    private fun shufflePostIds(allPostIds: List<Long>, seed: Int): List<Long> {
-        return allPostIds.shuffled(Random(seed))
-    }
-
-    private fun extractPageIds(shuffledPostIds: List<Long>, startIndex: Int, size: Int): List<Long> {
-        return shuffledPostIds.drop(startIndex).take(size)
     }
 
     private fun mapPostsToResponse(pageIds: List<Long>): List<PostInfoResponse> {
