@@ -3,6 +3,8 @@ package nmnb.application
 import com.fasterxml.jackson.databind.ObjectMapper
 import nmnb.application.like.controller.LikeController
 import nmnb.application.like.service.LikeService
+import nmnb.application.post.controller.PostController
+import nmnb.application.post.service.PostService
 import nmnb.application.user.controller.UserController
 import nmnb.application.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc
     controllers = [
         UserController::class,
         LikeController::class,
+        PostController::class,
     ],
 )
 @ContextConfiguration(classes = [TestApplication::class])
@@ -30,4 +33,7 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var likeService: LikeService
+
+    @MockBean
+    protected lateinit var postService: PostService
 }
