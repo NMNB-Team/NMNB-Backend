@@ -30,7 +30,7 @@ class PostCacheServiceTest(
     fun getAllPostIdsWithCache() {
         // given
         val ids = listOf(1L)
-        whenever(postRepository.findAllPostId()).thenReturn(listOf(1L))
+        whenever(postRepository.findAllPostId()).thenReturn(ids)
 
         // when
         val firstResult = postCacheService.getAllPostIds()
