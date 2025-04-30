@@ -17,7 +17,7 @@ class PostServiceImpl(
 ) : PostService {
     override fun getPostPage(request: PostPageServiceRequest): PostPageResponse {
         val allPostIds = postCacheService.getAllPostIds()
-        val shuffledPostIds = RandomSelector.shuffleIds(allPostIds, request.seed)
+        val shuffledPostIds = postCacheService.getShuffledIds(allPostIds, request.seed)
 
         val startIndex = request.cursor + 1
         val extractedIds = RandomSelector.extractPageIds(shuffledPostIds, startIndex, request.size)
