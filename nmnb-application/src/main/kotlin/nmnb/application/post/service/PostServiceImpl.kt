@@ -13,9 +13,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class PostServiceImpl(
     private val postRepository: PostRepository,
+    private val postCacheService: PostCacheService,
 ) : PostService {
     override fun getPostPage(request: PostPageServiceRequest): PostPageResponse {
-        val allPostIds = fetchAllPostIds()
+        val allPostIds = postCacheService.getAllPostIds()
         val shuffledPostIds = RandomSelector.shuffleIds(allPostIds, request.seed)
 
         val startIndex = request.cursor + 1
@@ -34,10 +35,6 @@ class PostServiceImpl(
         val nextCursor = startIndex + pageIds.size - 1
 
         return PostPageResponse.of(postsInfoResponse, hasNext, nextCursor)
-    }
-
-    private fun fetchAllPostIds(): List<Long> {
-        return postRepository.findAllPostId()
     }
 
     private fun mapPostsToResponse(pageIds: List<Long>): List<PostInfoResponse> {
