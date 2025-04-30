@@ -38,6 +38,10 @@ dependencies {
     // redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
     implementation ("org.springframework.session:spring-session-data-redis")
+
+    //cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation ("com.github.ben-manes.caffeine:caffeine")
 }
 
 tasks.bootJar {
