@@ -37,6 +37,8 @@ jobs:
           cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET_NAME_FOR_SERVICE }}
+          kakao.auth.client: ${{ secrets.KAKAO_CLIENT_ID }}
+          kakao.auth.redirect: ${{ secrets.KAKAO_REDIRECT_URL }}
 
       - name: Set environment variables in application-dev.yml
         uses: microsoft/variable-substitution@v1

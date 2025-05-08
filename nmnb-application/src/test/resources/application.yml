@@ -28,3 +28,8 @@ cloud:
       static: ${AWS_REGION}
     s3:
       bucket: ${S3_BUCKET_NAME_FOR_SERVICE}
+
+kakao:
+  auth:
+    client: ${KAKAO_CLIENT_ID}
+    redirect: ${KAKAO_REDIRECT_URL}
