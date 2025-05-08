@@ -1,7 +1,6 @@
 package nmnb.application.domain.post.service
 
 import nmnb.application.IntegrationTestSupport
-import nmnb.application.domain.post.service.PostCacheService
 import nmnb.domain.post.repository.PostRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName

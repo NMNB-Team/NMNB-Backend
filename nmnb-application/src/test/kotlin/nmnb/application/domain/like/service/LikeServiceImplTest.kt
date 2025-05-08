@@ -1,8 +1,6 @@
 package nmnb.application.domain.like.service
 
 import nmnb.application.IntegrationTestSupport
-import nmnb.application.domain.like.service.LikeAsyncService
-import nmnb.application.domain.like.service.LikeService
 import nmnb.application.domain.like.service.dto.request.PostLikeServiceRequest
 import nmnb.domain.like.LikeCacheKey
 import nmnb.domain.post.Post

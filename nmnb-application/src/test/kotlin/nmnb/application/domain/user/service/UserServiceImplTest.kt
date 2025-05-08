@@ -1,7 +1,6 @@
 package nmnb.application.domain.user.service
 
 import nmnb.application.IntegrationTestSupport
-import nmnb.application.domain.user.service.UserService
 import nmnb.domain.user.PetOwnershipStatus
 import nmnb.domain.user.User
 import org.assertj.core.api.Assertions

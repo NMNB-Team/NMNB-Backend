@@ -1,7 +1,6 @@
 package nmnb.application.domain.post.service
 
 import nmnb.application.IntegrationTestSupport
-import nmnb.application.domain.post.service.PostService
 import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.domain.post.Post
 import nmnb.domain.post.repository.PostRepository
