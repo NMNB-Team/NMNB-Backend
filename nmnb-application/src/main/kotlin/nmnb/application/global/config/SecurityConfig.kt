@@ -10,6 +10,13 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
+
+    val allowedUrl: Array<String> = arrayOf(
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/v1/api/auth/**",
+    )
+
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { csrfConfigurer -> csrfConfigurer.disable() }
@@ -26,6 +33,11 @@ class SecurityConfig {
             headers.frameOptions { frameOptionsConfig ->
                 frameOptionsConfig.sameOrigin()
             }
+        }
+
+        http.authorizeHttpRequests {
+            it.requestMatchers(*allowedUrl).permitAll()
+                .anyRequest().authenticated()
         }
 
         return http.build()
