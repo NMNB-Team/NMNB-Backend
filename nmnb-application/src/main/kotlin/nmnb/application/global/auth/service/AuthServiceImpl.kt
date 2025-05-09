@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.service
 
-import nmnb.application.global.auth.service.dto.response.AuthSignInResponse
+import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.application.global.auth.util.JwtUtil
 import nmnb.application.global.auth.util.KakaoUtil
 import nmnb.domain.user.User
@@ -14,7 +14,7 @@ class AuthServiceImpl(
     private val jwtUtil: JwtUtil,
 ) : AuthService {
 
-    override fun signInWithSocial(accessCode: String): AuthSignInResponse {
+    override fun signInWithSocial(accessCode: String): AuthUserResponse {
         val kakaoToken = kakaoUtil.requestToken(accessCode)
         val kakaoProfile = kakaoUtil.requestProfile(kakaoToken)
         val email = kakaoProfile.kakaoAccount.email
@@ -24,6 +24,6 @@ class AuthServiceImpl(
         val accessToken = jwtUtil.createAccessToken(email)
         val refreshToken = jwtUtil.createRefreshToken(email)
 
-        return AuthSignInResponse(email, accessToken = accessToken, refreshToken = refreshToken)
+        return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken)
     }
 }

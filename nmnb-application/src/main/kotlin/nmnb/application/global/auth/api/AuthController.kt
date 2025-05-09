@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.global.auth.service.AuthService
-import nmnb.application.global.auth.service.dto.response.AuthSignInResponse
+import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,7 +25,7 @@ class AuthController(
         ApiResponse(responseCode = "AUTH500", description = "카카오 서버 응답을 처리하는 중 오류가 발생했습니다."),
     )
     @PostMapping("/login/kakao")
-    fun signIn(@RequestParam("code") accessCode: String): BaseResponse<AuthSignInResponse> {
+    fun signIn(@RequestParam("code") accessCode: String): BaseResponse<AuthUserResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, authService.signInWithSocial(accessCode))
     }
 }

@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.service.dto.response
 
-data class AuthSignInResponse(
+data class AuthUserResponse(
     val email: String,
     val accessToken: String,
     val refreshToken: String,
