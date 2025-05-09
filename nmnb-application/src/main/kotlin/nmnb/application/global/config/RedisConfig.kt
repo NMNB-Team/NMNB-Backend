@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 
+@EnableRedisRepositories(basePackages = ["nmnb.application.global.auth.repository"])
 @Configuration
 class RedisConfig(
     @Value("\${spring.data.redis.host}")
