@@ -4,8 +4,8 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import nmnb.application.global.auth.repository.RefreshTokenRepository
-import nmnb.domain.auth.domain.RefreshToken
+import nmnb.domain.auth.RefreshToken
+import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
