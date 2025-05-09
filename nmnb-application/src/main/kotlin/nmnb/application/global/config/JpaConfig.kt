@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = ["nmnb.domain", "nmnb.application.global.auth.repository"])
+@EnableJpaRepositories(basePackages = ["nmnb.domain"])
 @EntityScan(basePackages = ["nmnb.domain"])
 class JpaConfig
