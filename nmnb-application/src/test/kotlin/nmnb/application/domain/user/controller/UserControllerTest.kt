@@ -44,7 +44,7 @@ class UserControllerTest() : ControllerTestSupport() {
                 {
                     "email": "test@example.com",
                     "profileImage": "profile_image.png",
-                    "companionAnimal": "dog",
+                    "petName": "dog",
                     "petOwnershipStatus": "HAS_PET"
                 }
                 """,

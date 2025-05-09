@@ -36,7 +36,7 @@ class User(
     var posts: MutableList<Post> = mutableListOf()
 
     val nickName: String
-        get() = petName?.let { companionAnimal -> "$companionAnimal-$id" } ?: id.toString()
+        get() = petName?.let { petName -> "$petName-$id" } ?: id.toString()
     val hasAnimal: Boolean
         get() = petOwnershipStatus == PetOwnershipStatus.HAS_PET
 
@@ -48,14 +48,14 @@ class User(
             id: String? = null,
             email: String = "ex@example.com",
             profileImage: String = DEFAULT_PROFILE_IMAGE,
-            companionAnimal: String? = null,
+            petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
             posts: MutableList<Post> = mutableListOf(),
         ): User {
             val user = User(
                 email = email,
                 profileImage = profileImage,
-                petName = companionAnimal,
+                petName = petName,
             )
             user.id = id
             user.petOwnershipStatus = petOwnershipStatus
