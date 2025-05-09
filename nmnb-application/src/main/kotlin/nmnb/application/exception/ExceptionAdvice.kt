@@ -1,9 +1,10 @@
-package nmnb.common.response.exception
+package nmnb.application.exception
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.dto.ErrorReasonDTO
+import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
