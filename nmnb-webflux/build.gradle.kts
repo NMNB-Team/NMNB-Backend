@@ -1,0 +1,26 @@
+dependencies {
+    implementation(project(":nmnb-r2dbc"))
+    implementation(project(":nmnb-common"))
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    // Webflux
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // r2dbc-mysql
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    implementation("io.asyncer:r2dbc-mysql:1.4.0")
+
+    // Swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0")
+}
+
+tasks.bootJar {
+    enabled = false
+}
+
+tasks.jar {
+    enabled = true
+}
