@@ -17,7 +17,7 @@ class UserServiceImplTest(
         // given
         val user = User.fixture(
             id = "test",
-            companionAnimal = "nmnb",
+            petName = "nmnb",
             petOwnershipStatus = PetOwnershipStatus.HAS_PET,
         )
 
