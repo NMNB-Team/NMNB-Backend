@@ -37,6 +37,9 @@ jobs:
           cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET_NAME_FOR_SERVICE }}
+          jwt.secret: ${{ secrets.JWT_SECRET_KEY }}
+          jwt.refresh-expiration-time: ${{ secrets.REFRESH_EXPIRATION_TIME }}
+          jwt.access-expiration-time: ${{ secrets.ACCESS_EXPIRATION_TIME }}
           kakao.auth.client: ${{ secrets.KAKAO_CLIENT_ID }}
           kakao.auth.redirect: ${{ secrets.KAKAO_REDIRECT_URL }}
 
