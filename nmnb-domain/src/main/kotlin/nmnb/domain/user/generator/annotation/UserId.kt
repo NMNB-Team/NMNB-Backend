@@ -1,4 +1,4 @@
-package cv.nmnb.global.generator.annotation
+package nmnb.domain.user.generator.annotation
 
 import nmnb.domain.user.generator.CustomIdGenerator
 import org.hibernate.annotations.IdGeneratorType

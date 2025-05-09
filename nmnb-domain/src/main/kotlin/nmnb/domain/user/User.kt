@@ -1,6 +1,5 @@
 package nmnb.domain.user
 
-import cv.nmnb.global.generator.annotation.UserId
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -13,6 +12,7 @@ import jakarta.persistence.Table
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
+import nmnb.domain.user.generator.annotation.UserId
 
 @Entity
 @Table(name = "users")
