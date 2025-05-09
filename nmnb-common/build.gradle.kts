@@ -6,6 +6,9 @@ dependencies {
     //jakarta
     implementation("jakarta.validation:jakarta.validation-api:3.0.0")
     implementation("org.hibernate.validator:hibernate-validator:6.2.0.Final")
+
+    // Swagger
+    implementation("org.springdoc:springdoc-openapi-starter-common:2.3.0")
 }
 
 tasks.bootJar {
