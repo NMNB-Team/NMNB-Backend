@@ -12,6 +12,8 @@ dependencies {
     // r2dbc-mysql
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("io.asyncer:r2dbc-mysql:1.4.0")
+    // r2dbc-coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
 
     // Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0")
