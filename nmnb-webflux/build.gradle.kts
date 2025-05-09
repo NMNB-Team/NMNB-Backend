@@ -15,6 +15,9 @@ dependencies {
 
     // Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0")
+
+    // ConfigurationProperties
+    annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.bootJar {
