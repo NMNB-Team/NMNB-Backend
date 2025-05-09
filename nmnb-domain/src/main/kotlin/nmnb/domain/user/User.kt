@@ -10,7 +10,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import nmnb.domain.BaseEntity
+import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
 
 @Entity
@@ -23,7 +23,7 @@ class User(
     var profileImage: String = DEFAULT_PROFILE_IMAGE,
 
     var petName: String? = null,
-) : BaseEntity() {
+) : JpaBaseEntity() {
     @Id
     @field:UserId
     @Column(name = "user_id")
