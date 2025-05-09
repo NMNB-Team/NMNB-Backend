@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import nmnb.common.domain.PetOwnershipStatus
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
 
