@@ -36,7 +36,6 @@ kapt {
     arguments {
         arg("querydsl.generated", querydslDir.absolutePath)
     }
-    correctErrorTypes = true
 }
 
 sourceSets {
