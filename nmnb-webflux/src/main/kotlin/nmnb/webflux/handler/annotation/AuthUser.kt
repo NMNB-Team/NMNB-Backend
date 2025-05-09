@@ -1,5 +1,0 @@
-package nmnb.webflux.handler.annotation
-
-@Target(AnnotationTarget.VALUE_PARAMETER)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class AuthUser
