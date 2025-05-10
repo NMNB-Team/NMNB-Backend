@@ -10,7 +10,9 @@ data class KakaoProfile(
     val id: Long = 0L,
     val connectedAt: String = "",
     val kakaoAccount: KakaoAccount = KakaoAccount(),
-)
+) : OAuthProfile {
+    override fun getEmail(): String = kakaoAccount.email
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoAccount(

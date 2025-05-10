@@ -29,7 +29,7 @@ class JwtUtil(
         return Jwts.builder()
             .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
             .setExpiration(Date.from(Instant.now().plus(accessExpirationTime, ChronoUnit.SECONDS)))
-            .claim("userId", email)
+            .claim("email", email)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
     }
