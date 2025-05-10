@@ -19,7 +19,10 @@ class SecurityConfig(
     private val allowedUrl = arrayOf(
         "/webjars/swagger-ui.html",
         "/webjars/swagger-ui/**",
-        "webjars/v3/api-docs/**",
+        "/webjars/v3/api-docs/**",
+    )
+
+    private val userUrl = arrayOf(
         "/v1/api/upload",
     )
 
@@ -35,6 +38,8 @@ class SecurityConfig(
 
         http.authorizeExchange {
             it.pathMatchers(*allowedUrl).permitAll()
+                .pathMatchers(*userUrl)
+                .hasRole("USER")
                 .anyExchange().authenticated()
         }
 
