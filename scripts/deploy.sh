@@ -11,6 +11,7 @@ DELAY=10
 
 # 현재 실행 중인 블루 컨테이너 확인
 BLUE_API_CONTAINER="$(docker ps --filter "name=nmnb-blue" --filter "status=running" | grep -v "CONTAINER ID")"
+WEBFLUX_BLUE_API_CONTAINER="$(docker ps --filter "name=nmnb-webflux-blue" --filter "status=running" | grep -v "CONTAINER ID")"
 
 if [[ -n "$BLUE_API_CONTAINER" ]]; then
     echo "-----------------------------"
@@ -33,6 +34,29 @@ else
     CURRENT_NGINX_CONF='nmnb.green.conf'
     NEW_NGINX_CONF='nmnb.blue.conf'
 fi
+
+if [[ -n "$WEBFLUX_BLUE_API_CONTAINER" ]]; then
+    echo "-----------------------------"
+    echo "webflux 전환: BLUE => GREEN"
+    echo "-----------------------------"
+
+    CURRENT_WEBFLUX_API_ENV='nmnb-webflux-blue'
+    NEW_WEBFLUX_API_ENV='nmnb-webflux-green'
+
+    CURRENT_WEBFLUX_NGINX_CONF='nmnb.webflux.blue.conf'
+    NEW_WEBFLUX_NGINX_CONF='nmnb.webflux.green.conf'
+else
+    echo "-----------------------------"
+    echo "webflux 전환: GREEN => BLUE"
+    echo "-----------------------------"
+
+    CURRENT_WEBFLUX_API_ENV='nmnb-webflux-green'
+    NEW_WEBFLUX_API_ENV='nmnb-webflux-blue'
+
+    CURRENT_WEBFLUX_NGINX_CONF='nmnb.webflux.green.conf'
+    NEW_WEBFLUX_NGINX_CONF='nmnb.webflux.blue.conf'
+fi
+
 
 echo
 echo "-----------------------------"
@@ -67,14 +91,48 @@ fi
 
 echo
 echo "-----------------------------"
+echo "새로운 환경 이미지 빌드 중(webflux): $NEW_WEBFLUX_API_ENV (캐시 무시)"
+sudo docker-compose -f "$COMPOSE_PATH" build --no-cache $NEW_WEBFLUX_API_ENV || { echo "이미지 빌드 실패"; exit 1; }
+echo "이미지 빌드 완료"
+echo "-----------------------------"
+echo
+
+echo
+echo "-----------------------------"
+echo "새로운 환경 시작 중(WEBFLUX): $NEW_WEBFLUX_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" up -d --no-deps $NEW_WEBFLUX_API_ENV || { echo "새로운 환경 시작 실패(WEBFLUX)"; exit 1; }
+echo "새로운 환경 시작 완료(WEBFLUX)"
+echo "-----------------------------"
+echo
+
+sleep $DELAY
+
+if ! docker ps --filter "name=$NEW_WEBFLUX_API_ENV" --filter "status=running" | grep -q "$NEW_WEBFLUX_API_ENV"; then
+    echo "새로운 환경(WEBFLUX)($NEW_WEBFLUX_API_ENV) 컨테이너가 정상 실행되지 않음"
+    exit 1
+fi
+
+echo
+echo "-----------------------------"
 echo "Nginx 설정 파일 업데이트 중..."
 docker cp "$NGINX_CONF_DIR/$NEW_NGINX_CONF" "$NGINX_CONTAINER:/etc/nginx/conf.d/"
+
+echo
+echo "-----------------------------"
+echo "Nginx 설정 파일 업데이트 중...(WEBFLUX)"
+docker cp "$NGINX_CONF_DIR/$NEW_WEBFLUX_NGINX_CONF" "$NGINX_CONTAINER:/etc/nginx/conf.d/"
+
 
 echo "복사된 파일 확인"
 docker exec "$NGINX_CONTAINER" ls -l /etc/nginx/conf.d/
 
 echo "현재 설정 파일 삭제"
 docker exec "$NGINX_CONTAINER" rm -f "/etc/nginx/conf.d/$CURRENT_NGINX_CONF"
+echo "-----------------------------"
+echo
+
+echo "현재 설정 파일 삭제(WEBFLUX)"
+docker exec "$NGINX_CONTAINER" rm -f "/etc/nginx/conf.d/$CURRENT_WEBFLUX_NGINX_CONF"
 echo "-----------------------------"
 echo
 
@@ -99,6 +157,15 @@ echo "이전 환경 중지 및 제거 중: $CURRENT_API_ENV"
 sudo docker-compose -f "$COMPOSE_PATH" stop "$CURRENT_API_ENV" || { echo "이전 환경 중지 실패"; exit 1; }
 sudo docker-compose -f "$COMPOSE_PATH" rm -f "$CURRENT_API_ENV" || { echo "이전 환경 제거 실패"; exit 1; }
 echo "이전 환경 중지 및 제거 완료"
+echo "-----------------------------"
+echo
+
+echo
+echo "-----------------------------"
+echo "이전 환경 중지 및 제거 중(WEBFLUX): $CURRENT_WEBFLUX_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" stop "$CURRENT_WEBFLUX_API_ENV" || { echo "이전 환경 중지 실패"; exit 1; }
+sudo docker-compose -f "$COMPOSE_PATH" rm -f "$CURRENT_WEBFLUX_API_ENV" || { echo "이전 환경 제거 실패"; exit 1; }
+echo "이전 환경 중지 및 제거 완료(WEBFLUX)"
 echo "-----------------------------"
 echo
 
