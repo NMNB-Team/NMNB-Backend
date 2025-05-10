@@ -54,6 +54,31 @@ jobs:
           spring.data.redis.host: ${{ secrets.DEV_REDIS_URL }}
           spring.data.redis.port: ${{ secrets.REDIS_PORT }}
 
+      - name: Set variables in webflux-bootstrap application.yml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./nmnb-webflux-bootstrap/src/main/resources/application.yml
+        env:
+          cloud.aws.credentials.access-key: ${{ secrets.AWS_ACCESS_KEY }}
+          cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_KEY }}
+          cloud.aws.region.static: ${{ secrets.AWS_REGION }}
+          cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET_NAME_FOR_SERVICE }}
+          jwt.secret: ${{ secrets.JWT_SECRET_KEY }}
+          jwt.refresh-expiration-time: ${{ secrets.REFRESH_EXPIRATION_TIME }}
+          jwt.access-expiration-time: ${{ secrets.ACCESS_EXPIRATION_TIME }}
+
+
+      - name: Set variables in webflux-bootstrap application-dev.yml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./nmnb-webflux-bootstrap/src/main/resources/application-dev.yml
+        env:
+          spring.r2dbc.username: ${{ secrets.R2DBC_USERNAME }}
+          spring.r2dbc.password: ${{ secrets.R2DBC_PASSWORD }}
+          spring.r2dbc.url: ${{ secrets.R2DBC_URL }}
+          spring.data.redis.host: ${{ secrets.DEV_REDIS_URL }}
+          spring.data.redis.port: ${{ secrets.REDIS_PORT }}
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
