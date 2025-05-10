@@ -13,6 +13,7 @@ dependencies {
 
 tasks.bootJar {
     enabled = true
+    mainClass.set("nmnb.bootstrap.NmnbBackApplicationKt")
 }
 
 tasks.jar {

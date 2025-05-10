@@ -10,6 +10,7 @@ dependencies {
 
 tasks.bootJar {
     enabled = true
+    mainClass.set("nmnb.webfluxBootstrap.NmnbWebfluxApplicationKt")
 }
 
 tasks.jar {
