@@ -37,7 +37,7 @@ class UserServiceImplTest(
         // given
         val user = User.fixture(
             id = "test",
-            companionAnimal = null,
+            petName = null,
             petOwnershipStatus = PetOwnershipStatus.NO_PET,
         )
 
