@@ -14,9 +14,5 @@ data class KakaoProfile(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoAccount(
-    val hasEmail: Boolean = false,
-    val emailNeedsAgreement: Boolean = false,
-    val isEmailValid: Boolean = false,
-    val isEmailVerified: Boolean = false,
     val email: String = "",
 )
