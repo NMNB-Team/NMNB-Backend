@@ -63,4 +63,12 @@ class User(
             return user
         }
     }
+
+    fun updatePetName(petName: String) {
+        this.petName = petName
+    }
+
+    fun updatePetOwnershipStatus(status: PetOwnershipStatus) {
+        this.petOwnershipStatus = status
+    }
 }
