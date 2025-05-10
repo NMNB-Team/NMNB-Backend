@@ -4,58 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import nmnb.application.global.auth.exception.AuthException
 import nmnb.application.global.auth.service.dto.KakaoProfile
-import nmnb.application.global.auth.service.dto.OAuthToken
 import nmnb.common.response.status.ErrorStatus
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 
 @Component
-class KakaoUtil(
-    @Value("\${kakao.auth.client}")
-    private val client: String,
-    @Value("\${kakao.auth.redirect}")
-    private val redirect: String,
-) {
+class KakaoUtil {
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val objectMapper = ObjectMapper()
     private val restTemplate = RestTemplate()
 
-    fun requestToken(accessCode: String): OAuthToken {
-        log.info("Requesting OAuth token with code: {}", accessCode)
-
-        val headers = defaultHeaders()
-        val params = LinkedMultiValueMap<String, String>().apply {
-            add("grant_type", "authorization_code")
-            add("client_id", client)
-            add("redirect_uri", redirect)
-            add("code", accessCode)
-        }
-
-        val request = HttpEntity(params, headers)
-        val response = restTemplate.exchange(
-            "https://kauth.kakao.com/oauth/token",
-            HttpMethod.POST,
-            request,
-            String::class.java,
-        )
-
-        return parseBody(response.body, OAuthToken::class.java, "OAuthToken")
-    }
-
-    fun requestProfile(oAuthToken: OAuthToken): KakaoProfile {
-        log.info("Requesting Kakao profile with accessToken: {}", oAuthToken.accessToken)
-
+    fun requestProfile(accessCode: String): KakaoProfile {
         val headers = defaultHeaders().apply {
-            setBearerAuth(oAuthToken.accessToken)
+            setBearerAuth(accessCode)
         }
 
         val request = HttpEntity<MultiValueMap<String, String>>(headers)

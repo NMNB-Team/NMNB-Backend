@@ -15,8 +15,7 @@ class AuthServiceImpl(
 ) : AuthService {
 
     override fun signInWithSocial(accessCode: String): AuthUserResponse {
-        val kakaoToken = kakaoUtil.requestToken(accessCode)
-        val kakaoProfile = kakaoUtil.requestProfile(kakaoToken)
+        val kakaoProfile = kakaoUtil.requestProfile(accessCode)
         val email = kakaoProfile.kakaoAccount.email
 
         userRepository.findByEmail(email) ?: userRepository.save(User(email))
