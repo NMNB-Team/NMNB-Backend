@@ -19,17 +19,19 @@ class S3Service(
     private val s3Properties: S3Properties,
 ) {
 
-    suspend fun upload(fileName: String, filePart: FilePart): String = withContext(Dispatchers.IO) {
+    suspend fun upload(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
         val tempFile = File.createTempFile("upload-", fileName)
         filePart.transferTo(tempFile).awaitSingleOrNull()
 
         val contentType = filePart.headers().contentType?.toString() ?: "application/octet-stream"
+        val metadata = mapOf("duration" to duration.toString())
 
         val request = PutObjectRequest.builder()
             .bucket(s3Properties.s3.bucket)
             .key(fileName)
             .contentType(contentType)
             .contentLength(tempFile.length())
+            .metadata(metadata)
             .build()
 
         val requestBody = AsyncRequestBody.fromFile(tempFile.toPath())
