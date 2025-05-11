@@ -68,8 +68,8 @@ class UserControllerTest() : ControllerTestSupport() {
             .thenReturn(
                 UserPetRegistrationResponse(
                     petName = "멍멍이",
-                    hasAnimal = true
-                )
+                    hasAnimal = true,
+                ),
             )
 
         // when & then
