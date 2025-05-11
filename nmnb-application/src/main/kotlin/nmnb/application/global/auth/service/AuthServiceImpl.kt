@@ -2,6 +2,7 @@ package nmnb.application.global.auth.service
 
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.application.global.auth.util.JwtUtil
+import nmnb.application.global.config.S3Properties
 import nmnb.application.global.infrastructure.oauth.OAuthClientComposite
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
@@ -13,13 +14,14 @@ class AuthServiceImpl(
     private val oAuthClientComposite: OAuthClientComposite,
     private val userRepository: UserRepository,
     private val jwtUtil: JwtUtil,
+    private val s3Properties: S3Properties,
 ) : AuthService {
 
     override fun signInWithSocial(accessCode: String, type: SocialType): AuthUserResponse {
-        val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode)
+        val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode = accessCode)
         val email = profile.getEmail()
 
-        userRepository.findByEmail(email) ?: userRepository.save(User(email))
+        userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.defaultProfileImageUrl))
 
         val accessToken = jwtUtil.createAccessToken(email)
         val refreshToken = jwtUtil.createRefreshToken(email)

@@ -20,7 +20,7 @@ class User(
     val email: String,
 
     @Column(nullable = false)
-    var profileImage: String = DEFAULT_PROFILE_IMAGE,
+    var profileImage: String,
 
     var petName: String? = null,
 ) : BaseEntity() {
@@ -41,13 +41,11 @@ class User(
         get() = petOwnershipStatus == PetOwnershipStatus.HAS_PET
 
     companion object {
-        private const val DEFAULT_PROFILE_IMAGE =
-            "https://nmnb-bucket-for-service.s3.ap-northeast-2.amazonaws.com/default_profile_img.jpg"
 
         fun fixture(
             id: String? = null,
             email: String = "ex@example.com",
-            profileImage: String = DEFAULT_PROFILE_IMAGE,
+            profileImage: String = "profileImg.jpg",
             petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
             posts: MutableList<Post> = mutableListOf(),
