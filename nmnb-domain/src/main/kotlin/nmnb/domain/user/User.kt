@@ -45,7 +45,7 @@ class User(
         fun fixture(
             id: String? = null,
             email: String = "ex@example.com",
-            profileImage: String = "profileImg.jpg",
+            profileImage: String = "default.png",
             petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
             posts: MutableList<Post> = mutableListOf(),
