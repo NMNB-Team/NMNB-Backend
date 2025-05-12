@@ -18,7 +18,7 @@ class UserServiceImp(
         return UserProfileResponse.of(user)
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     override fun registerPet(user: User, petName: String): UserPetRegistrationResponse {
         user.updatePetName(petName)
         user.updatePetOwnershipStatus(PetOwnershipStatus.HAS_PET)
