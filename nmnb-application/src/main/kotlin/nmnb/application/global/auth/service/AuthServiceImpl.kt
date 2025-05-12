@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.service
 
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
-import nmnb.application.global.auth.util.JwtUtil
+import nmnb.application.global.auth.util.JwtTokenProvider
 import nmnb.application.global.config.S3Properties
 import nmnb.application.global.infrastructure.oauth.OAuthClientComposite
 import nmnb.domain.auth.SocialType
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 class AuthServiceImpl(
     private val oAuthClientComposite: OAuthClientComposite,
     private val userRepository: UserRepository,
-    private val jwtUtil: JwtUtil,
+    private val tokenProvider: JwtTokenProvider,
     private val s3Properties: S3Properties,
 ) : AuthService {
 
@@ -23,8 +23,8 @@ class AuthServiceImpl(
 
         userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.defaultProfileImageUrl))
 
-        val accessToken = jwtUtil.createAccessToken(email)
-        val refreshToken = jwtUtil.createRefreshToken(email)
+        val accessToken = tokenProvider.createAccessToken(email)
+        val refreshToken = tokenProvider.createRefreshToken(email)
 
         return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken)
     }

@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @Component
-class JwtUtil(
+class JwtTokenProvider(
     @Value("\${jwt.secret}") private val secret: String,
     @Value("\${jwt.access-expiration-time}") private val accessExpirationTime: Long,
     @Value("\${jwt.refresh-expiration-time}") private val refreshExpirationTime: Long,
