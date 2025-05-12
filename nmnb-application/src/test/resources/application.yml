@@ -35,8 +35,3 @@ jwt:
   refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
   access-expiration-time: ${ACCESS_EXPIRATION_TIME}
   secret: ${JWT_SECRET_KEY}
-
-kakao:
-  auth:
-    client: ${KAKAO_CLIENT_ID}
-    redirect: ${KAKAO_REDIRECT_URL}
