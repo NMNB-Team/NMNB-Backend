@@ -14,6 +14,10 @@ enum class ErrorStatus(
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // AUTH
+    OAUTH_RESPONSE_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH500", "OAuth 서버 응답을 처리하는 중 오류가 발생했습니다."),
+    UNSUPPORTED_SOCIAL_TYPE(HttpStatus.BAD_REQUEST, "AUTH400", "지원하지 않는 소셜 로그인 타입입니다."),
+
     // POST
     POST_NOTFOUND(HttpStatus.NOT_FOUND, "POST400", "게시물을 찾을 수 없습니다."),
     ;

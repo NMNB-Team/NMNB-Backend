@@ -22,7 +22,7 @@ class User(
     @Column(nullable = false)
     var profileImage: String,
 
-    var companionAnimal: String? = null,
+    var petName: String? = null,
 ) : BaseEntity() {
     @Id
     @field:UserId
@@ -36,28 +36,37 @@ class User(
     var posts: MutableList<Post> = mutableListOf()
 
     val nickName: String
-        get() = companionAnimal?.let { companionAnimal -> "$companionAnimal-$id" } ?: id.toString()
+        get() = petName?.let { petName -> "$petName-$id" } ?: id.toString()
     val hasAnimal: Boolean
         get() = petOwnershipStatus == PetOwnershipStatus.HAS_PET
 
     companion object {
+
         fun fixture(
             id: String? = null,
             email: String = "ex@example.com",
             profileImage: String = "default.png",
-            companionAnimal: String? = null,
+            petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
             posts: MutableList<Post> = mutableListOf(),
         ): User {
             val user = User(
                 email = email,
                 profileImage = profileImage,
-                companionAnimal = companionAnimal,
+                petName = petName,
             )
             user.id = id
             user.petOwnershipStatus = petOwnershipStatus
             user.posts = posts
             return user
         }
+    }
+
+    fun updatePetName(petName: String) {
+        this.petName = petName
+    }
+
+    fun updatePetOwnershipStatus(status: PetOwnershipStatus) {
+        this.petOwnershipStatus = status
     }
 }

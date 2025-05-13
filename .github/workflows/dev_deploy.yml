@@ -37,6 +37,10 @@ jobs:
           cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET_NAME_FOR_SERVICE }}
+          cloud.aws.s3.defaultProfileImagePath: ${{ secrets.DEFAULT_PROFILE_IMAGE_PATH }}
+          jwt.secret: ${{ secrets.JWT_SECRET_KEY }}
+          jwt.refresh-expiration-time: ${{ secrets.REFRESH_EXPIRATION_TIME }}
+          jwt.access-expiration-time: ${{ secrets.ACCESS_EXPIRATION_TIME }}
 
       - name: Set environment variables in application-dev.yml
         uses: microsoft/variable-substitution@v1

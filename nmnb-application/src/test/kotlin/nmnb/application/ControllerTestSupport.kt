@@ -1,12 +1,12 @@
 package nmnb.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import nmnb.application.like.controller.LikeController
-import nmnb.application.like.service.LikeService
-import nmnb.application.post.controller.PostController
-import nmnb.application.post.service.PostService
-import nmnb.application.user.controller.UserController
-import nmnb.application.user.service.UserService
+import nmnb.application.domain.like.controller.LikeController
+import nmnb.application.domain.like.service.LikeService
+import nmnb.application.domain.post.controller.PostController
+import nmnb.application.domain.post.service.PostService
+import nmnb.application.domain.user.controller.UserController
+import nmnb.application.domain.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
