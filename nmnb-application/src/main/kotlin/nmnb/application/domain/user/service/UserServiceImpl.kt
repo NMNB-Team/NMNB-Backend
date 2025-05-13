@@ -18,6 +18,7 @@ class UserServiceImpl(
         return UserProfileResponse.of(user)
     }
 
+    @Transactional
     override fun registerPet(user: User, petName: String): UserPetRegistrationResponse {
         user.updatePetName(petName)
         user.updatePetOwnershipStatus(PetOwnershipStatus.HAS_PET)
