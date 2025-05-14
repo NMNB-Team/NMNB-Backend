@@ -1,9 +1,9 @@
-package nmnb.webflux.auth.utils
+package nmnb.webflux.global.handler.auth.utils
 
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.r2dbc.user.R2dbcUserRepository
-import nmnb.webflux.auth.domain.CustomUserDetails
+import nmnb.webflux.global.handler.auth.domain.CustomUserDetails
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.stereotype.Component

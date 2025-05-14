@@ -11,7 +11,7 @@ import nmnb.common.response.status.SuccessStatus
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.domain.post.controller.dto.request.PostInfoRequest
 import nmnb.webflux.domain.post.service.PostUploadService
-import nmnb.webflux.handler.annotation.AuthUser
+import nmnb.webflux.global.handler.annotation.AuthUser
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.web.bind.annotation.PostMapping

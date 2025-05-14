@@ -1,6 +1,6 @@
-package nmnb.webflux.config
+package nmnb.webflux.global.handler.config
 
-import nmnb.webflux.handler.resolver.AuthUserArgumentResolver
+import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.cors.CorsConfiguration

@@ -1,4 +1,4 @@
-package nmnb.webflux.auth.domain
+package nmnb.webflux.global.handler.auth.domain
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash

@@ -1,4 +1,4 @@
-package nmnb.application.exception
+package nmnb.application.global.exception
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
