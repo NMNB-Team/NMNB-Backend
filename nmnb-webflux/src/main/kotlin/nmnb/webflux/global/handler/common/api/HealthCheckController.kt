@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class HealthCheckController {
-    @GetMapping("/webjars/health")
+    @GetMapping("/netty/health")
     fun healthCheck(): String {
         return "나는 건강합니다 (Webflux) 💪"
     }
