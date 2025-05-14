@@ -34,6 +34,13 @@ class UserController(
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @PatchMapping("/pet")
     fun setPetOwnershipWithName(@RequestBody request: UserPetRegistrationRequest): BaseResponse<UserPetStatusResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithPet(User.fixture("AuthUser 구현 후 수정"), request.petName))
+        return BaseResponse.onSuccess(SuccessStatus.OK, userService.setPetOwnershipWithName(User.fixture("AuthUser 구현 후 수정"), request.petName))
+    }
+
+    @Operation(summary = "반려견 미보유 상태 설정 API", description = "가입하는 유저가 반려견을 보유하지 않았음을 설정합니다. petOwnershipStatus가 NO_PET으로 설정됩니다._예림")
+    @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
+    @PatchMapping("/pet/none")
+    fun setNoPetOwnership(): BaseResponse<UserPetStatusResponse> {
+        return BaseResponse.onSuccess(SuccessStatus.OK, userService.setNoPetOwnership(User.fixture("AuthUser 구현 후 수정")))
     }
 }
