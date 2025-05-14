@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.domain.user.service.UserService
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
-import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
+import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User

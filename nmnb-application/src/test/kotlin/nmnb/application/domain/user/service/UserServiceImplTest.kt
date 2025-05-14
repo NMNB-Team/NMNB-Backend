@@ -5,7 +5,7 @@ import nmnb.application.domain.user.service.dto.request.UserPetRegistrationReque
 import nmnb.domain.user.PetOwnershipStatus
 import nmnb.domain.user.SignUpStatus
 import nmnb.domain.user.User
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,7 +30,6 @@ class UserServiceImplTest(
         assertThat(result.nickName).isEqualTo(user.nickName)
         assertThat(result.profileImage).isEqualTo(user.profileImage)
         assertThat(result.petOwnershipStatus).isEqualTo(user.petOwnershipStatus)
-
     }
 
     @DisplayName("반려견의 이름을 등록하고 반려견 소유 상태를 설정한다")
@@ -41,7 +40,7 @@ class UserServiceImplTest(
             id = "test",
             petName = null,
             petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
-            signUpStatus = SignUpStatus.IN_PROGRESS
+            signUpStatus = SignUpStatus.IN_PROGRESS,
         )
 
         val request = UserPetRegistrationRequest(petName = "멍멍이")
@@ -63,7 +62,7 @@ class UserServiceImplTest(
             id = "test",
             petName = null,
             petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
-            signUpStatus = SignUpStatus.IN_PROGRESS
+            signUpStatus = SignUpStatus.IN_PROGRESS,
         )
 
         // when

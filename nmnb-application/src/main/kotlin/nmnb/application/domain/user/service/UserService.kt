@@ -1,7 +1,7 @@
 package nmnb.application.domain.user.service
 
-import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
+import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.domain.user.User
 
 interface UserService {

@@ -14,7 +14,7 @@ data class UserStatusResponse(
             return UserStatusResponse(
                 nickName = user.nickName,
                 petOwnershipStatus = user.petOwnershipStatus,
-                signUpStatus = user.signUpStatus
+                signUpStatus = user.signUpStatus,
             )
         }
     }
