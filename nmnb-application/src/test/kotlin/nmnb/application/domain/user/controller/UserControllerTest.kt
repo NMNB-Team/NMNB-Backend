@@ -2,10 +2,11 @@ package nmnb.application.domain.user.controller
 
 import nmnb.application.ControllerTestSupport
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
-import nmnb.application.domain.user.service.dto.response.UserPetStatusResponse
+import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.PetOwnershipStatus
+import nmnb.domain.user.SignUpStatus
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -62,14 +63,15 @@ class UserControllerTest() : ControllerTestSupport() {
     @WithMockUser
     @DisplayName("반려견의 이름을 등록 및 반려견 소유 상태 설정에 성공한다")
     @Test
-    fun setPetOwnershipWithName() {
+    fun registerWithPetName() {
         // given
         val request = UserPetRegistrationRequest(petName = "멍멍이")
-        whenever(userService.setPetOwnershipWithName(any(), any()))
+        whenever(userService.registerWithPetName(any(), any()))
             .thenReturn(
-                UserPetStatusResponse(
+                UserStatusResponse(
                     nickName = "멍멍이-{랜덤값}",
                     petOwnershipStatus = PetOwnershipStatus.HAS_PET,
+                    signUpStatus = SignUpStatus.COMPLETE,
                 ),
             )
 
@@ -86,18 +88,20 @@ class UserControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
             .andExpect(jsonPath("$.result.nickName").value("멍멍이-{랜덤값}"))
             .andExpect(jsonPath("$.result.petOwnershipStatus").value("HAS_PET"))
+            .andExpect(jsonPath("$.result.signUpStatus").value("COMPLETE"))
     }
 
     @WithMockUser
     @DisplayName("반려견 미보유 상태 등록에 성공한다")
     @Test
-    fun setNoPetOwnership() {
+    fun registerWithoutPet() {
         // given
-        whenever(userService.setNoPetOwnership(any()))
+        whenever(userService.registerWithoutPet(any()))
             .thenReturn(
-                UserPetStatusResponse(
+                UserStatusResponse(
                     nickName = "{랜덤값}",
                     petOwnershipStatus = PetOwnershipStatus.NO_PET,
+                    signUpStatus = SignUpStatus.COMPLETE,
                 ),
             )
 
@@ -111,5 +115,6 @@ class UserControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
             .andExpect(jsonPath("$.result.nickName").value("{랜덤값}"))
             .andExpect(jsonPath("$.result.petOwnershipStatus").value("NO_PET"))
+            .andExpect(jsonPath("$.result.signUpStatus").value("COMPLETE"))
     }
 }

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.domain.user.service.UserService
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
-import nmnb.application.domain.user.service.dto.response.UserPetStatusResponse
+import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
@@ -33,14 +33,14 @@ class UserController(
     @Operation(summary = "반려견 이름 등록 API", description = "가입하는 유저가 반려견의 이름을 등록합니다. 유저의 petOwnershipStatus가 `HAS_PET`으로 설정됩니다._예림")
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @PatchMapping("/pet")
-    fun setPetOwnershipWithName(@RequestBody request: UserPetRegistrationRequest): BaseResponse<UserPetStatusResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.OK, userService.setPetOwnershipWithName(User.fixture("AuthUser 구현 후 수정"), request.petName))
+    fun registerWithPetName(@RequestBody request: UserPetRegistrationRequest): BaseResponse<UserStatusResponse> {
+        return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithPetName(User.fixture("AuthUser 구현 후 수정"), request.petName))
     }
 
     @Operation(summary = "반려견 미보유 상태 설정 API", description = "가입하는 유저가 반려견을 보유하지 않았음을 설정합니다. petOwnershipStatus가 NO_PET으로 설정됩니다._예림")
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @PatchMapping("/pet/none")
-    fun setNoPetOwnership(): BaseResponse<UserPetStatusResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.OK, userService.setNoPetOwnership(User.fixture("AuthUser 구현 후 수정")))
+    fun registerWithoutPet(): BaseResponse<UserStatusResponse> {
+        return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithoutPet(User.fixture("AuthUser 구현 후 수정")))
     }
 }

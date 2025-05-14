@@ -1,8 +1,9 @@
 package nmnb.application.domain.user.service
 
-import nmnb.application.domain.user.service.dto.response.UserPetStatusResponse
+import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.domain.user.PetOwnershipStatus
+import nmnb.domain.user.SignUpStatus
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -19,15 +20,20 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun setPetOwnershipWithName(user: User, petName: String): UserPetStatusResponse {
+    override fun registerWithPetName(user: User, petName: String): UserStatusResponse {
         user.updatePetName(petName)
-        user.updatePetOwnershipStatus(PetOwnershipStatus.HAS_PET)
-        return UserPetStatusResponse.of(userRepository.save(user))
+        completeRegistration(user, PetOwnershipStatus.HAS_PET)
+        return UserStatusResponse.of(userRepository.save(user))
     }
 
     @Transactional
-    override fun setNoPetOwnership(user: User): UserPetStatusResponse {
-        user.updatePetOwnershipStatus(PetOwnershipStatus.NO_PET)
-        return UserPetStatusResponse.of(userRepository.save(user))
+    override fun registerWithoutPet(user: User): UserStatusResponse {
+        completeRegistration(user, PetOwnershipStatus.NO_PET)
+        return UserStatusResponse.of(userRepository.save(user))
+    }
+
+    private fun completeRegistration(user: User, petOwnershipStatus: PetOwnershipStatus) {
+        user.updatePetOwnershipStatus(petOwnershipStatus)
+        user.updateSignUpStatus(SignUpStatus.COMPLETE)
     }
 }

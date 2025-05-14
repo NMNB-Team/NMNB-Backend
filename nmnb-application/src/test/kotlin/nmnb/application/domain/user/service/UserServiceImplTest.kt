@@ -3,8 +3,9 @@ package nmnb.application.domain.user.service
 import nmnb.application.IntegrationTestSupport
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
 import nmnb.domain.user.PetOwnershipStatus
+import nmnb.domain.user.SignUpStatus
 import nmnb.domain.user.User
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,46 +27,51 @@ class UserServiceImplTest(
         val result = userService.getProfile(user)
 
         // then
-        Assertions.assertThat(result.nickName).isEqualTo(user.nickName)
-        Assertions.assertThat(result.profileImage).isEqualTo(user.profileImage)
-        Assertions.assertThat(result.petOwnershipStatus).isEqualTo(user.petOwnershipStatus)
+        assertThat(result.nickName).isEqualTo(user.nickName)
+        assertThat(result.profileImage).isEqualTo(user.profileImage)
+        assertThat(result.petOwnershipStatus).isEqualTo(user.petOwnershipStatus)
+
     }
 
     @DisplayName("반려견의 이름을 등록하고 반려견 소유 상태를 설정한다")
     @Test
-    fun setPetOwnershipWithName() {
+    fun registerWithPetName() {
         // given
         val user = User.fixture(
             id = "test",
             petName = null,
             petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
+            signUpStatus = SignUpStatus.IN_PROGRESS
         )
 
         val request = UserPetRegistrationRequest(petName = "멍멍이")
 
         // when
-        val result = userService.setPetOwnershipWithName(user, request.petName)
+        val result = userService.registerWithPetName(user, request.petName)
 
         // then
-        Assertions.assertThat(result.nickName).contains("멍멍이")
-        Assertions.assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.HAS_PET)
+        assertThat(result.nickName).contains("멍멍이")
+        assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.HAS_PET)
+        assertThat(result.signUpStatus).isEqualTo(SignUpStatus.COMPLETE)
     }
 
     @DisplayName("반려견 미보유 상태로 설정한다")
     @Test
-    fun setNoPetOwnership() {
+    fun registerWithoutPet() {
         // given
         val user = User.fixture(
             id = "test",
             petName = null,
             petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
+            signUpStatus = SignUpStatus.IN_PROGRESS
         )
 
         // when
-        val result = userService.setNoPetOwnership(user)
+        val result = userService.registerWithoutPet(user)
 
         // then
-        Assertions.assertThat(result.nickName).isNotBlank()
-        Assertions.assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.NO_PET)
+        assertThat(result.nickName).isNotBlank()
+        assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.NO_PET)
+        assertThat(result.signUpStatus).isEqualTo(SignUpStatus.COMPLETE)
     }
 }

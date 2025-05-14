@@ -33,6 +33,9 @@ class User(
     @Enumerated(EnumType.STRING)
     var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.UNKNOWN
 
+    @Enumerated(EnumType.STRING)
+    var signUpStatus: SignUpStatus = SignUpStatus.IN_PROGRESS
+
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var posts: MutableList<Post> = mutableListOf()
 
@@ -47,6 +50,7 @@ class User(
             profileImage: String = "default.png",
             petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
+            signUpStatus: SignUpStatus = SignUpStatus.COMPLETE,
             posts: MutableList<Post> = mutableListOf(),
         ): User {
             val user = User(
@@ -56,6 +60,7 @@ class User(
             )
             user.id = id
             user.petOwnershipStatus = petOwnershipStatus
+            user.signUpStatus = signUpStatus
             user.posts = posts
             return user
         }
@@ -67,5 +72,9 @@ class User(
 
     fun updatePetOwnershipStatus(status: PetOwnershipStatus) {
         this.petOwnershipStatus = status
+    }
+
+    fun updateSignUpStatus(status: SignUpStatus) {
+        this.signUpStatus = status
     }
 }
