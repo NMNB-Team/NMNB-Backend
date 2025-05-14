@@ -30,3 +30,9 @@ jwt:
   access-expiration-time: ${ACCESS_EXPIRATION_TIME}
   secret: ${JWT_SECRET_KEY}
 
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+      springframework.r2dbc: DEBUG
