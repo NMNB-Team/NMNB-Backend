@@ -17,8 +17,9 @@ class SecurityConfig(
 ) {
 
     private val allowedUrl = arrayOf(
-        "/webjars/swagger-ui/**",
-        "/v3/api-docs/**",
+        "/**"
+        //"/webjars/swagger-ui/**",
+        //"/v3/api-docs/**",
     )
 
     private val userUrl = arrayOf(
