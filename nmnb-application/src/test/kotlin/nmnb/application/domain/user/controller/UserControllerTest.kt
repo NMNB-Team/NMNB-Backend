@@ -2,7 +2,7 @@ package nmnb.application.domain.user.controller
 
 import nmnb.application.ControllerTestSupport
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
-import nmnb.application.domain.user.service.dto.response.UserPetRegistrationResponse
+import nmnb.application.domain.user.service.dto.response.UserPetStatusResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.PetOwnershipStatus
@@ -60,15 +60,15 @@ class UserControllerTest() : ControllerTestSupport() {
     }
 
     @WithMockUser
-    @DisplayName("반려견 이름 등록에 성공한다")
+    @DisplayName("반려견의 이름을 등록 및 반려견 소유 상태 설정에 성공한다")
     @Test
-    fun registerPet() {
+    fun setPetOwnershipWithName() {
         // given
         val request = UserPetRegistrationRequest(petName = "멍멍이")
-        whenever(userService.registerPet(any(), any()))
+        whenever(userService.setPetOwnershipWithName(any(), any()))
             .thenReturn(
-                UserPetRegistrationResponse(
-                    petName = "멍멍이",
+                UserPetStatusResponse(
+                    nickName = "멍멍이-{랜덤값}",
                     petOwnershipStatus = PetOwnershipStatus.HAS_PET,
                 ),
             )
@@ -84,7 +84,32 @@ class UserControllerTest() : ControllerTestSupport() {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
-            .andExpect(jsonPath("$.result.petName").value("멍멍이"))
+            .andExpect(jsonPath("$.result.nickName").value("멍멍이-{랜덤값}"))
             .andExpect(jsonPath("$.result.petOwnershipStatus").value("HAS_PET"))
+    }
+
+    @WithMockUser
+    @DisplayName("반려견 미보유 상태 등록에 성공한다")
+    @Test
+    fun setNoPetOwnership() {
+        // given
+        whenever(userService.setNoPetOwnership(any()))
+            .thenReturn(
+                UserPetStatusResponse(
+                    nickName = "{랜덤값}",
+                    petOwnershipStatus = PetOwnershipStatus.NO_PET,
+                ),
+            )
+
+        // when & then
+        mockMvc.perform(
+            patch("/v1/api/users/pet/none")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
+            .andExpect(jsonPath("$.result.nickName").value("{랜덤값}"))
+            .andExpect(jsonPath("$.result.petOwnershipStatus").value("NO_PET"))
     }
 }

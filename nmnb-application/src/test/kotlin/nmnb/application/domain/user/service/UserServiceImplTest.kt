@@ -31,9 +31,9 @@ class UserServiceImplTest(
         Assertions.assertThat(result.petOwnershipStatus).isEqualTo(user.petOwnershipStatus)
     }
 
-    @DisplayName("반려견을 등록한다")
+    @DisplayName("반려견의 이름을 등록하고 반려견 소유 상태를 설정한다")
     @Test
-    fun registerPet() {
+    fun setPetOwnershipWithName() {
         // given
         val user = User.fixture(
             id = "test",
@@ -44,10 +44,28 @@ class UserServiceImplTest(
         val request = UserPetRegistrationRequest(petName = "멍멍이")
 
         // when
-        val result = userService.registerPet(user, request.petName)
+        val result = userService.setPetOwnershipWithName(user, request.petName)
 
         // then
-        Assertions.assertThat(result.petName).isEqualTo("멍멍이")
+        Assertions.assertThat(result.nickName).contains("멍멍이")
         Assertions.assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.HAS_PET)
+    }
+
+    @DisplayName("반려견 미보유 상태로 설정한다")
+    @Test
+    fun setNoPetOwnership() {
+        // given
+        val user = User.fixture(
+            id = "test",
+            petName = null,
+            petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
+        )
+
+        // when
+        val result = userService.setNoPetOwnership(user)
+
+        // then
+        Assertions.assertThat(result.nickName).isNotBlank()
+        Assertions.assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.NO_PET)
     }
 }
