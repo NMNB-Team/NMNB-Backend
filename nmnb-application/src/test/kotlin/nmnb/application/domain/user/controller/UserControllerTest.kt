@@ -5,6 +5,7 @@ import nmnb.application.domain.user.service.dto.request.UserPetRegistrationReque
 import nmnb.application.domain.user.service.dto.response.UserPetRegistrationResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.common.response.status.SuccessStatus
+import nmnb.domain.user.PetOwnershipStatus
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -29,7 +30,7 @@ class UserControllerTest() : ControllerTestSupport() {
                 UserProfileResponse(
                     "nickname",
                     "profile",
-                    true,
+                    PetOwnershipStatus.HAS_PET,
                     "2025.01.02",
                 ),
             )
@@ -54,7 +55,7 @@ class UserControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
             .andExpect(jsonPath("$.result.nickName").value("nickname"))
             .andExpect(jsonPath("$.result.profileImage").value("profile"))
-            .andExpect(jsonPath("$.result.hasAnimal").value(true))
+            .andExpect(jsonPath("$.result.petOwnershipStatus").value("HAS_PET"))
             .andExpect(jsonPath("$.result.createdAt").isNotEmpty)
     }
 
@@ -68,7 +69,7 @@ class UserControllerTest() : ControllerTestSupport() {
             .thenReturn(
                 UserPetRegistrationResponse(
                     petName = "멍멍이",
-                    hasAnimal = true,
+                    petOwnershipStatus = PetOwnershipStatus.HAS_PET,
                 ),
             )
 
@@ -84,6 +85,6 @@ class UserControllerTest() : ControllerTestSupport() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
             .andExpect(jsonPath("$.result.petName").value("멍멍이"))
-            .andExpect(jsonPath("$.result.hasAnimal").value(true))
+            .andExpect(jsonPath("$.result.petOwnershipStatus").value("HAS_PET"))
     }
 }

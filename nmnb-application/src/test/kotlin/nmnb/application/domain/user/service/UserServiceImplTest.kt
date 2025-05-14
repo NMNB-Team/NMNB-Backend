@@ -28,7 +28,7 @@ class UserServiceImplTest(
         // then
         Assertions.assertThat(result.nickName).isEqualTo(user.nickName)
         Assertions.assertThat(result.profileImage).isEqualTo(user.profileImage)
-        Assertions.assertThat(result.hasAnimal).isEqualTo(user.hasAnimal)
+        Assertions.assertThat(result.petOwnershipStatus).isEqualTo(user.petOwnershipStatus)
     }
 
     @DisplayName("반려견을 등록한다")
@@ -48,6 +48,6 @@ class UserServiceImplTest(
 
         // then
         Assertions.assertThat(result.petName).isEqualTo("멍멍이")
-        Assertions.assertThat(result.hasAnimal).isEqualTo(true)
+        Assertions.assertThat(result.petOwnershipStatus).isEqualTo(PetOwnershipStatus.HAS_PET)
     }
 }

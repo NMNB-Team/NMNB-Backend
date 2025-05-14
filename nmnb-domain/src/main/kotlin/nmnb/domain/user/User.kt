@@ -37,8 +37,6 @@ class User(
 
     val nickName: String
         get() = petName?.let { petName -> "$petName-$id" } ?: id.toString()
-    val hasAnimal: Boolean
-        get() = petOwnershipStatus == PetOwnershipStatus.HAS_PET
 
     companion object {
 
