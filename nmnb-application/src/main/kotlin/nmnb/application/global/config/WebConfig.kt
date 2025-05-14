@@ -1,6 +1,8 @@
 package nmnb.application.global.config
 
+import nmnb.application.global.auth.converter.StringToSocialTypeConverter
 import org.springframework.context.annotation.Configuration
+import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -13,5 +15,9 @@ class WebConfig : WebMvcConfigurer {
             .allowedHeaders("*")
             .allowCredentials(false)
             .maxAge(6000)
+    }
+
+    override fun addFormatters(registry: FormatterRegistry) {
+        registry.addConverter(StringToSocialTypeConverter())
     }
 }

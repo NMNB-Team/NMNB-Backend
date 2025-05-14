@@ -7,16 +7,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoProfile(
-    val id: Long = 0L,
-    val connectedAt: String = "",
     val kakaoAccount: KakaoAccount = KakaoAccount(),
-)
+) : OAuthProfile {
+    override fun getEmail(): String = kakaoAccount.email
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoAccount(
-    val hasEmail: Boolean = false,
-    val emailNeedsAgreement: Boolean = false,
-    val isEmailValid: Boolean = false,
-    val isEmailVerified: Boolean = false,
     val email: String = "",
 )

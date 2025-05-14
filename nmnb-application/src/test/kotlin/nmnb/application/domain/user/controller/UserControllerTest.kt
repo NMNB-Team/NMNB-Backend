@@ -1,6 +1,8 @@
 package nmnb.application.domain.user.controller
 
 import nmnb.application.ControllerTestSupport
+import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
+import nmnb.application.domain.user.service.dto.response.UserPetRegistrationResponse
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.common.response.status.SuccessStatus
 import org.junit.jupiter.api.DisplayName
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -33,7 +36,7 @@ class UserControllerTest() : ControllerTestSupport() {
 
         // when & then
         mockMvc.perform(
-            get("/v1/api/profile")
+            get("/v1/api/users/profile")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
                 .content(
@@ -41,7 +44,7 @@ class UserControllerTest() : ControllerTestSupport() {
                 {
                     "email": "test@example.com",
                     "profileImage": "profile_image.png",
-                    "companionAnimal": "dog",
+                    "petName": "dog",
                     "petOwnershipStatus": "HAS_PET"
                 }
                 """,
@@ -53,5 +56,34 @@ class UserControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.result.profileImage").value("profile"))
             .andExpect(jsonPath("$.result.hasAnimal").value(true))
             .andExpect(jsonPath("$.result.createdAt").isNotEmpty)
+    }
+
+    @WithMockUser
+    @DisplayName("반려견 이름 등록에 성공한다")
+    @Test
+    fun registerPet() {
+        // given
+        val request = UserPetRegistrationRequest(petName = "멍멍이")
+        whenever(userService.registerPet(any(), any()))
+            .thenReturn(
+                UserPetRegistrationResponse(
+                    petName = "멍멍이",
+                    hasAnimal = true,
+                ),
+            )
+
+        // when & then
+        mockMvc.perform(
+            patch("/v1/api/users/pet")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
+                .content(
+                    objectMapper.writeValueAsString(request),
+                ),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
+            .andExpect(jsonPath("$.result.petName").value("멍멍이"))
+            .andExpect(jsonPath("$.result.hasAnimal").value(true))
     }
 }

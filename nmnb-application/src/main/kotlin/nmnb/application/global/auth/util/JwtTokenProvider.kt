@@ -4,8 +4,8 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import nmnb.application.global.auth.repository.RefreshTokenRepository
-import nmnb.domain.auth.domain.RefreshToken
+import nmnb.domain.auth.RefreshToken
+import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @Component
-class JwtUtil(
+class JwtTokenProvider(
     @Value("\${jwt.secret}") private val secret: String,
     @Value("\${jwt.access-expiration-time}") private val accessExpirationTime: Long,
     @Value("\${jwt.refresh-expiration-time}") private val refreshExpirationTime: Long,
@@ -29,7 +29,7 @@ class JwtUtil(
         return Jwts.builder()
             .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
             .setExpiration(Date.from(Instant.now().plus(accessExpirationTime, ChronoUnit.SECONDS)))
-            .claim("userId", email)
+            .claim("email", email)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
     }
