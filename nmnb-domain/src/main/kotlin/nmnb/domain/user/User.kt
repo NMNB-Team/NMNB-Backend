@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import nmnb.domain.BaseEntity
 import nmnb.domain.post.Post
+import java.util.UUID
 
 @Entity
 @Table(name = "users")
@@ -42,7 +43,7 @@ class User(
 
         fun fixture(
             id: String? = null,
-            email: String = "ex@example.com",
+            email: String = "${UUID.randomUUID()}@example.com",
             profileImage: String = "default.png",
             petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
