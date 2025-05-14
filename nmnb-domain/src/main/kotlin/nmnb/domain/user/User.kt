@@ -30,7 +30,7 @@ class User(
     var id: String? = null
 
     @Enumerated(EnumType.STRING)
-    var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET
+    var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.UNKNOWN
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var posts: MutableList<Post> = mutableListOf()
