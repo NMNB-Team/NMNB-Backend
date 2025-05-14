@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfig {
 
     val allowedUrl: Array<String> = arrayOf(
+        "/**",
         "/health",
         "/swagger-ui/**",
         "/v3/api-docs/**",
