@@ -1,22 +1,20 @@
 package nmnb.application.domain.user.service.dto.response
 
-import nmnb.common.utils.DateTimeUtils
 import nmnb.domain.user.PetOwnershipStatus
+import nmnb.domain.user.SignUpStatus
 import nmnb.domain.user.User
 
-data class UserProfileResponse(
+data class UserStatusResponse(
     val nickName: String,
-    val profileImage: String,
     val petOwnershipStatus: PetOwnershipStatus,
-    val createdAt: String,
+    val signUpStatus: SignUpStatus,
 ) {
     companion object {
-        fun of(user: User): UserProfileResponse {
-            return UserProfileResponse(
+        fun of(user: User): UserStatusResponse {
+            return UserStatusResponse(
                 nickName = user.nickName,
-                profileImage = user.profileImage,
                 petOwnershipStatus = user.petOwnershipStatus,
-                createdAt = DateTimeUtils.formatDate(user.createdAt),
+                signUpStatus = user.signUpStatus,
             )
         }
     }

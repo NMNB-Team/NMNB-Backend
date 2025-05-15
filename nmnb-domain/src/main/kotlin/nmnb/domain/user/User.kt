@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import nmnb.domain.BaseEntity
 import nmnb.domain.post.Post
+import java.util.UUID
 
 @Entity
 @Table(name = "users")
@@ -30,24 +31,26 @@ class User(
     var id: String? = null
 
     @Enumerated(EnumType.STRING)
-    var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET
+    var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.UNKNOWN
+
+    @Enumerated(EnumType.STRING)
+    var signUpStatus: SignUpStatus = SignUpStatus.IN_PROGRESS
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var posts: MutableList<Post> = mutableListOf()
 
     val nickName: String
         get() = petName?.let { petName -> "$petName-$id" } ?: id.toString()
-    val hasAnimal: Boolean
-        get() = petOwnershipStatus == PetOwnershipStatus.HAS_PET
 
     companion object {
 
         fun fixture(
             id: String? = null,
-            email: String = "ex@example.com",
+            email: String = "${UUID.randomUUID()}@example.com",
             profileImage: String = "default.png",
             petName: String? = null,
             petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
+            signUpStatus: SignUpStatus = SignUpStatus.COMPLETE,
             posts: MutableList<Post> = mutableListOf(),
         ): User {
             val user = User(
@@ -57,6 +60,7 @@ class User(
             )
             user.id = id
             user.petOwnershipStatus = petOwnershipStatus
+            user.signUpStatus = signUpStatus
             user.posts = posts
             return user
         }
@@ -68,5 +72,9 @@ class User(
 
     fun updatePetOwnershipStatus(status: PetOwnershipStatus) {
         this.petOwnershipStatus = status
+    }
+
+    fun updateSignUpStatus(status: SignUpStatus) {
+        this.signUpStatus = status
     }
 }

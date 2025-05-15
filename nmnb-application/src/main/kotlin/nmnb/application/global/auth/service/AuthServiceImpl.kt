@@ -21,11 +21,11 @@ class AuthServiceImpl(
         val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode = accessCode)
         val email = profile.getEmail()
 
-        userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.defaultProfileImageUrl))
+        val user = userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.defaultProfileImageUrl))
 
         val accessToken = tokenProvider.createAccessToken(email)
         val refreshToken = tokenProvider.createRefreshToken(email)
 
-        return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken)
+        return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken, signUpStatus = user.signUpStatus)
     }
 }
