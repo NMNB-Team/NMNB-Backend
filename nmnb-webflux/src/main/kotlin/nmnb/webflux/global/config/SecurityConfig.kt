@@ -1,6 +1,6 @@
-package nmnb.webflux.global.handler.config
+package nmnb.webflux.global.config
 
-import nmnb.webflux.global.handler.auth.utils.JWTFilter
+import nmnb.webflux.global.auth.utils.JWTFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity

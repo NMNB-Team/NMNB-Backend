@@ -1,10 +1,10 @@
-package nmnb.webflux.global.handler.common.service
+package nmnb.webflux.global.common.service
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
-import nmnb.webflux.global.handler.common.properties.S3Properties
+import nmnb.webflux.global.common.properties.S3Properties
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.async.AsyncRequestBody

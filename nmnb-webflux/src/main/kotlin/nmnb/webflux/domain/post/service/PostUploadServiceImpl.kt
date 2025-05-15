@@ -6,7 +6,7 @@ import nmnb.r2dbc.post.R2dbcPost
 import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.domain.post.service.dto.request.PostInfoServiceRequest
-import nmnb.webflux.global.handler.common.service.S3Service
+import nmnb.webflux.global.common.service.S3Service
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

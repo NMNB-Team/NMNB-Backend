@@ -1,4 +1,4 @@
-package nmnb.webflux.global.handler.auth.domain
+package nmnb.webflux.global.auth.domain
 
 import nmnb.r2dbc.user.R2dbcUser
 import org.springframework.security.core.GrantedAuthority

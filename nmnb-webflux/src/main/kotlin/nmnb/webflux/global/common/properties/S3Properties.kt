@@ -1,4 +1,4 @@
-package nmnb.webflux.global.handler.common.properties
+package nmnb.webflux.global.common.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
