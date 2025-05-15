@@ -7,7 +7,6 @@ COMPOSE_PATH="$PROJECT_DIR/docker-compose.override.yml"
 ENV_FILE_PATH="/home/ubuntu/.env"
 
 NGINX_CONTAINER="nginx"
-DELAY=10
 
 # 현재 실행 중인 블루 컨테이너 확인
 BLUE_API_CONTAINER="$(docker ps --filter "name=nmnb-blue" --filter "status=running" | grep -v "CONTAINER ID")"
@@ -42,9 +41,6 @@ if [[ -n "$WEBFLUX_BLUE_API_CONTAINER" ]]; then
 
     CURRENT_WEBFLUX_API_ENV='nmnb-webflux-blue'
     NEW_WEBFLUX_API_ENV='nmnb-webflux-green'
-
-    CURRENT_WEBFLUX_NGINX_CONF='nmnb.webflux.blue.conf'
-    NEW_WEBFLUX_NGINX_CONF='nmnb.webflux.green.conf'
 else
     echo "-----------------------------"
     echo "webflux 전환: GREEN => BLUE"
@@ -52,9 +48,6 @@ else
 
     CURRENT_WEBFLUX_API_ENV='nmnb-webflux-green'
     NEW_WEBFLUX_API_ENV='nmnb-webflux-blue'
-
-    CURRENT_WEBFLUX_NGINX_CONF='nmnb.webflux.green.conf'
-    NEW_WEBFLUX_NGINX_CONF='nmnb.webflux.blue.conf'
 fi
 
 
@@ -82,7 +75,6 @@ echo "새로운 환경 시작 완료"
 echo "-----------------------------"
 echo
 
-sleep $DELAY
 
 if ! docker ps --filter "name=$NEW_API_ENV" --filter "status=running" | grep -q "$NEW_API_ENV"; then
     echo "새로운 환경($NEW_API_ENV) 컨테이너가 정상 실행되지 않음"
@@ -105,7 +97,6 @@ echo "새로운 환경 시작 완료(WEBFLUX)"
 echo "-----------------------------"
 echo
 
-sleep $DELAY
 
 if ! docker ps --filter "name=$NEW_WEBFLUX_API_ENV" --filter "status=running" | grep -q "$NEW_WEBFLUX_API_ENV"; then
     echo "새로운 환경(WEBFLUX)($NEW_WEBFLUX_API_ENV) 컨테이너가 정상 실행되지 않음"
@@ -117,11 +108,6 @@ echo "-----------------------------"
 echo "Nginx 설정 파일 업데이트 중..."
 docker cp "$NGINX_CONF_DIR/$NEW_NGINX_CONF" "$NGINX_CONTAINER:/etc/nginx/conf.d/"
 
-echo
-echo "-----------------------------"
-echo "Nginx 설정 파일 업데이트 중...(WEBFLUX)"
-docker cp "$NGINX_CONF_DIR/$NEW_WEBFLUX_NGINX_CONF" "$NGINX_CONTAINER:/etc/nginx/conf.d/"
-
 
 echo "복사된 파일 확인"
 docker exec "$NGINX_CONTAINER" ls -l /etc/nginx/conf.d/
@@ -131,10 +117,6 @@ docker exec "$NGINX_CONTAINER" rm -f "/etc/nginx/conf.d/$CURRENT_NGINX_CONF"
 echo "-----------------------------"
 echo
 
-echo "현재 설정 파일 삭제(WEBFLUX)"
-docker exec "$NGINX_CONTAINER" rm -f "/etc/nginx/conf.d/$CURRENT_WEBFLUX_NGINX_CONF"
-echo "-----------------------------"
-echo
 
 echo "남아있는 파일 확인"
 docker exec "$NGINX_CONTAINER" ls -l /etc/nginx/conf.d/
