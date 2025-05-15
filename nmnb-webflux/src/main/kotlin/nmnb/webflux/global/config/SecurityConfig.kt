@@ -17,9 +17,10 @@ class SecurityConfig(
 ) {
 
     private val allowedUrl = arrayOf(
-        "/**",
-        // "/webjars/swagger-ui/**",
-        // "/v3/api-docs/**",
+        "/netty/health",
+        "/netty/webjars/swagger-ui/**",
+        "/netty/swagger-ui.html/**",
+        "/netty/v3/api-docs/**",
     )
 
     private val userUrl = arrayOf(
