@@ -36,3 +36,13 @@ logging:
     org:
       springframework: DEBUG
       springframework.r2dbc: DEBUG
+
+springdoc:
+  api-docs:
+    path: /netty/v3/api-docs
+  swagger-ui:
+    path: /netty/swagger-ui.html
+    config-url: /netty/v3/api-docs/swagger-config
+    url: /netty/v3/api-docs
+    operationsSorter: alpha
+    display-request-duration: true
