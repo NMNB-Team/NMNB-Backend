@@ -28,7 +28,7 @@ class PostController(
 ) {
     @Operation(summary = "영상 업로드 API", description = "영상을 업로드 합니다._숙희")
     @ApiResponses(
-        ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
+        ApiResponse(responseCode = "COMMON202", description = "요청 성공 및 반환할 콘텐츠가 없음."),
     )
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     suspend fun uploadPost(
@@ -39,7 +39,7 @@ class PostController(
         val postInfo = objectMapper.readValue(request, PostInfoRequest::class.java)
 
         return BaseResponse.onSuccess(
-            SuccessStatus.OK,
+            SuccessStatus.NO_CONTENT,
             postUploadService.upload(user, file, postInfo.toServiceRequest()),
         )
     }
