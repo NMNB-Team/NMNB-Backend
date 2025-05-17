@@ -6,5 +6,5 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 
 @Configuration
 @EnableR2dbcAuditing
-@EnableR2dbcRepositories(basePackages = ["nmnb.r2dbc", "nmnb.webflux.auth"])
+@EnableR2dbcRepositories(basePackages = ["nmnb.r2dbc", "nmnb.webflux.global.auth"])
 class R2dbcConfig
