@@ -12,6 +12,7 @@ import software.amazon.awssdk.services.s3.S3AsyncClient
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import java.io.File
 import java.net.URLEncoder
+import java.nio.file.Files
 
 @Component
 class S3Service(
@@ -20,27 +21,41 @@ class S3Service(
 ) {
 
     suspend fun upload(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
+        val tempFile = createTempFile(fileName, filePart)
+        try {
+            uploadToS3(fileName, tempFile, duration)
+            return@withContext createPostUrl(fileName)
+        } finally {
+            tempFile.delete()
+        }
+    }
+
+    private suspend fun createTempFile(fileName: String, filePart: FilePart): File {
         val tempFile = File.createTempFile("upload-", fileName)
         filePart.transferTo(tempFile).awaitSingleOrNull()
+        return tempFile
+    }
 
-        val contentType = filePart.headers().contentType?.toString() ?: "application/octet-stream"
+    private suspend fun uploadToS3(fileName: String, file: File, duration: Int) {
+        val contentType = withContext(Dispatchers.IO) {
+            Files.probeContentType(file.toPath())
+        } ?: "application/octet-stream"
         val metadata = mapOf("duration" to duration.toString())
 
         val request = PutObjectRequest.builder()
             .bucket(s3Properties.s3.bucket)
             .key(fileName)
             .contentType(contentType)
-            .contentLength(tempFile.length())
+            .contentLength(file.length())
             .metadata(metadata)
             .build()
 
-        val requestBody = AsyncRequestBody.fromFile(tempFile.toPath())
+        val requestBody = AsyncRequestBody.fromFile(file.toPath())
         s3AsyncClient.putObject(request, requestBody).await()
+    }
 
-        tempFile.delete()
-
-        return@withContext "https://${s3Properties.s3.bucket}.s3.${s3Properties.region.static}.amazonaws.com/${
+    private fun createPostUrl(fileName: String) =
+        "https://${s3Properties.s3.bucket}.s3.${s3Properties.region.static}.amazonaws.com/${
             URLEncoder.encode(fileName, "UTF-8")
         }"
-    }
 }
