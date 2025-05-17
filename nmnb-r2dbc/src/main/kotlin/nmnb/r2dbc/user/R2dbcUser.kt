@@ -6,6 +6,7 @@ import nmnb.r2dbc.R2dbcBaseEntity
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.util.UUID
 
 @Table("users")
 data class R2dbcUser(
@@ -27,4 +28,24 @@ data class R2dbcUser(
 
     @Column("sign_up_status")
     var signUpStatus: SignUpStatus = SignUpStatus.IN_PROGRESS,
-) : R2dbcBaseEntity()
+) : R2dbcBaseEntity() {
+    companion object {
+        fun fixture(
+            id: String? = null,
+            email: String = "${UUID.randomUUID()}@example.com",
+            profileImage: String = "default.png",
+            petName: String? = null,
+            petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
+            signUpStatus: SignUpStatus = SignUpStatus.COMPLETE,
+        ): R2dbcUser {
+            val user = R2dbcUser(
+                email = email,
+                profileImage = profileImage,
+                petName = petName,
+            )
+            user.petOwnershipStatus = petOwnershipStatus
+            user.signUpStatus = signUpStatus
+            return user
+        }
+    }
+}
