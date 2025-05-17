@@ -1,6 +1,7 @@
 package nmnb.r2dbc.user
 
 import nmnb.common.domain.PetOwnershipStatus
+import nmnb.common.domain.SignUpStatus
 import nmnb.r2dbc.R2dbcBaseEntity
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -18,9 +19,12 @@ data class R2dbcUser(
     @Column("profile_image")
     var profileImage: String,
 
-    @Column("companion_animal")
-    var companionAnimal: String? = null,
+    @Column("pet_name")
+    var petName: String? = null,
 
     @Column("pet_ownership_status")
     var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.NO_PET,
+
+    @Column("sign_up_status")
+    var signUpStatus: SignUpStatus = SignUpStatus.IN_PROGRESS,
 ) : R2dbcBaseEntity()
