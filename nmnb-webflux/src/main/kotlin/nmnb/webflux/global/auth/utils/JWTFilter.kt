@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class JWTFilter(
-    private val jwtUtil: JwtUtil,
+    private val jwtTokenProvider: JwtTokenProvider,
     private val userRepository: R2dbcUserRepository,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
@@ -26,8 +26,8 @@ class JWTFilter(
 
         val parsedToken = authorizationHeader.substring(7)
 
-        return if (jwtUtil.isValidToken(parsedToken)) {
-            val username = jwtUtil.getId(parsedToken)
+        return if (jwtTokenProvider.isValidToken(parsedToken)) {
+            val username = jwtTokenProvider.getId(parsedToken)
 
             return userRepository.findByEmail(username)
                 .switchIfEmpty(Mono.error(GeneralException(ErrorStatus.USER_NOT_FOUND)))

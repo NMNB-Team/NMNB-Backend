@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 import javax.crypto.SecretKey
 
 @Component
-class JwtUtil(
+class JwtTokenProvider(
     @Value("\${jwt.secret}") private val secret: String,
 ) {
     fun isValidToken(token: String): Boolean {
@@ -38,7 +38,7 @@ class JwtUtil(
     }
 
     fun getId(token: String): String {
-        return getClaims(token).body.get("userId", String::class.java)
+        return getClaims(token).body.get("email", String::class.java)
     }
 
     private fun getClaims(token: String): Jws<Claims> {
