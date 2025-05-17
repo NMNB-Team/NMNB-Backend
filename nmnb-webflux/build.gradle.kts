@@ -12,6 +12,8 @@ dependencies {
     // r2dbc-mysql
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("io.asyncer:r2dbc-mysql:1.4.0")
+    //r2dbc-h2
+    implementation("io.r2dbc:r2dbc-h2")
     // r2dbc-coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
 
@@ -39,6 +41,15 @@ dependencies {
     // Redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
     implementation ("org.springframework.session:spring-session-data-redis")
+
+    // test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
 }
 
 tasks.bootJar {
