@@ -1,7 +1,7 @@
 package nmnb.application.domain.user.service.dto.response
 
+import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.utils.DateTimeUtils
-import nmnb.domain.user.PetOwnershipStatus
 import nmnb.domain.user.User
 
 data class UserProfileResponse(

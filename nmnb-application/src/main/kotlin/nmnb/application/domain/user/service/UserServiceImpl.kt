@@ -1,9 +1,9 @@
 package nmnb.application.domain.user.service
 
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
-import nmnb.common.domain.PetOwnershipStatus
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
-import nmnb.domain.user.SignUpStatus
+import nmnb.common.domain.PetOwnershipStatus
+import nmnb.common.domain.SignUpStatus
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service

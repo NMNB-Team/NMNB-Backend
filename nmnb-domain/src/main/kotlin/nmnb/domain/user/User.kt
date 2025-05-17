@@ -10,10 +10,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import nmnb.common.domain.PetOwnershipStatus
+import nmnb.common.domain.SignUpStatus
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
-import java.util.UUID
 import nmnb.domain.user.generator.annotation.UserId
+import java.util.UUID
 
 @Entity
 @Table(name = "users")
