@@ -23,8 +23,10 @@ import reactor.core.publisher.Mono
 class PostUploadServiceImplTest : IntegrationTestSupport() {
     @MockBean
     lateinit var postRepository: R2dbcPostRepository
+
     @MockBean
     lateinit var s3Service: S3Service
+
     @Autowired
     lateinit var postUploadService: PostUploadService
 
@@ -45,7 +47,7 @@ class PostUploadServiceImplTest : IntegrationTestSupport() {
             description = request.description,
             userId = user.id,
         )
-        
+
         whenever(s3Service.upload(any(), any(), any())).thenReturn(expectedUrl)
         whenever(postRepository.save(any())).thenReturn(Mono.just(savedPost))
         whenever(postRepository.findById(100L)).thenReturn(Mono.just(savedPost))
