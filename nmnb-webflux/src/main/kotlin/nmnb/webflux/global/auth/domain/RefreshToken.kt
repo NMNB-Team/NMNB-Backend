@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table
 @RedisHash("refresh_token")
 data class RefreshToken(
     @Id
-    val userId: String,
+    val email: String,
 
     var refreshToken: String,
 )
