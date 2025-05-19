@@ -32,8 +32,7 @@ class AuthServiceImpl(
     }
 
     override fun refreshToken(refreshToken: String): AuthTokenResponse {
-        val email = tokenProvider.getEmailWithValidation(refreshToken)
-        refreshTokenService.verifyStoredTokenMatch(email, refreshToken)
+        val email = validateRefreshToken(refreshToken)
 
         val newAccessToken = tokenProvider.createAccessToken(email)
         val newRefreshToken = tokenProvider.createRefreshToken(email)
@@ -41,5 +40,11 @@ class AuthServiceImpl(
         refreshTokenService.saveOrUpdateToken(email, newRefreshToken)
 
         return AuthTokenResponse(newAccessToken, newRefreshToken)
+    }
+
+    fun validateRefreshToken(refreshToken: String): String {
+        val email = tokenProvider.getEmailWithValidation(refreshToken)
+        refreshTokenService.verifyStoredTokenMatch(email, refreshToken)
+        return email
     }
 }
