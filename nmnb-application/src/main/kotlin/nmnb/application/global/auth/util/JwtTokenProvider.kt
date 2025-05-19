@@ -45,6 +45,7 @@ class JwtTokenProvider(
         val refrehToken = Jwts.builder()
             .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
             .setExpiration(Date.from(Instant.now().plus(refreshExpirationTime, ChronoUnit.SECONDS)))
+            .claim("email", email)
             .signWith(key, SignatureAlgorithm.HS256).compact()
 
         refreshTokenRepository.findByIdOrNull(email)?.update(refrehToken) ?: refreshTokenRepository.save(
