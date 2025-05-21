@@ -37,7 +37,7 @@ class JwtTokenProvider(
         }
     }
 
-    fun getId(token: String): String {
+    fun getEmail(token: String): String {
         return getClaims(token).body.get("email", String::class.java)
     }
 
