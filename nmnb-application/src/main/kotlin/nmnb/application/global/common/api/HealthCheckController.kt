@@ -1,4 +1,4 @@
-package nmnb.application.global.api
+package nmnb.application.global.common.api
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController

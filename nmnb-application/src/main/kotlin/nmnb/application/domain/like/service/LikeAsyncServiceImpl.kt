@@ -1,6 +1,6 @@
 package nmnb.application.domain.like.service
 
-import nmnb.application.domain.post.exception.PostException
+import nmnb.common.response.exception.PostException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.like.Like
 import nmnb.domain.like.repository.LikeRepository

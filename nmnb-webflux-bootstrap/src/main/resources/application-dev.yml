@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  r2dbc:
+    username: ${R2DBC_USERNAME}
+    password: ${R2DBC_PASSWORD}
+    url: ${R2DBC_URL}
+  sql:
+    init:
+      mode: never
+
+  data:
+    redis:
+      host: ${DEV_REDIS_URL}
+      port: ${REDIS_PORT}

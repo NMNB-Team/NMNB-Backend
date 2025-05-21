@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import nmnb.domain.BaseEntity
+import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
 import nmnb.domain.user.User
 
@@ -27,7 +27,7 @@ class Like(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     val post: Post,
-) : BaseEntity() {
+) : JpaBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")

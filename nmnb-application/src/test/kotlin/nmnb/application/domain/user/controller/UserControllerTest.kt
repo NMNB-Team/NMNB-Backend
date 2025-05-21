@@ -4,9 +4,9 @@ import nmnb.application.ControllerTestSupport
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
+import nmnb.common.domain.PetOwnershipStatus
+import nmnb.common.domain.SignUpStatus
 import nmnb.common.response.status.SuccessStatus
-import nmnb.domain.user.PetOwnershipStatus
-import nmnb.domain.user.SignUpStatus
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

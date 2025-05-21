@@ -1,6 +1,5 @@
 package nmnb.domain.user
 
-import cv.nmnb.global.generator.annotation.UserId
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -10,8 +9,11 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import nmnb.domain.BaseEntity
+import nmnb.common.domain.PetOwnershipStatus
+import nmnb.common.domain.SignUpStatus
+import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
+import nmnb.domain.user.generator.annotation.UserId
 import java.util.UUID
 
 @Entity
@@ -24,7 +26,7 @@ class User(
     var profileImage: String,
 
     var petName: String? = null,
-) : BaseEntity() {
+) : JpaBaseEntity() {
     @Id
     @field:UserId
     @Column(name = "user_id")

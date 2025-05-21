@@ -5,8 +5,8 @@ import nmnb.application.global.auth.service.dto.KakaoAccount
 import nmnb.application.global.auth.service.dto.KakaoProfile
 import nmnb.application.global.infrastructure.oauth.KakaoOAuthClient
 import nmnb.application.global.infrastructure.oauth.OAuthClientComposite
+import nmnb.common.domain.SignUpStatus
 import nmnb.domain.auth.SocialType
-import nmnb.domain.user.SignUpStatus
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat

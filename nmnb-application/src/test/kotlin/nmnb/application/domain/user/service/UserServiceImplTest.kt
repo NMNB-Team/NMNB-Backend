@@ -2,8 +2,8 @@ package nmnb.application.domain.user.service
 
 import nmnb.application.IntegrationTestSupport
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
-import nmnb.domain.user.PetOwnershipStatus
-import nmnb.domain.user.SignUpStatus
+import nmnb.common.domain.PetOwnershipStatus
+import nmnb.common.domain.SignUpStatus
 import nmnb.domain.user.User
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName

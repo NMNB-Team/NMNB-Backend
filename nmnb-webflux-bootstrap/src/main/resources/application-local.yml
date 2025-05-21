@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  r2dbc:
+    username: ${LOCAL_R2DBC_USERNAME}
+    password: ${LOCAL_R2DBC_PASSWORD}
+    url: ${LOCAL_R2DBC_URL}
+
+  data:
+    redis:
+      host: ${LOCAL_REDIS_URL}
+      port: ${REDIS_PORT}

@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.service.dto.response
 
-import nmnb.domain.user.SignUpStatus
+import nmnb.common.domain.SignUpStatus
 
 data class AuthUserResponse(
     val email: String,

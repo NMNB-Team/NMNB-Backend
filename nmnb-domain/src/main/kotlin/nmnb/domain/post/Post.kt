@@ -9,7 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import nmnb.domain.BaseEntity
+import nmnb.domain.JpaBaseEntity
 import nmnb.domain.user.User
 
 @Entity
@@ -26,7 +26,7 @@ class Post(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
-) : BaseEntity() {
+) : JpaBaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
