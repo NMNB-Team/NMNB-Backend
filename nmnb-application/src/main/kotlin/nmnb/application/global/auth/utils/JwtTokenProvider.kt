@@ -1,4 +1,4 @@
-package nmnb.application.global.auth.util
+package nmnb.application.global.auth.utils
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
