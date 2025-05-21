@@ -1,5 +1,6 @@
 package nmnb.application.global.auth.service
 
+import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.application.global.auth.util.JwtTokenProvider
 import nmnb.application.global.config.S3Properties
@@ -15,6 +16,7 @@ class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val tokenProvider: JwtTokenProvider,
     private val s3Properties: S3Properties,
+    private val refreshTokenService: RefreshTokenService,
 ) : AuthService {
 
     override fun signInWithSocial(accessCode: String, type: SocialType): AuthUserResponse {
@@ -27,5 +29,22 @@ class AuthServiceImpl(
         val refreshToken = tokenProvider.createRefreshToken(email)
 
         return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken, signUpStatus = user.signUpStatus)
+    }
+
+    override fun refreshToken(refreshToken: String): AuthTokenResponse {
+        val email = validateRefreshToken(refreshToken)
+
+        val newAccessToken = tokenProvider.createAccessToken(email)
+        val newRefreshToken = tokenProvider.createRefreshToken(email)
+
+        refreshTokenService.saveOrUpdateToken(email, newRefreshToken)
+
+        return AuthTokenResponse(newAccessToken, newRefreshToken)
+    }
+
+    fun validateRefreshToken(refreshToken: String): String {
+        val email = tokenProvider.getEmailWithValidation(refreshToken)
+        refreshTokenService.verifyStoredTokenMatch(email, refreshToken)
+        return email
     }
 }

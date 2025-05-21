@@ -7,6 +7,7 @@ import nmnb.application.domain.post.controller.PostController
 import nmnb.application.domain.post.service.PostService
 import nmnb.application.domain.user.controller.UserController
 import nmnb.application.domain.user.service.UserService
+import nmnb.application.global.auth.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -36,4 +37,7 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var postService: PostService
+
+    @MockBean
+    protected lateinit var authService: AuthService
 }
