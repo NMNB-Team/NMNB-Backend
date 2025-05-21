@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import nmnb.application.global.auth.generator.annotation.ExtractToken
+import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.application.global.auth.service.AuthService
+import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
@@ -30,5 +33,12 @@ class AuthController(
     @GetMapping("/login/{type}")
     fun signIn(@RequestParam("code") accessCode: String, @PathVariable("type") type: SocialType): BaseResponse<AuthUserResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, authService.signInWithSocial(accessCode, type))
+    }
+
+    @Operation(summary = "토큰 재발급 API", description = "토큰을 재발급합니다_예림")
+    @TokenApiResponse
+    @GetMapping("/refresh")
+    fun refreshToken(@ExtractToken refreshToken: String): BaseResponse<AuthTokenResponse> {
+        return BaseResponse.onSuccess(SuccessStatus.OK, authService.refreshToken(refreshToken))
     }
 }

@@ -21,6 +21,9 @@ enum class ErrorStatus(
     AUTH_INVALID_TOKEN(HttpStatus.BAD_REQUEST, "AUTH502", "잘못된 토큰 정보입니다."),
     AUTH_EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "AUTH503", "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "AUTH504", "지원하지 않는 토큰입니다."),
+    AUTH_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "AUTH405", "토큰이 요청에 포함되어 있지 않습니다."),
+    AUTH_EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH406", "빈 토큰이 전달되었습니다."),
+    AUTH_CLAIM_EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH407", "토큰에 이메일 정보가 없습니다."),
 
     // POST
     POST_NOTFOUND(HttpStatus.NOT_FOUND, "POST400", "게시물을 찾을 수 없습니다."),

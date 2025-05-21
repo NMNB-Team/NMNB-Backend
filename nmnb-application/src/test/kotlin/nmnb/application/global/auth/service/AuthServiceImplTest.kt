@@ -10,7 +10,7 @@ import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
@@ -31,9 +31,9 @@ class AuthServiceImplTest : IntegrationTestSupport() {
     @MockBean
     private lateinit var oAuthClientComposite: OAuthClientComposite
 
-    @BeforeEach
-    fun setUp() {
-        userRepository.deleteAll()
+    @AfterEach
+    fun tearDown() {
+        userRepository.deleteAllInBatch()
     }
 
     @Test
