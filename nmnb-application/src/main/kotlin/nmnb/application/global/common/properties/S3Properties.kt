@@ -1,4 +1,4 @@
-package nmnb.application.global.config
+package nmnb.application.global.common.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
