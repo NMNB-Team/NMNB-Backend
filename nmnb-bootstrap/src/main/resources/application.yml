@@ -24,3 +24,7 @@ jwt:
   refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
   access-expiration-time: ${ACCESS_EXPIRATION_TIME}
   secret: ${JWT_SECRET_KEY}
+
+springdoc:
+  swagger-ui:
+    tagsSorter: alpha
