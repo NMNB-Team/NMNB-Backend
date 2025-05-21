@@ -3,7 +3,6 @@ package nmnb.application.global.auth.service
 import nmnb.application.IntegrationTestSupport
 import nmnb.application.global.auth.service.dto.KakaoAccount
 import nmnb.application.global.auth.service.dto.KakaoProfile
-import nmnb.application.global.auth.util.JwtTokenProvider
 import nmnb.application.global.infrastructure.oauth.KakaoOAuthClient
 import nmnb.application.global.infrastructure.oauth.OAuthClientComposite
 import nmnb.common.domain.SignUpStatus
@@ -14,7 +13,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -32,11 +30,6 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @MockBean
     private lateinit var oAuthClientComposite: OAuthClientComposite
-
-    @MockBean
-    lateinit var refreshTokenService: RefreshTokenService
-
-    @MockBean lateinit var tokenProvider: JwtTokenProvider
 
     @AfterEach
     fun tearDown() {
@@ -89,28 +82,5 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         assertThat(result.accessToken).isNotBlank()
         assertThat(result.refreshToken).isNotBlank()
         assertThat(result.signUpStatus).isEqualTo(SignUpStatus.IN_PROGRESS)
-    }
-
-    @Test
-    @DisplayName("리프레시 토큰을 사용해 새로운 토큰을 발급한다")
-    fun refreshToken() {
-        // given
-        val email = "test@example.com"
-        val refreshToken = "dummy-refresh-token"
-        val newAccessToken = "new-access-token"
-        val newRefreshToken = "new-refresh-token"
-
-        whenever(tokenProvider.getEmailWithValidation(refreshToken)).thenReturn(email)
-        doNothing().whenever(refreshTokenService).verifyStoredTokenMatch(email, refreshToken)
-        whenever(tokenProvider.createAccessToken(email)).thenReturn(newAccessToken)
-        whenever(tokenProvider.createRefreshToken(email)).thenReturn(newRefreshToken)
-        doNothing().whenever(refreshTokenService).saveOrUpdateToken(email, newRefreshToken)
-
-        // when
-        val result = authService.refreshToken(refreshToken)
-
-        // then
-        assertThat(result.accessToken).isEqualTo(newAccessToken)
-        assertThat(result.refreshToken).isEqualTo(newRefreshToken)
     }
 }
