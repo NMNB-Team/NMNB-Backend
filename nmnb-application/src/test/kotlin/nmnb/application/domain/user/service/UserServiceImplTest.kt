@@ -18,7 +18,6 @@ class UserServiceImplTest(
     fun getProfile() {
         // given
         val user = User.fixture(
-            id = "test",
             petName = "nmnb",
             petOwnershipStatus = PetOwnershipStatus.HAS_PET,
         )
@@ -37,7 +36,6 @@ class UserServiceImplTest(
     fun registerWithPetName() {
         // given
         val user = User.fixture(
-            id = "test",
             petName = null,
             petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
             signUpStatus = SignUpStatus.IN_PROGRESS,
@@ -59,7 +57,6 @@ class UserServiceImplTest(
     fun registerWithoutPet() {
         // given
         val user = User.fixture(
-            id = "test",
             petName = null,
             petOwnershipStatus = PetOwnershipStatus.UNKNOWN,
             signUpStatus = SignUpStatus.IN_PROGRESS,
