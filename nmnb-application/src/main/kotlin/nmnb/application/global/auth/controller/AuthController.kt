@@ -36,6 +36,7 @@ class AuthController(
     }
 
     @Operation(summary = "토큰 재발급 API", description = "토큰을 재발급합니다_예림")
+    @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @GetMapping("/refresh")
     fun refreshToken(@ExtractToken refreshToken: String): BaseResponse<AuthTokenResponse> {

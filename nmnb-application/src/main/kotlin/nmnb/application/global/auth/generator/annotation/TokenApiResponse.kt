@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 @ApiResponses(
-    ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
     ApiResponse(responseCode = "AUTH402", description = "잘못된 토큰 정보입니다."),
     ApiResponse(responseCode = "AUTH403", description = "만료된 토큰입니다."),
     ApiResponse(responseCode = "AUTH404", description = "지원하지 않는 토큰입니다."),
