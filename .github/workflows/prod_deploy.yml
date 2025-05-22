@@ -59,6 +59,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/nmnb
+            git reset --hard HEAD
+            git clean -fd
             git pull origin release
             chmod +x scripts/prod-deploy.sh
             scripts/prod-deploy.sh ${{ github.sha }}
