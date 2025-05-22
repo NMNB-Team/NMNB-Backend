@@ -1,9 +1,9 @@
-name: NMNB DEV CI/CD
+name: NMNB PROD CI/CD
 
 on:
   pull_request:
     branches:
-      - develop
+      - release
     types:
       - closed
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
@@ -41,15 +41,15 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build bootstrap image
-        run: docker build -f nmnb-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:dev-mvc ./
+        run: docker build -f nmnb-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-mvc ./
 
       - name: Build webflux image
-        run: docker build -f nmnb-webflux-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:dev-webflux ./
+        run: docker build -f nmnb-webflux-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-webflux ./
 
       - name: Push Docker images
         run: |
-          docker push $DOCKER_IMAGE_NAME:dev-mvc
-          docker push $DOCKER_IMAGE_NAME:dev-webflux
+          docker push $DOCKER_IMAGE_NAME:prod-mvc
+          docker push $DOCKER_IMAGE_NAME:prod-webflux
 
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -61,6 +61,6 @@ jobs:
             cd /home/ubuntu/nmnb
             git reset --hard HEAD
             git clean -fd
-            git pull origin develop
-            chmod +x scripts/dev-deploy.sh
-            scripts/dev-deploy.sh ${{ github.sha }}
+            git pull origin release
+            chmod +x scripts/prod-deploy.sh
+            scripts/prod-deploy.sh ${{ github.sha }}
