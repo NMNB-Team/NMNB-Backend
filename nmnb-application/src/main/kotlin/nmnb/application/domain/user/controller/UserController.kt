@@ -30,7 +30,7 @@ class UserController(
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @GetMapping("/profile")
-    fun getProfile(@RequestBody user: User): BaseResponse<UserProfileResponse> {
+    fun getProfile(@Parameter(name = "nurse", hidden = true) @AuthUser user: User): BaseResponse<UserProfileResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, userService.getProfile(user))
     }
 
