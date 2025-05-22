@@ -31,7 +31,6 @@ data class R2dbcUser(
 ) : R2dbcBaseEntity() {
     companion object {
         fun fixture(
-            id: String? = null,
             email: String = "${UUID.randomUUID()}@example.com",
             profileImage: String = "default.png",
             petName: String? = null,

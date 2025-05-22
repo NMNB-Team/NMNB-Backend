@@ -2,8 +2,8 @@ package nmnb.application.global.auth.service
 
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
-import nmnb.application.global.auth.util.JwtTokenProvider
-import nmnb.application.global.config.S3Properties
+import nmnb.application.global.auth.utils.JwtTokenProvider
+import nmnb.application.global.common.properties.S3Properties
 import nmnb.application.global.infrastructure.oauth.OAuthClientComposite
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User

@@ -30,7 +30,7 @@ class User(
     @Id
     @field:UserId
     @Column(name = "user_id")
-    var id: String? = null
+    val id: String? = null
 
     @Enumerated(EnumType.STRING)
     var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.UNKNOWN
@@ -47,7 +47,6 @@ class User(
     companion object {
 
         fun fixture(
-            id: String? = null,
             email: String = "${UUID.randomUUID()}@example.com",
             profileImage: String = "default.png",
             petName: String? = null,
@@ -60,7 +59,6 @@ class User(
                 profileImage = profileImage,
                 petName = petName,
             )
-            user.id = id
             user.petOwnershipStatus = petOwnershipStatus
             user.signUpStatus = signUpStatus
             user.posts = posts
