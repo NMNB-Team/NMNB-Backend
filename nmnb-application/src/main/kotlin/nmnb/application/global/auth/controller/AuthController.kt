@@ -1,4 +1,4 @@
-package nmnb.application.global.auth.api
+package nmnb.application.global.auth.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
