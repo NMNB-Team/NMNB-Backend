@@ -40,7 +40,7 @@ services:
       dockerfile: nmnb-bootstrap/Dockerfile
     container_name: dev-nmnb
     environment:
-      - SERVER_PORT=${nmnb_GREEN_PORT}
+      - SERVER_PORT=${nmnb_DEV_PORT}
     ports:
       - "${nmnb_DEV_PORT}:${MVC_INTERNAL_DEV_APP_PORT}"
     healthcheck:
@@ -92,7 +92,7 @@ services:
       dockerfile: nmnb-webflux-bootstrap/Dockerfile
     container_name: dev-nmnb-webflux
     environment:
-      - SERVER_PORT=${nmnb_WEBFLUX_GREEN_PORT}
+      - SERVER_PORT=${nmnb_WEBFLUX_DEV_PORT}
     ports:
       - "${nmnb_WEBFLUX_DEV_PORT}:${WEBFLUX_INTERNAL_DEV_APP_PORT}"
     healthcheck:
