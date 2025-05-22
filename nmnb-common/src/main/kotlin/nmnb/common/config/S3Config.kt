@@ -1,6 +1,6 @@
 package nmnb.webflux.global.config
 
-import nmnb.webflux.global.common.properties.S3Properties
+import nmnb.common.properties.S3Properties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
