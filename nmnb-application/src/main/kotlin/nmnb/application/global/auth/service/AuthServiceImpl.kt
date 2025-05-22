@@ -9,6 +9,7 @@ import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthServiceImpl(
@@ -19,6 +20,7 @@ class AuthServiceImpl(
     private val refreshTokenService: RefreshTokenService,
 ) : AuthService {
 
+    @Transactional
     override fun signInWithSocial(accessCode: String, type: SocialType): AuthUserResponse {
         val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode = accessCode)
         val email = profile.getEmail()
@@ -31,6 +33,7 @@ class AuthServiceImpl(
         return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken, signUpStatus = user.signUpStatus)
     }
 
+    @Transactional
     override fun refreshToken(refreshToken: String): AuthTokenResponse {
         val email = validateRefreshToken(refreshToken)
 
