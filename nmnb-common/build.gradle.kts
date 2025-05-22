@@ -9,6 +9,9 @@ dependencies {
 
     // Swagger
     implementation("org.springdoc:springdoc-openapi-starter-common:2.3.0")
+
+    // S3
+    implementation("software.amazon.awssdk:s3:2.19.1")
 }
 
 tasks.bootJar {
