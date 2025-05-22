@@ -1,4 +1,4 @@
-package nmnb.webflux.global.config
+package nmnb.common.config
 
 import nmnb.common.properties.S3Properties
 import org.springframework.context.annotation.Bean
