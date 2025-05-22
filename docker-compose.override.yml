@@ -27,7 +27,24 @@ services:
     ports:
       - "${nmnb_GREEN_PORT}:${MVC_INTERNAL_APP_PORT}"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://nmnb-green:${nmnb_GREEN_PORT}/health"]
+      test: [ "CMD", "curl", "-f", "http://nmnb-green:${nmnb_GREEN_PORT}/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nmnb_network
+
+  dev-nmnb:
+    build:
+      context: .
+      dockerfile: nmnb-bootstrap/Dockerfile
+    container_name: dev-nmnb
+    environment:
+      - SERVER_PORT=${nmnb_GREEN_PORT}
+    ports:
+      - "${nmnb_DEV_PORT}:${MVC_INTERNAL_DEV_APP_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://nmnb-green:${nmnb_DEV_PORT}/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -45,7 +62,7 @@ services:
     ports:
       - "${nmnb_WEBFLUX_BLUE_PORT}:${WEBFLUX_INTERNAL_APP_PORT}"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://nmnb-webflux-blue:${nmnb_WEBFLUX_BLUE_PORT}/health"]
+      test: [ "CMD", "curl", "-f", "http://nmnb-webflux-blue:${nmnb_WEBFLUX_BLUE_PORT}/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -62,7 +79,24 @@ services:
     ports:
       - "${nmnb_WEBFLUX_GREEN_PORT}:${WEBFLUX_INTERNAL_APP_PORT}"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://nmnb-webflux-green:${nmnb_WEBFLUX_GREEN_PORT}/health"]
+      test: [ "CMD", "curl", "-f", "http://nmnb-webflux-green:${nmnb_WEBFLUX_GREEN_PORT}/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nmnb_network
+
+  dev-nmnb-webflux:
+    build:
+      context: .
+      dockerfile: nmnb-webflux-bootstrap/Dockerfile
+    container_name: dev-nmnb-webflux
+    environment:
+      - SERVER_PORT=${nmnb_WEBFLUX_GREEN_PORT}
+    ports:
+      - "${nmnb_WEBFLUX_DEV_PORT}:${WEBFLUX_INTERNAL_DEV_APP_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://nmnb-webflux-green:${nmnb_WEBFLUX_DEV_PORT}/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
