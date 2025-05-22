@@ -7,7 +7,7 @@ COMPOSE_PATH="$PROJECT_DIR/docker-compose.override.yml"
 ENV_FILE_PATH="/home/ubuntu/.dev_env"
 
 NGINX_CONTAINER="nginx"
-NGINX_CONF="nmnb.green.conf"
+NGINX_CONF="nmnb.dev.conf"
 
 MVC_API_ENV='dev-nmnb'
 WEBFLUX_API_ENV='dev-nmnb-webflux'
