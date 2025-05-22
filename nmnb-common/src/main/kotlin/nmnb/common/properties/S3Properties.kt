@@ -1,4 +1,4 @@
-package nmnb.webflux.global.common.properties
+package nmnb.common.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
@@ -12,7 +12,13 @@ data class S3Properties(
 ) {
     data class S3(
         var bucket: String = "",
-    )
+        var urlPrefix: String = "",
+        var defaultProfileImagePath: String = "",
+
+    ) {
+        val defaultProfileImageUrl: String
+            get() = "$urlPrefix/$defaultProfileImagePath"
+    }
 
     data class Credentials(
         var accessKey: String = "",
