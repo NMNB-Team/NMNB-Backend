@@ -1,0 +1,21 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  r2dbc:
+    username: ${PROD_R2DBC_USERNAME}
+    password: ${PROD_R2DBC_PASSWORD}
+    url: ${PROD_R2DBC_URL}
+  sql:
+    init:
+      mode: never
+
+  data:
+    redis:
+      host: ${PROD_REDIS_URL}
+      port: ${PROD_REDIS_PORT}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME_FOR_PROD_SERVICE}
