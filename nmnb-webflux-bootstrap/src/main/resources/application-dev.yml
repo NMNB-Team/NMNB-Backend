@@ -14,3 +14,8 @@ spring:
     redis:
       host: ${DEV_REDIS_URL}
       port: ${REDIS_PORT}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME_FOR_SERVICE}

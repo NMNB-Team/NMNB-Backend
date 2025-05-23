@@ -1,11 +1,11 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
   datasource:
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    url: ${DB_URL}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+    url: ${PROD_DB_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
@@ -22,10 +22,10 @@ spring:
 
   data:
     redis:
-      host: ${DEV_REDIS_URL}
-      port: ${REDIS_PORT}
+      host: ${PROD_REDIS_URL}
+      port: ${PROD_REDIS_PORT}
 
 cloud:
   aws:
     s3:
-      bucket: ${S3_BUCKET_NAME_FOR_SERVICE}
+      bucket: ${S3_BUCKET_NAME_FOR_PROD_SERVICE}
