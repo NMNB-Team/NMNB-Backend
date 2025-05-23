@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: nmnb
+  profiles:
+    active: dev
+  webflux:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  logging:
+    level:
+      org:
+        springframework:
+          r2dbc: DEBUG
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ${AWS_REGION}
+
+jwt:
+  refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
+  access-expiration-time: ${ACCESS_EXPIRATION_TIME}
+  secret: ${JWT_SECRET_KEY}
+
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+      springframework.r2dbc: DEBUG
+
+springdoc:
+  api-docs:
+    path: /netty/v3/api-docs
+  swagger-ui:
+    path: /netty/swagger-ui.html
+    config-url: /netty/v3/api-docs/swagger-config
+    url: /netty/v3/api-docs
+    operationsSorter: alpha
+    display-request-duration: true
