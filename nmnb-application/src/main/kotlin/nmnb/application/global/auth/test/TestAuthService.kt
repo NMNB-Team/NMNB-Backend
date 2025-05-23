@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.test
 
 import nmnb.application.global.auth.test.dto.TestAuthResponse
-import nmnb.application.global.auth.util.JwtTokenProvider
+import nmnb.application.global.auth.utils.JwtTokenProvider
 import nmnb.common.response.exception.UserException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.user.User

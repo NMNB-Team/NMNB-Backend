@@ -2,9 +2,9 @@ package nmnb.application.global.auth.service
 
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
-import nmnb.application.global.auth.util.JwtTokenProvider
-import nmnb.application.global.config.S3Properties
+import nmnb.application.global.auth.utils.JwtTokenProvider
 import nmnb.application.global.infrastructure.oauth.OAuthClientComposite
+import nmnb.common.properties.S3Properties
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
@@ -23,7 +23,7 @@ class AuthServiceImpl(
         val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode = accessCode)
         val email = profile.getEmail()
 
-        val user = userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.defaultProfileImageUrl))
+        val user = userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.s3.defaultProfileImageUrl))
 
         val accessToken = tokenProvider.createAccessToken(email)
         val refreshToken = tokenProvider.createRefreshToken(email)
