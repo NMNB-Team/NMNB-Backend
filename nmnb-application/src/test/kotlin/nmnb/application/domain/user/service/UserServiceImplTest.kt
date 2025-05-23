@@ -1,7 +1,7 @@
 package nmnb.application.domain.user.service
 
 import nmnb.application.IntegrationTestSupport
-import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
+import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRequest
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.user.User
@@ -44,7 +44,7 @@ class UserServiceImplTest(
         val request = UserPetRegistrationRequest(petName = "멍멍이")
 
         // when
-        val result = userService.registerWithPetName(user, request.petName)
+        val result = userService.registerWithPetName(user, request)
 
         // then
         assertThat(result.nickName).contains("멍멍이")

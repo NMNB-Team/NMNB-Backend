@@ -1,5 +1,6 @@
 package nmnb.application.domain.user.service
 
+import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRequest
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.common.domain.PetOwnershipStatus
@@ -20,8 +21,8 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun registerWithPetName(user: User, petName: String): UserStatusResponse {
-        user.updatePetName(petName)
+    override fun registerWithPetName(user: User, request: UserPetRegistrationRequest): UserStatusResponse {
+        user.updatePetName(request.petName)
         completeRegistration(user, PetOwnershipStatus.HAS_PET)
         return UserStatusResponse.of(userRepository.save(user))
     }

@@ -1,7 +1,7 @@
 package nmnb.application.domain.user.controller
 
 import nmnb.application.ControllerTestSupport
-import nmnb.application.domain.user.service.dto.request.UserPetRegistrationRequest
+import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRequest
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.common.domain.PetOwnershipStatus
