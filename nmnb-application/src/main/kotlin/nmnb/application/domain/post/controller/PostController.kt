@@ -35,7 +35,6 @@ class PostController(
     @TokenApiResponse
     @GetMapping("/videos")
     fun getPostPage(
-        @Parameter(name = "user", hidden = true) @AuthUser user: User,
         @RequestParam seed: Int,
         @RequestParam(required = false, defaultValue = "-1") cursor: Int,
         @RequestParam(required = false, defaultValue = "7") size: Int,
