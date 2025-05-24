@@ -30,7 +30,7 @@ class UserController(
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @GetMapping("/profile")
-    fun getProfile(@Parameter(name = "nurse", hidden = true) @AuthUser user: User): BaseResponse<UserProfileResponse> {
+    fun getProfile(@Parameter(name = "user", hidden = true) @AuthUser user: User): BaseResponse<UserProfileResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, userService.getProfile(user))
     }
 
@@ -38,14 +38,14 @@ class UserController(
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @PatchMapping("/pet")
-    fun registerWithPetName(@Parameter(name = "nurse", hidden = true) @AuthUser user: User, @RequestBody request: UserPetRegistrationRequest): BaseResponse<UserStatusResponse> {
+    fun registerWithPetName(@Parameter(name = "user", hidden = true) @AuthUser user: User, @RequestBody request: UserPetRegistrationRequest): BaseResponse<UserStatusResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithPetName(user, request.toServiceRequest()))
     }
 
     @Operation(summary = "반려견 미보유 상태 설정 API", description = "가입하는 유저가 반려견을 보유하지 않았음을 설정합니다. petOwnershipStatus가 NO_PET으로 설정됩니다._예림")
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @PatchMapping("/pet/none")
-    fun registerWithoutPet(@Parameter(name = "nurse", hidden = true) @AuthUser user: User): BaseResponse<UserStatusResponse> {
+    fun registerWithoutPet(@Parameter(name = "user", hidden = true) @AuthUser user: User): BaseResponse<UserStatusResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithoutPet(user))
     }
 }
