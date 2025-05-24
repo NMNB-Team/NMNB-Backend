@@ -34,7 +34,8 @@ class AuthUserArgumentResolver(
     ): Any? {
         val authentication = SecurityContextHolder.getContext().authentication
         val userEmail = getUserEmail(authentication)
-        return userRepository.findByEmail(userEmail)
+        val user = userRepository.findByEmail(userEmail) ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
+        return user
     }
 
     companion object {
