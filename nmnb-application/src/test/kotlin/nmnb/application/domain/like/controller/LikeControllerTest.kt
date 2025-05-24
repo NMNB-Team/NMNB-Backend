@@ -29,7 +29,6 @@ class LikeControllerTest : ControllerTestSupport() {
         given(userRepository.findByEmail(any())).willReturn(user)
     }
 
-
     @WithMockUser
     @DisplayName("좋아요가 등록되어있으면 취소, 좋아요가 없으면 등록하는 것에 성공한다.")
     @Test
