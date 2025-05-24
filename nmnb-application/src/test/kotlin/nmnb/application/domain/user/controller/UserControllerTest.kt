@@ -7,9 +7,12 @@ import nmnb.application.domain.user.service.dto.response.UserStatusResponse
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.domain.SignUpStatus
 import nmnb.common.response.status.SuccessStatus
+import nmnb.domain.user.User
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.given
 import org.mockito.kotlin.whenever
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
@@ -18,8 +21,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import reactor.core.publisher.Mono
 
 class UserControllerTest() : ControllerTestSupport() {
+
+    @BeforeEach
+    fun setup() {
+        val user = User(
+            email = "test@example.com",
+            profileImage = "profile",
+        )
+        given(userRepository.findByEmail(any())).willReturn(user)
+    }
 
     @WithMockUser
     @DisplayName("사용자 마이페이지 조회에 성공한다")
