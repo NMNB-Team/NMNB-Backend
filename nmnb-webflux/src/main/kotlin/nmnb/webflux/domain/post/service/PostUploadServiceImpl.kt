@@ -6,7 +6,7 @@ import nmnb.r2dbc.post.R2dbcPost
 import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.domain.post.service.dto.request.PostInfoServiceRequest
-import nmnb.webflux.global.common.service.S3Service
+import nmnb.webflux.global.common.infrastructure.s3.S3Service
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -33,7 +33,7 @@ class PostUploadServiceImpl(
         postRepository.save(post).awaitSingle()
     }
 
-    private fun generateFileName(date: String, name: String): String {
+    private fun generateFileName(date: String, name: String): String { // 얘는 따로 넘기는 게 나을 것 같음
         return date + "_" + NanoIdUtils.randomNanoId(
             NanoIdUtils.DEFAULT_NUMBER_GENERATOR,
             CUSTOM_STRING.toCharArray(),

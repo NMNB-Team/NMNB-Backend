@@ -6,7 +6,7 @@ import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.IntegrationTestSupport
 import nmnb.webflux.domain.post.service.dto.request.PostInfoServiceRequest
-import nmnb.webflux.global.common.service.S3Service
+import nmnb.webflux.global.common.infrastructure.s3.S3Service
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

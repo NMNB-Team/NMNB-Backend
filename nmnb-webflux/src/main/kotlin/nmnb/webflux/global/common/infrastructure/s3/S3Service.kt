@@ -1,4 +1,4 @@
-package nmnb.webflux.global.common.service
+package nmnb.webflux.global.common.infrastructure.s3
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
