@@ -42,7 +42,7 @@ class LikeServiceImplTest(
         val post = Post.fixture(user = postingBy)
         postRepository.save(post)
 
-        val request = PostLikeServiceRequest(likedBy, post.id!!)
+        val request = PostLikeServiceRequest(post.id!!)
 
         // when
         likeService.likeOrUnlike(likedBy, request)
@@ -64,7 +64,7 @@ class LikeServiceImplTest(
         userRepository.saveAll(listOf(likedBy, postingBy))
         val post = Post.fixture(user = postingBy)
         postRepository.save(post)
-        val request = PostLikeServiceRequest(likedBy, post.id!!)
+        val request = PostLikeServiceRequest(post.id!!)
 
         val cacheKey = LikeCacheKey(likedBy.id!!, post.id!!).key
         redisTemplate.opsForValue().set(cacheKey, "1")
