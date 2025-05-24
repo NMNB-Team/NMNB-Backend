@@ -1,5 +1,5 @@
 package nmnb.application.domain.user.service.dto.request
 
-data class UserPetRegistrationRequest(
+data class UserPetRegistrationServiceRequest(
     val petName: String,
 )

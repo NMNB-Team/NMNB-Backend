@@ -1,15 +1,19 @@
 package nmnb.application.global.config
 
+import nmnb.application.global.auth.utils.JWTFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtFilter: JWTFilter,
+) {
 
     val allowedUrl: Array<String> = arrayOf(
         "/health",
@@ -42,6 +46,7 @@ class SecurityConfig {
             it.requestMatchers(*allowedUrl).permitAll()
                 .anyRequest().authenticated()
         }
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.domain.post.service.PostService
 import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.application.domain.post.service.dto.response.PostPageResponse
+import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,6 +29,7 @@ class PostController(
             "이후 이어지는 요청에서는 처음 생성한 동일한 `seed`값을 계속 사용하여, 랜덤 순서가 고정된 상태로 페이징 조회를 이어갈 수 있습니다._숙희",
     )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
+    @TokenApiResponse
     @GetMapping("/videos")
     fun getPostPage(
         @RequestParam seed: Int,
