@@ -1,4 +1,4 @@
-package nmnb.application.global.auth.api
+package nmnb.application.global.auth.controller
 
 import nmnb.application.ControllerTestSupport
 import nmnb.application.global.auth.generator.ExtractTokenArgumentResolver

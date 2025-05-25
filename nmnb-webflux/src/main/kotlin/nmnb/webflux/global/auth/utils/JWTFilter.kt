@@ -27,7 +27,7 @@ class JWTFilter(
         val parsedToken = authorizationHeader.substring(7)
 
         return if (jwtTokenProvider.isValidToken(parsedToken)) {
-            val username = jwtTokenProvider.getId(parsedToken)
+            val username = jwtTokenProvider.getEmail(parsedToken)
 
             return userRepository.findByEmail(username)
                 .switchIfEmpty(Mono.error(GeneralException(ErrorStatus.USER_NOT_FOUND)))

@@ -7,10 +7,15 @@ import nmnb.application.domain.post.controller.PostController
 import nmnb.application.domain.post.service.PostService
 import nmnb.application.domain.user.controller.UserController
 import nmnb.application.domain.user.service.UserService
+import nmnb.application.global.auth.generator.AuthUserArgumentResolver
 import nmnb.application.global.auth.service.AuthService
+import nmnb.application.global.auth.utils.JwtTokenProvider
+import nmnb.application.global.config.SecurityConfig
+import nmnb.domain.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 
@@ -21,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc
         PostController::class,
     ],
 )
+@Import(SecurityConfig::class, AuthUserArgumentResolver::class)
 @ContextConfiguration(classes = [TestApplication::class])
 abstract class ControllerTestSupport {
     @Autowired
@@ -40,4 +46,10 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var authService: AuthService
+
+    @MockBean
+    protected lateinit var userRepository: UserRepository
+
+    @MockBean
+    lateinit var jwtTokenProvider: JwtTokenProvider
 }

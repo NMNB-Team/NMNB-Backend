@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.service
 
 import nmnb.application.global.auth.exception.AuthException
-import nmnb.application.global.auth.util.JwtTokenProvider
+import nmnb.application.global.auth.utils.JwtTokenProvider
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
