@@ -1,4 +1,4 @@
-package nmnb.webflux.global.auth.utils
+package nmnb.webflux.global.infrastructure.security
 
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
