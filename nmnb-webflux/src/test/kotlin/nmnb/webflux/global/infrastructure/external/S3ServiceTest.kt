@@ -1,9 +1,8 @@
-package nmnb.webflux.global.common.infrastructure
+package nmnb.webflux.global.infrastructure.external
 
 import kotlinx.coroutines.test.runTest
 import nmnb.common.properties.S3Properties
 import nmnb.webflux.IntegrationTestSupport
-import nmnb.webflux.global.common.infrastructure.external.S3Service
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

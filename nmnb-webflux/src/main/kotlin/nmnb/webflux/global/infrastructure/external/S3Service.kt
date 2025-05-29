@@ -1,4 +1,4 @@
-package nmnb.webflux.global.common.infrastructure.external
+package nmnb.webflux.global.infrastructure.external
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await

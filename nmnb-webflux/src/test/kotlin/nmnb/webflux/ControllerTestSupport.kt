@@ -3,7 +3,7 @@ package nmnb.webflux
 import nmnb.r2dbc.user.R2dbcUserRepository
 import nmnb.webflux.domain.post.controller.PostController
 import nmnb.webflux.domain.post.service.PostUploadService
-import nmnb.webflux.global.auth.utils.JwtTokenProvider
+import nmnb.webflux.global.infrastructure.security.JwtTokenProvider
 import nmnb.webflux.global.config.SecurityConfig
 import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
 import org.springframework.beans.factory.annotation.Autowired
