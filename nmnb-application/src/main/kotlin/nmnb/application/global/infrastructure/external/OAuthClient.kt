@@ -1,4 +1,4 @@
-package nmnb.application.global.infrastructure.oauth
+package nmnb.application.global.infrastructure.external
 
 import nmnb.application.global.auth.service.dto.OAuthProfile
 import nmnb.domain.auth.SocialType
