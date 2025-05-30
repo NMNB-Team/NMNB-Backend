@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
@@ -50,7 +50,6 @@ jobs:
         run: |
           docker push $DOCKER_IMAGE_NAME:prod-mvc
           docker push $DOCKER_IMAGE_NAME:prod-webflux
-
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
