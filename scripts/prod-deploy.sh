@@ -63,13 +63,13 @@ echo
 echo
 echo "-----------------------------"
 echo "도커 허브에서 새로운 이미지 pull 중: $NEW_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" pull "$NEW_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" pull "$NEW_API_ENV" || { echo "이미지 pull 실패"; exit 1; }
 echo "이미지 pull 완료"
 echo "-----------------------------"
 echo
 
 echo "새로운 환경 시작 중: $NEW_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" up -d --no-deps "$NEW_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" up -d --no-deps "$NEW_API_ENV"  || { echo "새로운 환경 시작 실패"; exit 1; }
 echo "새로운 환경 시작 완료"
 echo "-----------------------------"
 echo
@@ -82,13 +82,13 @@ fi
 echo
 echo "-----------------------------"
 echo "도커 허브에서 새로운 이미지 pull 중(webflux): $NEW_WEBFLUX_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" pull "$NEW_WEBFLUX_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" pull "$NEW_WEBFLUX_API_ENV" || { echo "이미지 pull 실패"; exit 1; }
 echo "이미지 pull 완료"
 echo "-----------------------------"
 echo
 
 echo "새로운 환경 시작 중(WEBFLUX): $NEW_WEBFLUX_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" up -d --no-deps "$NEW_WEBFLUX_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" up -d --no-deps "$NEW_WEBFLUX_API_ENV" || { echo "새로운 환경 시작 실패(WEBFLUX)"; exit 1; }
 echo "새로운 환경 시작 완료(WEBFLUX)"
 echo "-----------------------------"
 echo
@@ -129,14 +129,14 @@ echo "-----------------------------"
 echo
 
 echo "이전 환경 중지 및 제거 중: $CURRENT_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" stop "$CURRENT_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" rm -f "$CURRENT_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" stop "$CURRENT_API_ENV" || { echo "이전 환경 중지 실패"; exit 1; }
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" rm -f "$CURRENT_API_ENV" || { echo "이전 환경 제거 실패"; exit 1; }
 echo "-----------------------------"
 echo
 
 echo "이전 환경 중지 및 제거 중(WEBFLUX): $CURRENT_WEBFLUX_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" stop "$CURRENT_WEBFLUX_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" rm -f "$CURRENT_WEBFLUX_API_ENV"
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" stop "$CURRENT_WEBFLUX_API_ENV" || { echo "이전 환경 중지 실패"; exit 1; }
+sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" rm -f "$CURRENT_WEBFLUX_API_ENV" || { echo "이전 환경 제거 실패"; exit 1; }
 echo "-----------------------------"
 echo
 

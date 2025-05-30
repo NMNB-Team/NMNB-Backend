@@ -23,10 +23,10 @@ echo "-----------------------------"
 echo
 
 echo "기존 컨테이너 중단 중..."
-sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" stop $MVC_API_ENV $WEBFLUX_API_ENV
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" stop $MVC_API_ENV $WEBFLUX_API_ENV  || { echo "이전 환경 중지 실패"; exit 1; }
 
 echo "기존 컨테이너 삭제 중..."
-sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" rm -f $MVC_API_ENV $WEBFLUX_API_ENV
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" rm -f $MVC_API_ENV $WEBFLUX_API_ENV  || { echo "이전 환경 삭제 실패"; exit 1; }
 echo
 echo "-----------------------------"
 echo "도커 허브에서 새로운 이미지 pull 중: $MVC_API_ENV"
