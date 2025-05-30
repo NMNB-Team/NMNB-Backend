@@ -41,10 +41,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build bootstrap image
-        run: docker build -f nmnb-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-mvc ./
+        run: docker build --no-cache -f nmnb-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-mvc ./
 
       - name: Build webflux image
-        run: docker build -f nmnb-webflux-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-webflux ./
+        run: docker build --no-cache -f nmnb-webflux-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-webflux ./
 
       - name: Push Docker images
         run: |
