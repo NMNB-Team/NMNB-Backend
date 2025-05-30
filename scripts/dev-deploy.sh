@@ -4,7 +4,8 @@ PROJECT_DIR="/home/ubuntu/nmnb"
 NGINX_CONF_DIR="/home/ubuntu/nginx"
 
 COMPOSE_PATH="$PROJECT_DIR/docker-compose.override.yml"
-ENV_FILE_PATH="/home/ubuntu/.dev_env"
+PROD_ENV_FILE_PATH="/home/ubuntu/.prod_env"
+DEV_ENV_FILE_PATH="/home/ubuntu/.dev_env"
 
 NGINX_CONTAINER="nginx"
 NGINX_CONF="nmnb.dev.conf"
@@ -15,21 +16,21 @@ WEBFLUX_API_ENV='dev-nmnb-webflux'
 echo
 echo "-----------------------------"
 echo ".env 파일 복사 중..."
-cp "$ENV_FILE_PATH" "$PROJECT_DIR/.env" || { echo ".env 파일 복사 실패"; exit 1; }
+cp "$PROD_ENV_FILE_PATH" "$PROJECT_DIR/.prod_env" || { echo ".env 파일 복사 실패"; exit 1; }
+cp "$DEV_ENV_FILE_PATH" "$PROJECT_DIR/.dev_env" || { echo ".env 파일 복사 실패"; exit 1; }
 echo ".env 파일 복사 완료"
 echo "-----------------------------"
 echo
 
 echo "기존 컨테이너 중단 중..."
-sudo docker-compose -f "$COMPOSE_PATH" stop $MVC_API_ENV $WEBFLUX_API_ENV
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" stop $MVC_API_ENV $WEBFLUX_API_ENV
 
 echo "기존 컨테이너 삭제 중..."
-sudo docker-compose -f "$COMPOSE_PATH" rm -f $MVC_API_ENV $WEBFLUX_API_ENV
-
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" rm -f $MVC_API_ENV $WEBFLUX_API_ENV
 echo
 echo "-----------------------------"
 echo "도커 허브에서 새로운 이미지 pull 중: $MVC_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" pull $MVC_API_ENV || { echo "이미지 pull 실패"; exit 1; }
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" pull $MVC_API_ENV || { echo "이미지 pull 실패"; exit 1; }
 echo "이미지 pull 완료"
 echo "-----------------------------"
 echo
@@ -37,14 +38,14 @@ echo
 echo
 echo "-----------------------------"
 echo "도커 허브에서 새로운 이미지 pull 중(webflux): $WEBFLUX_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" pull $WEBFLUX_API_ENV || { echo "이미지 pull 실패"; exit 1; }
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" pull $WEBFLUX_API_ENV || { echo "이미지 pull 실패"; exit 1; }
 echo "이미지 pull 완료"
 echo "-----------------------------"
 echo
 
 echo "-----------------------------"
 echo "컨테이너 재시작 중..."
-sudo docker-compose -f "$COMPOSE_PATH" up -d --no-deps $MVC_API_ENV $WEBFLUX_API_ENV || { echo "컨테이너 재시작 실패"; exit 1; }
+sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" up -d --no-deps $MVC_API_ENV $WEBFLUX_API_ENV || { echo "컨테이너 재시작 실패"; exit 1; }
 echo "컨테이너 재시작 완료"
 echo "-----------------------------"
 echo
