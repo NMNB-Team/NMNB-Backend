@@ -42,9 +42,9 @@ class PostUploadServiceImplTest : IntegrationTestSupport() {
         val expectedUrl = "https://s3.aws/test/test.png"
         val savedPost = R2dbcPost.fixture(
             url = expectedUrl,
-            thumbnailUrl = "Here! Yerim!",
             description = request.description,
             userId = user.id,
+            id = 1L
         )
 
         whenever(s3Service.upload(any(), any(), any())).thenReturn(expectedUrl)

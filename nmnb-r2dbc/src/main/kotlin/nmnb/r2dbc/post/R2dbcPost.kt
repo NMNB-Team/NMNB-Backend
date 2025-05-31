@@ -30,6 +30,7 @@ data class R2dbcPost(
             thumbnailUrl: String = "thumbnail",
             description: String? = null,
             userId: String? = null,
+            id: Long? = null,
         ): R2dbcPost {
             return R2dbcPost(url, thumbnailUrl, description, userId)
         }
