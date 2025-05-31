@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
@@ -41,16 +41,15 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build bootstrap image
-        run: docker build -f nmnb-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-mvc ./
+        run: docker build --no-cache -f nmnb-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-mvc ./
 
       - name: Build webflux image
-        run: docker build -f nmnb-webflux-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-webflux ./
+        run: docker build --no-cache -f nmnb-webflux-bootstrap/Dockerfile -t $DOCKER_IMAGE_NAME:prod-webflux ./
 
       - name: Push Docker images
         run: |
           docker push $DOCKER_IMAGE_NAME:prod-mvc
           docker push $DOCKER_IMAGE_NAME:prod-webflux
-
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -59,8 +58,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/nmnb
-            git reset --hard HEAD
+            git fetch origin release
+            git reset --hard origin/release
             git clean -fd
-            git pull origin release
             chmod +x scripts/prod-deploy.sh
             scripts/prod-deploy.sh ${{ github.sha }}
