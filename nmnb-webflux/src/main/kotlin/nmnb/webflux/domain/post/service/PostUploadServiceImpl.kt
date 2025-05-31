@@ -7,6 +7,7 @@ import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.domain.post.service.dto.request.PostInfoServiceRequest
 import nmnb.webflux.global.infrastructure.external.S3Service
+import nmnb.webflux.global.infrastructure.external.ThumbnailJobProducer
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +17,7 @@ import java.time.LocalDate
 class PostUploadServiceImpl(
     private val postRepository: R2dbcPostRepository,
     private val s3Service: S3Service,
+    private val thumbnailJobProducer: ThumbnailJobProducer,
 ) : PostUploadService {
 
     @Transactional
@@ -26,11 +28,12 @@ class PostUploadServiceImpl(
 
         val post = R2dbcPost(
             url = url,
-            thumbnailUrl = "Here! Yerim!",
+            thumbnailUrl = null,
             description = request.description,
             userId = user.id,
         )
-        postRepository.save(post).awaitSingle()
+        val savedPost = postRepository.save(post).awaitSingle()
+        thumbnailJobProducer.enqueue(savedPost.id!!, fileName)
     }
 
     private fun generateFileName(date: String, name: String): String {
