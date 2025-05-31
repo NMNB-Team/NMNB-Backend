@@ -47,7 +47,7 @@ class PostUploadServiceImplTest : IntegrationTestSupport() {
             id = 1L
         )
 
-        whenever(s3Service.upload(any(), any(), any())).thenReturn(expectedUrl)
+        whenever(s3Service.uploadVideo(any(), any(), any())).thenReturn(expectedUrl)
         whenever(postRepository.save(any())).thenReturn(Mono.just(savedPost))
         whenever(postRepository.findById(any<Long>())).thenReturn(Mono.just(savedPost))
 

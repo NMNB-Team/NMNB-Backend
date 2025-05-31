@@ -22,7 +22,7 @@ class PostUploadServiceImpl(
     override suspend fun upload(user: R2dbcUser, file: FilePart, request: PostInfoServiceRequest) {
         val fileName = generateFileName(LocalDate.now().toString(), file.filename())
 
-        val url = s3Service.upload(fileName, file, request.duration)
+        val url = s3Service.uploadVideo(fileName, file, request.duration)
 
         val post = R2dbcPost(
             url = url,

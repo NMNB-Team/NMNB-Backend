@@ -22,7 +22,7 @@ class S3Service(
     private val s3AsyncClient: S3AsyncClient,
     private val s3Properties: S3Properties,
 ) {
-    suspend fun upload(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
+    suspend fun uploadVideo(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
         val tempFile = createTempFile(filePart)
         try {
             uploadToS3(fileName, tempFile, metadata = mapOf("duration" to duration.toString()))

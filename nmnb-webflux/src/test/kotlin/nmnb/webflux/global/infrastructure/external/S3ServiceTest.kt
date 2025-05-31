@@ -36,7 +36,7 @@ class S3ServiceTest(
         val duration = 10
 
         // when
-        val result = s3Service.upload(fileName, filePart, duration)
+        val result = s3Service.uploadVideo(fileName, filePart, duration)
 
         // then
         val expectFileName = "https://${s3Properties.s3.bucket}.s3.${s3Properties.region.static}.amazonaws.com/${
