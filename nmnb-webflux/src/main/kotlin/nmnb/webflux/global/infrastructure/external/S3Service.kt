@@ -5,6 +5,8 @@ import kotlinx.coroutines.future.await
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import nmnb.common.properties.S3Properties
+import nmnb.common.response.exception.PostException
+import nmnb.common.response.status.ErrorStatus
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.async.AsyncRequestBody
@@ -49,7 +51,7 @@ class S3Service(
             tempFile
         } catch (e: Exception) {
             tempFile.delete()
-            throw e
+            throw PostException(ErrorStatus.POST_S3_DOWNLOAD_FAILED)
         }
     }
 
@@ -60,7 +62,7 @@ class S3Service(
             tempFile
         } catch (e: Exception) {
             tempFile.delete()
-            throw e
+            throw PostException(ErrorStatus.POST_THUMBNAIL_GENERATION_FAILED)
         }
     }
 
