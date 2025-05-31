@@ -26,10 +26,5 @@ class FfmpegServiceTest(
         assertThat(resultThumbnail).exists()
         assertThat(resultThumbnail.length()).isGreaterThan(0)
         assertThat(resultThumbnail.extension).isEqualTo("jpg")
-
-        // 썸네일 저장 및 열기
-        val savedThumbnail = File("/Users/annewithane/Desktop/thumbnail.jpg")
-        resultThumbnail.copyTo(savedThumbnail, overwrite = true)
-        println("📸 썸네일이 다음 경로에 저장됨: ${savedThumbnail.absolutePath}")
     }
 }
