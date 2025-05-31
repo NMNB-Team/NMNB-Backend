@@ -19,9 +19,8 @@ class S3Service(
     private val s3AsyncClient: S3AsyncClient,
     private val s3Properties: S3Properties,
 ) {
-
     suspend fun upload(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
-        val tempFile = createTempFile(fileName, filePart)
+        val tempFile = createTempFile(filePart)
         try {
             uploadToS3(fileName, tempFile, duration)
             return@withContext createPostUrl(fileName)
@@ -34,13 +33,21 @@ class S3Service(
         val tempFile = File.createTempFile("upload-", fileName)
         filePart.transferTo(tempFile).awaitSingleOrNull()
         return tempFile
+    private suspend fun createTempFile(filePart: FilePart): File = withContext(Dispatchers.IO) {
+        val tempFile = File.createTempFile("upload-", ".tmp")
+        try {
+            filePart.transferTo(tempFile).awaitSingleOrNull()
+            tempFile
+        } catch (e: Exception) {
+            tempFile.delete()
+            throw e
+        }
     }
 
     private suspend fun uploadToS3(fileName: String, file: File, duration: Int) {
         val contentType = withContext(Dispatchers.IO) {
             Files.probeContentType(file.toPath())
         } ?: "application/octet-stream"
-        val metadata = mapOf("duration" to duration.toString())
 
         val request = PutObjectRequest.builder()
             .bucket(s3Properties.s3.bucket)
