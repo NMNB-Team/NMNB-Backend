@@ -38,11 +38,11 @@ class ThumbnailWorker(
                     if (payload != null) {
                         processPayload(payload)
                     } else {
-                        delay(1000) // 큐가 비어있으면 1초 대기
+                        delay(1000)
                     }
                 } catch (e: Exception) {
                     println("ThumbnailWorker error: ${e.message}")
-                    delay(1000) // 에러 발생 시 잠시 대기 후 재시도
+                    delay(1000)
                 }
             }
         }
