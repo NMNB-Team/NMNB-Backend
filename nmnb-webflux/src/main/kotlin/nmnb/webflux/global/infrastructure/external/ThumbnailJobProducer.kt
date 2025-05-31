@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ThumbnailJobProducer(
-    private val redisTemplate: ReactiveRedisTemplate<String, String>
+    private val redisTemplate: ReactiveRedisTemplate<String, String>,
 ) {
     suspend fun enqueue(postId: Long, fileName: String) {
         val payload = "$postId|$fileName"

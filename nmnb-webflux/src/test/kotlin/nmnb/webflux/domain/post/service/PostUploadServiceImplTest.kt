@@ -44,7 +44,7 @@ class PostUploadServiceImplTest : IntegrationTestSupport() {
             url = expectedUrl,
             description = request.description,
             userId = user.id,
-            id = 1L
+            id = 1L,
         )
 
         whenever(s3Service.uploadVideo(any(), any(), any())).thenReturn(expectedUrl)

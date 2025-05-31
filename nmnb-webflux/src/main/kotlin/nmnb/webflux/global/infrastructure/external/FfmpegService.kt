@@ -20,7 +20,7 @@ class FfmpegService {
             "-frames:v", "1",
             "-vf", "thumbnail,scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:-1:-1:ffffff,setsar=1",
             "-y",
-            outputFile.absolutePath
+            outputFile.absolutePath,
         )
         ffmpeg.redirectErrorStream(true)
         val process = ffmpeg.start()
@@ -36,5 +36,4 @@ class FfmpegService {
         }
         outputFile
     }
-
 }

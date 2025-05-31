@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.io.File
 
 class FfmpegServiceTest(
-    @Autowired private val ffmpegService: FfmpegService
+    @Autowired private val ffmpegService: FfmpegService,
 ) : IntegrationTestSupport() {
 
     @Test

@@ -67,7 +67,7 @@ class S3Service(
     private suspend fun uploadToS3(
         fileName: String,
         file: File,
-        metadata: Map<String, String> = emptyMap()
+        metadata: Map<String, String> = emptyMap(),
     ) {
         val contentType = withContext(Dispatchers.IO) {
             Files.probeContentType(file.toPath())
