@@ -8,11 +8,14 @@ import nmnb.common.properties.S3Properties
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.async.AsyncRequestBody
+import software.amazon.awssdk.core.async.AsyncResponseTransformer
 import software.amazon.awssdk.services.s3.S3AsyncClient
+import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import java.io.File
 import java.net.URLEncoder
 import java.nio.file.Files
+import java.util.UUID
 
 @Component
 class S3Service(
@@ -29,10 +32,27 @@ class S3Service(
         }
     }
 
-    private suspend fun createTempFile(fileName: String, filePart: FilePart): File {
-        val tempFile = File.createTempFile("upload-", fileName)
-        filePart.transferTo(tempFile).awaitSingleOrNull()
-        return tempFile
+    suspend fun uploadThumbnail(fileName: String, file: File): String = withContext(Dispatchers.IO) {
+        uploadToS3(fileName, file)
+        createPostUrl(fileName)
+    }
+
+    suspend fun download(fileName: String): File = withContext(Dispatchers.IO) {
+        val tempFile = File(System.getProperty("java.io.tmpdir"), "video-${UUID.randomUUID()}.tmp")
+        try {
+            val request = GetObjectRequest.builder()
+                .bucket(s3Properties.s3.bucket)
+                .key(fileName)
+                .build()
+
+            s3AsyncClient.getObject(request, AsyncResponseTransformer.toFile(tempFile.toPath())).await()
+            tempFile
+        } catch (e: Exception) {
+            tempFile.delete()
+            throw e
+        }
+    }
+
     private suspend fun createTempFile(filePart: FilePart): File = withContext(Dispatchers.IO) {
         val tempFile = File.createTempFile("upload-", ".tmp")
         try {
