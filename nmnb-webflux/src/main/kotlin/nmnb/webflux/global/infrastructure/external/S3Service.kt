@@ -22,7 +22,7 @@ class S3Service(
     suspend fun upload(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
         val tempFile = createTempFile(filePart)
         try {
-            uploadToS3(fileName, tempFile, duration)
+            uploadToS3(fileName, tempFile, metadata = mapOf("duration" to duration.toString()))
             return@withContext createPostUrl(fileName)
         } finally {
             tempFile.delete()
@@ -44,7 +44,11 @@ class S3Service(
         }
     }
 
-    private suspend fun uploadToS3(fileName: String, file: File, duration: Int) {
+    private suspend fun uploadToS3(
+        fileName: String,
+        file: File,
+        metadata: Map<String, String> = emptyMap()
+    ) {
         val contentType = withContext(Dispatchers.IO) {
             Files.probeContentType(file.toPath())
         } ?: "application/octet-stream"
