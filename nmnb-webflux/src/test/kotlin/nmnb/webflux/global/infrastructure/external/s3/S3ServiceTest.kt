@@ -1,4 +1,4 @@
-package nmnb.webflux.global.infrastructure.external
+package nmnb.webflux.global.infrastructure.external.s3
 
 import kotlinx.coroutines.test.runTest
 import nmnb.common.properties.S3Properties

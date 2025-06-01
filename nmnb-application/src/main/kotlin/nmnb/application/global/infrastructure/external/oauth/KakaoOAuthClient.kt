@@ -1,4 +1,4 @@
-package nmnb.application.global.infrastructure.external
+package nmnb.application.global.infrastructure.external.oauth
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import nmnb.application.global.auth.service.dto.KakaoProfile

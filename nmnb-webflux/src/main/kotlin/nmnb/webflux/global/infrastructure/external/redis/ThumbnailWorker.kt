@@ -1,4 +1,4 @@
-package nmnb.webflux.global.infrastructure.external
+package nmnb.webflux.global.infrastructure.external.redis
 
 import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.CoroutineScope
@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import nmnb.r2dbc.post.R2dbcPostRepository
+import nmnb.webflux.global.infrastructure.external.ffmpeg.FfmpegService
+import nmnb.webflux.global.infrastructure.external.s3.S3Service
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
 

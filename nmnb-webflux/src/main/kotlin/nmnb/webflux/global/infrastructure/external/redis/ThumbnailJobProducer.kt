@@ -1,4 +1,4 @@
-package nmnb.webflux.global.infrastructure.external
+package nmnb.webflux.global.infrastructure.external.redis
 
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.data.redis.core.ReactiveRedisTemplate

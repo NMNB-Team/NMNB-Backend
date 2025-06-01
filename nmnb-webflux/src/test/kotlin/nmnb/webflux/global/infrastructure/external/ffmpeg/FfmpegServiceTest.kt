@@ -1,4 +1,4 @@
-package nmnb.webflux.global.infrastructure.external
+package nmnb.webflux.global.infrastructure.external.ffmpeg
 
 import kotlinx.coroutines.test.runTest
 import nmnb.webflux.IntegrationTestSupport

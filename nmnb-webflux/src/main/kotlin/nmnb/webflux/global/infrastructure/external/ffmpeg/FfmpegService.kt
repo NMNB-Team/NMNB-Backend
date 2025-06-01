@@ -1,4 +1,4 @@
-package nmnb.webflux.global.infrastructure.external
+package nmnb.webflux.global.infrastructure.external.ffmpeg
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -1,4 +1,4 @@
-package nmnb.application.global.infrastructure.external
+package nmnb.application.global.infrastructure.external.oauth
 
 import nmnb.application.global.auth.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
