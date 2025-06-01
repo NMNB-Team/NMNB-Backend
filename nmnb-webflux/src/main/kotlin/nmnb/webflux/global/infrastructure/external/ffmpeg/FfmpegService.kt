@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nmnb.common.response.exception.PostException
 import nmnb.common.response.status.ErrorStatus
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.File
@@ -11,6 +12,9 @@ import java.io.InputStreamReader
 
 @Component
 class FfmpegService {
+
+    private val logger = LoggerFactory.getLogger(FfmpegService::class.java)
+
     suspend fun createThumbnail(videoFile: File): File = withContext(Dispatchers.IO) {
         val outputFile = File.createTempFile("thumbnail_", ".jpg")
         val ffmpeg = ProcessBuilder(
@@ -30,7 +34,7 @@ class FfmpegService {
         process.waitFor()
 
         if (process.exitValue() != 0) {
-            println("FFmpeg failed:\n$log")
+            logger.error("FFmpeg failed:\n$log")
             outputFile.delete()
             throw PostException(ErrorStatus.POST_THUMBNAIL_GENERATION_FAILED)
         }
