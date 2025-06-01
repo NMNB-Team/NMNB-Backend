@@ -11,7 +11,11 @@ class ThumbnailJobProducer(
     suspend fun enqueue(postId: Long, fileName: String) {
         val payload = "$postId|$fileName"
         redisTemplate.opsForList()
-            .rightPush("thumbnail:queue", payload)
+            .rightPush(QUEUE_KEY, payload)
             .awaitSingle()
+    }
+
+    companion object {
+        private const val QUEUE_KEY = "thumbnail:queue"
     }
 }

@@ -36,7 +36,7 @@ class ThumbnailWorker(
             while (isActive) {
                 try {
                     val payload = redisTemplate.opsForList()
-                        .leftPop("thumbnail:queue")
+                        .leftPop(QUEUE_KEY)
                         .awaitSingleOrNull()
 
                     if (payload != null) {
@@ -71,5 +71,9 @@ class ThumbnailWorker(
 
         localVideoFile.delete()
         thumbnailFile.delete()
+    }
+
+    companion object {
+        private const val QUEUE_KEY = "thumbnail:queue"
     }
 }
