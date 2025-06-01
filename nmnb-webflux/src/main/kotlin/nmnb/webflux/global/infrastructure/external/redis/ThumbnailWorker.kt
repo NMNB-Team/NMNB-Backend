@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class ThumbnailWorker(
-    private val redisTemplate: ReactiveRedisTemplate<String, String>,
+    private val postRepository: R2dbcPostRepository,
     private val ffmpegService: FfmpegService,
     private val s3Service: S3Service,
-    private val postRepository: R2dbcPostRepository,
+    private val redisTemplate: ReactiveRedisTemplate<String, String>,
 ) {
 
     private val scope = CoroutineScope(Dispatchers.Default)
