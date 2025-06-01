@@ -28,7 +28,6 @@ class PostUploadServiceImpl(
 
         val post = R2dbcPost(
             url = url,
-            thumbnailUrl = null,
             description = request.description,
             userId = user.id,
         )

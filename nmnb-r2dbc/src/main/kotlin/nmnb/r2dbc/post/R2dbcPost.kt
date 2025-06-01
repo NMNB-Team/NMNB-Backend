@@ -11,7 +11,7 @@ data class R2dbcPost(
     val url: String,
 
     @Column("thumbnail_url")
-    val thumbnailUrl: String? = null,
+    var thumbnailUrl: String? = null,
 
     @Column("description")
     var description: String? = null,
