@@ -11,6 +11,7 @@ import kotlinx.coroutines.reactor.awaitSingleOrNull
 import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.webflux.global.infrastructure.external.ffmpeg.FfmpegService
 import nmnb.webflux.global.infrastructure.external.s3.S3Service
+import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
 
@@ -22,6 +23,7 @@ class ThumbnailWorker(
     private val redisTemplate: ReactiveRedisTemplate<String, String>,
 ) {
 
+    private val logger = LoggerFactory.getLogger(ThumbnailWorker::class.java)
     private val scope = CoroutineScope(Dispatchers.Default)
 
     @PostConstruct
@@ -43,7 +45,7 @@ class ThumbnailWorker(
                         delay(1000)
                     }
                 } catch (e: Exception) {
-                    println("ThumbnailWorker error: ${e.message}")
+                    logger.error("ThumbnailWorker error: ${e.message}", e)
                     delay(1000)
                 }
             }
