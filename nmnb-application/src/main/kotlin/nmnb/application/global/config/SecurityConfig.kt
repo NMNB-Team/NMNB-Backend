@@ -1,6 +1,6 @@
 package nmnb.application.global.config
 
-import nmnb.application.global.auth.utils.JWTFilter
+import nmnb.application.global.infrastructure.security.JWTFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

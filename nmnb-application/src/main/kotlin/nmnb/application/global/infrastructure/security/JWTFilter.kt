@@ -1,4 +1,4 @@
-package nmnb.application.global.auth.utils
+package nmnb.application.global.infrastructure.security
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
