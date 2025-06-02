@@ -1,5 +1,6 @@
 package nmnb.webflux.global.infrastructure.external.redis
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class ThumbnailWorker(
     private val ffmpegService: FfmpegService,
     private val s3Service: S3Service,
     private val redisTemplate: ReactiveRedisTemplate<String, String>,
+    private val objectMapper: ObjectMapper,
 ) {
 
     private val logger = LoggerFactory.getLogger(ThumbnailWorker::class.java)
@@ -53,8 +55,9 @@ class ThumbnailWorker(
     }
 
     private suspend fun processPayload(payload: String) {
-        val (postIdStr, fileName) = payload.split("|")
-        val postId = postIdStr.toLong()
+        val job = objectMapper.readValue(payload, ThumbnailJobPayload::class.java)
+        val postId = job.postId
+        val fileName = job.fileName
 
         val localVideoFile = s3Service.download(fileName)
 

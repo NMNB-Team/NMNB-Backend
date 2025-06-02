@@ -1,5 +1,6 @@
 package nmnb.webflux.global.infrastructure.external.redis
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
@@ -7,12 +8,12 @@ import org.springframework.stereotype.Component
 @Component
 class ThumbnailJobProducer(
     private val redisTemplate: ReactiveRedisTemplate<String, String>,
+    private val objectMapper: ObjectMapper,
 ) {
     suspend fun enqueue(postId: Long, fileName: String) {
-        val payload = "$postId|$fileName"
-        redisTemplate.opsForList()
-            .rightPush(QUEUE_KEY, payload)
-            .awaitSingle()
+        val payload = ThumbnailJobPayload(postId, fileName)
+        val json = objectMapper.writeValueAsString(payload)
+        redisTemplate.opsForList().rightPush(QUEUE_KEY, json).awaitSingle()
     }
 
     companion object {
