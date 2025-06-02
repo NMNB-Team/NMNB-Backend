@@ -24,19 +24,22 @@ class S3Service(
     private val s3AsyncClient: S3AsyncClient,
     private val s3Properties: S3Properties,
 ) {
-    suspend fun uploadVideo(fileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
+
+    suspend fun uploadVideo(baseFileName: String, filePart: FilePart, duration: Int): String = withContext(Dispatchers.IO) {
+        val s3Key = generateS3Key(VIDEO_FOLDER, baseFileName)
         val tempFile = createTempFile(filePart)
         try {
-            uploadToS3(fileName, tempFile, metadata = mapOf("duration" to duration.toString()))
-            return@withContext createPostUrl(fileName)
+            uploadToS3(s3Key, tempFile, metadata = mapOf("duration" to duration.toString()))
+            return@withContext createPostUrl(s3Key)
         } finally {
             tempFile.delete()
         }
     }
 
-    suspend fun uploadThumbnail(fileName: String, file: File): String = withContext(Dispatchers.IO) {
-        uploadToS3(fileName, file)
-        createPostUrl(fileName)
+    suspend fun uploadThumbnail(baseFileName: String, file: File): String = withContext(Dispatchers.IO) {
+        val s3Key = generateS3Key(THUMBNAIL_FOLDER, baseFileName)
+        uploadToS3(s3Key, file)
+        createPostUrl(s3Key)
     }
 
     suspend fun download(fileName: String): File = withContext(Dispatchers.IO) {
@@ -87,8 +90,17 @@ class S3Service(
         s3AsyncClient.putObject(request, requestBody).await()
     }
 
-    private fun createPostUrl(fileName: String) =
+    private fun createPostUrl(fileName: String): String =
         "https://${s3Properties.s3.bucket}.s3.${s3Properties.region.static}.amazonaws.com/${
             URLEncoder.encode(fileName, "UTF-8")
         }"
+
+    private fun generateS3Key(folder: String, baseFileName: String): String {
+        return "$folder/$baseFileName"
+    }
+
+    companion object {
+        private const val VIDEO_FOLDER = "video"
+        private const val THUMBNAIL_FOLDER = "thumbnail"
+    }
 }

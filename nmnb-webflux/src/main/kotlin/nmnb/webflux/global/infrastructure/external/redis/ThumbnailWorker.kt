@@ -63,9 +63,8 @@ class ThumbnailWorker(
         val localVideoFile = s3Service.download(fileName)
 
         val thumbnailFile = ffmpegService.createThumbnail(localVideoFile)
-        val thumbnailFileName = "thumbnail/$fileName.jpg"
 
-        val thumbnailUrl = s3Service.uploadThumbnail(thumbnailFileName, thumbnailFile)
+        val thumbnailUrl = s3Service.uploadThumbnail(fileName, thumbnailFile)
 
         val post = postRepository.findById(postId).awaitSingleOrNull()
         post?.let {
