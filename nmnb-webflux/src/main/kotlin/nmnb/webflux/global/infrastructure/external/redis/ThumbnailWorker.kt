@@ -11,6 +11,7 @@ import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.webflux.global.infrastructure.external.ffmpeg.FfmpegService
+import nmnb.webflux.global.infrastructure.external.redis.dto.ThumbnailJobPayload
 import nmnb.webflux.global.infrastructure.external.s3.S3Service
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate

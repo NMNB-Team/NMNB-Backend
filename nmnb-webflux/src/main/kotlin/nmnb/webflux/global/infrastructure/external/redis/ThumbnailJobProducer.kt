@@ -2,6 +2,7 @@ package nmnb.webflux.global.infrastructure.external.redis
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.reactive.awaitSingle
+import nmnb.webflux.global.infrastructure.external.redis.dto.ThumbnailJobPayload
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
 
