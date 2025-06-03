@@ -1,6 +1,7 @@
 package nmnb.application.domain.user.controller
 
 import nmnb.application.ControllerTestSupport
+import nmnb.application.domain.user.controller.dto.request.EditProfileRequest
 import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRequest
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
@@ -15,9 +16,11 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.mockito.kotlin.whenever
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -128,5 +131,38 @@ class UserControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.result.nickName").value("{랜덤값}"))
             .andExpect(jsonPath("$.result.petOwnershipStatus").value("NO_PET"))
             .andExpect(jsonPath("$.result.signUpStatus").value("COMPLETE"))
+    }
+
+    @WithMockUser
+    @DisplayName("마이페이지 수정 요청에 성공한다")
+    @Test
+    fun editProfile() {
+        // given
+        val request = EditProfileRequest()
+        val requestToJson = MockMultipartFile(
+            "request",
+            null,
+            "application/json",
+            objectMapper.writeValueAsBytes(request),
+        )
+
+        val profileImage = MockMultipartFile(
+            "profileImage",
+            "newFileName.png",
+            "image/png",
+            "image-content".toByteArray(),
+        )
+        whenever(userService.editProfile(any(), any(), any())).then { }
+
+        // when & then
+        mockMvc.perform(
+            multipart("/v1/api/users/profile")
+                .file(requestToJson)
+                .file(profileImage)
+                .with(csrf())
+                .contentType(MediaType.MULTIPART_FORM_DATA),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
     }
 }
