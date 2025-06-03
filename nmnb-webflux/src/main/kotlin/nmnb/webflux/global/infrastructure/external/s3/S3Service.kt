@@ -14,14 +14,17 @@ import software.amazon.awssdk.core.async.AsyncResponseTransformer
 import software.amazon.awssdk.services.s3.S3AsyncClient
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
+import software.amazon.awssdk.services.s3.presigner.S3Presigner
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import java.io.File
-import java.net.URLEncoder
 import java.nio.file.Files
+import java.time.Duration
 import java.util.UUID
 
 @Component
 class S3Service(
     private val s3AsyncClient: S3AsyncClient,
+    private val s3Presigner: S3Presigner,
     private val s3Properties: S3Properties,
 ) {
 
@@ -30,7 +33,7 @@ class S3Service(
         val tempFile = createTempFile(filePart)
         try {
             uploadToS3(s3Key, tempFile, metadata = mapOf("duration" to duration.toString()))
-            return@withContext createPostUrl(s3Key)
+            return@withContext generatePresignedUrl(s3Key)
         } finally {
             tempFile.delete()
         }
@@ -39,7 +42,7 @@ class S3Service(
     suspend fun uploadThumbnail(baseFileName: String, file: File): String = withContext(Dispatchers.IO) {
         val s3Key = generateS3Key(THUMBNAIL_FOLDER, baseFileName)
         uploadToS3(s3Key, file)
-        createPostUrl(s3Key)
+        generatePresignedUrl(s3Key)
     }
 
     suspend fun download(fileName: String): File = withContext(Dispatchers.IO) {
@@ -90,10 +93,19 @@ class S3Service(
         s3AsyncClient.putObject(request, requestBody).await()
     }
 
-    private fun createPostUrl(fileName: String): String =
-        "https://${s3Properties.s3.bucket}.s3.${s3Properties.region.static}.amazonaws.com/${
-            URLEncoder.encode(fileName, "UTF-8")
-        }"
+    private fun generatePresignedUrl(key: String): String {
+        val getObjectRequest = GetObjectRequest.builder()
+            .bucket(s3Properties.s3.bucket)
+            .key(key)
+            .build()
+
+        val presignRequest = GetObjectPresignRequest.builder()
+            .getObjectRequest(getObjectRequest)
+            .signatureDuration(Duration.ofHours(1))
+            .build()
+
+        return s3Presigner.presignGetObject(presignRequest).url().toString()
+    }
 
     private fun generateS3Key(folder: String, baseFileName: String): String {
         return "$folder/$baseFileName"
