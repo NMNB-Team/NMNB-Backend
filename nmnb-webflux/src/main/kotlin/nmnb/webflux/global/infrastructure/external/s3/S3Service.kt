@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import nmnb.common.properties.S3Properties
 import nmnb.common.response.exception.PostException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.S3KeyUtils.generateS3Key
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.async.AsyncRequestBody
@@ -105,10 +106,6 @@ class S3Service(
             .build()
 
         return s3Presigner.presignGetObject(presignRequest).url().toString()
-    }
-
-    private fun generateS3Key(folder: String, baseFileName: String): String {
-        return "$folder/$baseFileName"
     }
 
     companion object {

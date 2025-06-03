@@ -3,6 +3,7 @@ package nmnb.application.global.infrastructure.external.s3
 import nmnb.common.properties.S3Properties
 import nmnb.common.response.exception.S3Exception
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.S3KeyUtils.generateS3Key
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import software.amazon.awssdk.core.exception.SdkClientException
@@ -54,9 +55,6 @@ class S3Service(
 
         return s3Presigner.presignGetObject(presignRequest).url().toString()
     }
-
-    private fun generateS3Key(folder: String, fileName: String) =
-        "$folder/$fileName"
 
     companion object {
         private val PRESIGNED_URL_EXPIRATION: Duration = Duration.ofHours(1)
