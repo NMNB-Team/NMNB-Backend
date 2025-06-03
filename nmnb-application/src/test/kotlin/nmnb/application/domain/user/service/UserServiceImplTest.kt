@@ -44,7 +44,7 @@ class UserServiceImplTest(
         val request = UserPetRegistrationRequest(petName = "멍멍이")
 
         // when
-        val result = userService.registerWithPetName(user, request)
+        val result = userService.registerWithPetName(user, request.toServiceRequest())
 
         // then
         assertThat(result.nickName).contains("멍멍이")

@@ -6,7 +6,7 @@ import nmnb.r2dbc.post.R2dbcPostRepository
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.IntegrationTestSupport
 import nmnb.webflux.domain.post.service.dto.request.PostInfoServiceRequest
-import nmnb.webflux.global.common.service.S3Service
+import nmnb.webflux.global.infrastructure.external.s3.S3Service
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -42,12 +42,12 @@ class PostUploadServiceImplTest : IntegrationTestSupport() {
         val expectedUrl = "https://s3.aws/test/test.png"
         val savedPost = R2dbcPost.fixture(
             url = expectedUrl,
-            thumbnailUrl = "Here! Yerim!",
             description = request.description,
             userId = user.id,
+            id = 1L,
         )
 
-        whenever(s3Service.upload(any(), any(), any())).thenReturn(expectedUrl)
+        whenever(s3Service.uploadVideo(any(), any(), any())).thenReturn(expectedUrl)
         whenever(postRepository.save(any())).thenReturn(Mono.just(savedPost))
         whenever(postRepository.findById(any<Long>())).thenReturn(Mono.just(savedPost))
 

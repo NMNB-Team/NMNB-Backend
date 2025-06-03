@@ -11,7 +11,7 @@ import nmnb.application.global.auth.generator.annotation.AuthUser
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
-import org.apache.catalina.User
+import nmnb.domain.user.User
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -30,7 +30,7 @@ class LikeController(
     fun likeOrUnlike(@Parameter(name = "user", hidden = true) @AuthUser user: User, @RequestBody request: PostLikeRequest): BaseResponse<Any> {
         return BaseResponse.onSuccess(
             SuccessStatus.OK,
-            likeService.likeOrUnlike(request.user, request.toServiceRequest()),
+            likeService.likeOrUnlike(user, request.toServiceRequest()),
         )
     }
 }

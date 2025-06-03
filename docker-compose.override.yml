@@ -8,6 +8,8 @@ services:
     environment:
       - SERVER_PORT=${nmnb_BLUE_PORT}
       - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - .prod_env
     ports:
       - "${nmnb_BLUE_PORT}:${MVC_INTERNAL_APP_PORT}"
     healthcheck:
@@ -26,6 +28,8 @@ services:
     environment:
       - SERVER_PORT=${nmnb_GREEN_PORT}
       - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - .prod_env
     ports:
       - "${nmnb_GREEN_PORT}:${MVC_INTERNAL_APP_PORT}"
     healthcheck:
@@ -44,10 +48,12 @@ services:
     environment:
       - SERVER_PORT=${nmnb_DEV_PORT}
       - SPRING_PROFILES_ACTIVE=dev
+    env_file:
+      - .dev_env
     ports:
       - "${nmnb_DEV_PORT}:${MVC_INTERNAL_DEV_APP_PORT}"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://nmnb-green:${nmnb_DEV_PORT}/health" ]
+      test: [ "CMD", "curl", "-f", "http://dev-nmnb:${nmnb_DEV_PORT}/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -63,6 +69,8 @@ services:
     environment:
       - SERVER_PORT=${nmnb_WEBFLUX_BLUE_PORT}
       - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - .prod_env
     ports:
       - "${nmnb_WEBFLUX_BLUE_PORT}:${WEBFLUX_INTERNAL_APP_PORT}"
     healthcheck:
@@ -81,6 +89,8 @@ services:
     environment:
       - SERVER_PORT=${nmnb_WEBFLUX_GREEN_PORT}
       - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - .prod_env
     ports:
       - "${nmnb_WEBFLUX_GREEN_PORT}:${WEBFLUX_INTERNAL_APP_PORT}"
     healthcheck:
@@ -99,10 +109,12 @@ services:
     environment:
       - SERVER_PORT=${nmnb_WEBFLUX_DEV_PORT}
       - SPRING_PROFILES_ACTIVE=dev
+    env_file:
+      - .dev_env
     ports:
       - "${nmnb_WEBFLUX_DEV_PORT}:${WEBFLUX_INTERNAL_DEV_APP_PORT}"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://nmnb-webflux-green:${nmnb_WEBFLUX_DEV_PORT}/health" ]
+      test: [ "CMD", "curl", "-f", "http://dev-nmnb-webflux:${nmnb_WEBFLUX_DEV_PORT}/health" ]
       interval: 30s
       timeout: 10s
       retries: 3

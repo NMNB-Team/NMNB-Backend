@@ -1,4 +1,4 @@
-package nmnb.application.global.infrastructure.oauth
+package nmnb.application.global.infrastructure.external.oauth
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper

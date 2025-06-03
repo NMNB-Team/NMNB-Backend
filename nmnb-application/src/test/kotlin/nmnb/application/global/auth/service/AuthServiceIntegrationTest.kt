@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.service
 
 import nmnb.application.IntegrationTestSupport
-import nmnb.application.global.auth.utils.JwtTokenProvider
+import nmnb.application.global.infrastructure.security.JwtTokenProvider
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.assertj.core.api.Assertions.assertThat

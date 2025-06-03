@@ -1,4 +1,4 @@
-package nmnb.webflux.global.auth.utils
+package nmnb.webflux.global.infrastructure.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
