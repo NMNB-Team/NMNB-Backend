@@ -73,7 +73,7 @@ class S3Service(
     }
 
     private suspend fun uploadToS3(
-        fileName: String,
+        s3Key: String,
         file: File,
         metadata: Map<String, String> = emptyMap(),
     ) {
@@ -83,7 +83,7 @@ class S3Service(
 
         val request = PutObjectRequest.builder()
             .bucket(s3Properties.s3.bucket)
-            .key(fileName)
+            .key(s3Key)
             .contentType(contentType)
             .contentLength(file.length())
             .metadata(metadata)
