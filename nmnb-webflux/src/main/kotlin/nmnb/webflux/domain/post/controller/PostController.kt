@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Post 🎞️", description = "영상 관련 API")
-@RequestMapping("/v1/api")
+@RequestMapping("/netty/v1/api")
 class PostController(
     private val objectMapper: ObjectMapper,
     private val postUploadService: PostUploadService,

@@ -24,7 +24,7 @@ class SecurityConfig(
     )
 
     private val userUrl = arrayOf(
-        "/v1/api/upload",
+        "/netty/v1/api/upload",
     )
 
     @Bean
