@@ -12,6 +12,9 @@ dependencies {
 
     // S3
     implementation("software.amazon.awssdk:s3:2.19.1")
+
+    // Nanoid
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 }
 
 tasks.bootJar {
