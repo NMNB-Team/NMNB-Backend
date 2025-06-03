@@ -57,7 +57,7 @@ class S3Service(
             tempFile
         } catch (e: Exception) {
             tempFile.delete()
-            throw PostException(ErrorStatus.POST_S3_DOWNLOAD_FAILED)
+            throw PostException(ErrorStatus.S3_DOWNLOAD_POST_FAILED)
         }
     }
 
