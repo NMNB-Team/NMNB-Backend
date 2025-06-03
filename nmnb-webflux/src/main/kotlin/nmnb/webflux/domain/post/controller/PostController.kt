@@ -11,6 +11,7 @@ import nmnb.common.response.status.SuccessStatus
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.domain.post.controller.dto.request.PostInfoRequest
 import nmnb.webflux.domain.post.service.PostUploadService
+import nmnb.webflux.global.auth.generator.annotation.TokenApiResponse
 import nmnb.webflux.global.handler.annotation.AuthUser
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
@@ -30,6 +31,7 @@ class PostController(
     @ApiResponses(
         ApiResponse(responseCode = "COMMON202", description = "요청 성공 및 반환할 콘텐츠가 없음."),
     )
+    @TokenApiResponse
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     suspend fun uploadPost(
         @Parameter(name = "user", hidden = true) @AuthUser user: R2dbcUser,
