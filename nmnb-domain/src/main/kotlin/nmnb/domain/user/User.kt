@@ -83,7 +83,7 @@ class User(
     }
 
     fun updateProfile(petName: String?, profileImage: String?) {
-        petName?.let { updatePetName(it) }
+        petName?.let { if (petName != this.petName) updatePetName(it) }
         profileImage?.let { updateProfileImage(it) }
     }
 }
