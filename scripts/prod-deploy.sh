@@ -60,10 +60,23 @@ echo ".env 파일 복사 완료"
 echo "-----------------------------"
 echo
 
-echo
+set -o allexport
+source "$PROJECT_DIR/.prod_env"
+set +o allexport
+
+if ! docker info > /dev/null 2>&1; then
+  echo "Docker 데몬이 실행 중인지 확인하세요."
+  exit 1
+fi
+
+echo "Docker Hub 로그인 중..."
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin || { echo "Docker 로그인 실패"; exit 1; }
+echo "Docker 로그인 완료"
+
+
 echo "-----------------------------"
-echo "도커 허브에서 새로운 이미지 pull 중: $NEW_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" pull "$NEW_API_ENV" || { echo "이미지 pull 실패"; exit 1; }
+echo "도커 허브에서 새로운 이미지 pull 중:"
+docker-compose --env-file "$PROJECT_DIR/.prod_env" -f "$COMPOSE_PATH" pull $NEW_API_ENV $NEW_WEBFLUX_API_ENV || { echo "이미지 pull 실패"; exit 1; }
 echo "이미지 pull 완료"
 echo "-----------------------------"
 echo
@@ -78,14 +91,6 @@ if ! docker ps --filter "name=$NEW_API_ENV" --filter "status=running" | grep -q 
     echo "새로운 환경($NEW_API_ENV) 컨테이너가 정상 실행되지 않음"
     exit 1
 fi
-
-echo
-echo "-----------------------------"
-echo "도커 허브에서 새로운 이미지 pull 중(webflux): $NEW_WEBFLUX_API_ENV"
-sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" pull "$NEW_WEBFLUX_API_ENV" || { echo "이미지 pull 실패"; exit 1; }
-echo "이미지 pull 완료"
-echo "-----------------------------"
-echo
 
 echo "새로운 환경 시작 중(WEBFLUX): $NEW_WEBFLUX_API_ENV"
 sudo docker-compose -f "$COMPOSE_PATH" --env-file "$PROJECT_DIR/.prod_env" up -d --no-deps "$NEW_WEBFLUX_API_ENV" || { echo "새로운 환경 시작 실패(WEBFLUX)"; exit 1; }

@@ -1,9 +1,7 @@
 services:
   # MVC
   nmnb-blue:
-    build:
-      context: .
-      dockerfile: nmnb-bootstrap/Dockerfile
+    image: nmnb/nmnb:prod-mvc
     container_name: nmnb-blue
     environment:
       - SERVER_PORT=${nmnb_BLUE_PORT}
@@ -21,9 +19,7 @@ services:
       - nmnb_network
 
   nmnb-green:
-    build:
-      context: .
-      dockerfile: nmnb-bootstrap/Dockerfile
+    image: nmnb/nmnb:prod-mvc
     container_name: nmnb-green
     environment:
       - SERVER_PORT=${nmnb_GREEN_PORT}
@@ -41,9 +37,7 @@ services:
       - nmnb_network
 
   dev-nmnb:
-    build:
-      context: .
-      dockerfile: nmnb-bootstrap/Dockerfile
+    image: nmnb/nmnb:dev-mvc
     container_name: dev-nmnb
     environment:
       - SERVER_PORT=${nmnb_DEV_PORT}
@@ -62,9 +56,7 @@ services:
 
   # WebFlux
   nmnb-webflux-blue:
-    build:
-      context: .
-      dockerfile: nmnb-webflux-bootstrap/Dockerfile
+    image: nmnb/nmnb:prod-webflux
     container_name: nmnb-webflux-blue
     environment:
       - SERVER_PORT=${nmnb_WEBFLUX_BLUE_PORT}
@@ -82,9 +74,7 @@ services:
       - nmnb_network
 
   nmnb-webflux-green:
-    build:
-      context: .
-      dockerfile: nmnb-webflux-bootstrap/Dockerfile
+    image: nmnb/nmnb:prod-webflux
     container_name: nmnb-webflux-green
     environment:
       - SERVER_PORT=${nmnb_WEBFLUX_GREEN_PORT}
@@ -102,9 +92,7 @@ services:
       - nmnb_network
 
   dev-nmnb-webflux:
-    build:
-      context: .
-      dockerfile: nmnb-webflux-bootstrap/Dockerfile
+    image: nmnb/nmnb:dev-webflux
     container_name: dev-nmnb-webflux
     environment:
       - SERVER_PORT=${nmnb_WEBFLUX_DEV_PORT}
