@@ -38,6 +38,16 @@ class PostController(
     suspend fun uploadPost(
         @Parameter(name = "user", hidden = true) @AuthUser user: R2dbcUser,
         @RequestPart(value = "file") file: FilePart,
+        @Parameter(
+            description = """ 
+        아래와 같은 JSON 형태로 입력해야 합니다:
+
+        {
+            "description": "강아지 영상입니다.",
+            "duration": 120
+        }
+    """
+        )
         @RequestPart("request") request: String,
     ): BaseResponse<Any> {
         val postInfo = objectMapper.readValue(request, PostInfoRequest::class.java)
