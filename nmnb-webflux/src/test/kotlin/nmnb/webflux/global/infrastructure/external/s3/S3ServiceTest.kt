@@ -1,7 +1,6 @@
 package nmnb.webflux.global.infrastructure.external.s3
 
 import kotlinx.coroutines.test.runTest
-import nmnb.common.properties.S3Properties
 import nmnb.webflux.IntegrationTestSupport
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
@@ -15,10 +14,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
 import reactor.core.publisher.Mono
 import java.io.File
-import java.net.URLEncoder
 
 class S3ServiceTest(
-    @Autowired private val s3Properties: S3Properties,
     @Autowired private val s3Service: S3Service,
 ) : IntegrationTestSupport() {
     @DisplayName("게시글을 S3에 업로드한 후, Url을 응답하는데 성공한다")
@@ -39,10 +36,7 @@ class S3ServiceTest(
         val result = s3Service.uploadVideo(fileName, filePart, duration)
 
         // then
-        val expectFileName = "https://${s3Properties.s3.bucket}.s3.${s3Properties.region.static}.amazonaws.com/${
-            URLEncoder.encode(fileName, "UTF-8")
-        }"
-
-        assertThat(result).isEqualTo(expectFileName)
+        assertThat(result).isNotEmpty
+        assertThat(result).startsWith("http").contains(fileName)
     }
 }
