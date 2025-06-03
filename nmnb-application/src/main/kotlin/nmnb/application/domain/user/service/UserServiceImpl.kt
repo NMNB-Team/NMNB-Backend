@@ -1,6 +1,5 @@
 package nmnb.application.domain.user.service
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import nmnb.application.domain.user.exception.PetException
 import nmnb.application.domain.user.service.dto.request.EditProfileServiceRequest
 import nmnb.application.domain.user.service.dto.request.UserPetRegistrationServiceRequest
@@ -10,6 +9,7 @@ import nmnb.application.global.infrastructure.external.s3.S3Service
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.domain.SignUpStatus
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.FileNameUtils.generateFileName
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -71,18 +71,5 @@ class UserServiceImpl(
             }
             else -> throw PetException(ErrorStatus.INVALID_PET_STATUS)
         }
-    }
-
-    private fun generateFileName(date: String, name: String): String {
-        return date + "_" + NanoIdUtils.randomNanoId(
-            NanoIdUtils.DEFAULT_NUMBER_GENERATOR,
-            CUSTOM_STRING.toCharArray(),
-            ID_LENGTH,
-        ) + "-" + name
-    }
-
-    companion object {
-        private const val ID_LENGTH: Int = 9
-        private const val CUSTOM_STRING = "1234567890"
     }
 }
