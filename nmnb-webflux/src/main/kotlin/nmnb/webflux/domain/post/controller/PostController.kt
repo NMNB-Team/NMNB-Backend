@@ -31,7 +31,7 @@ class PostController(
     @ApiResponses(
         ApiResponse(responseCode = "COMMON202", description = "요청 성공 및 반환할 콘텐츠가 없음."),
         ApiResponse(responseCode = "POST500", description = "영상 썸네일 생성 중 오류가 발생했습니다."),
-        ApiResponse(responseCode = "POST501", description = "S3에서 영상을 다운로드하는 데 실패했습니다"),
+        ApiResponse(responseCode = "S3500", description = "S3에서 영상을 다운로드하는 데 실패했습니다"),
     )
     @TokenApiResponse
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
