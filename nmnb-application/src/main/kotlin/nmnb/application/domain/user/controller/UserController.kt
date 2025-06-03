@@ -70,18 +70,35 @@ class UserController(
         )
     }
 
-    @Operation(summary = "반려견 이름 등록 API", description = "가입하는 유저가 반려견의 이름을 등록합니다. 유저의 petOwnershipStatus가 `HAS_PET`으로 설정됩니다._예림")
+    @Operation(
+        summary = "반려견 이름 등록 API",
+        description = "가입하는 유저가 반려견의 이름을 등록합니다. 유저의 petOwnershipStatus가 `HAS_PET`으로 설정됩니다._예림",
+    )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @PatchMapping("/pet")
-    fun registerWithPetName(@Parameter(name = "user", hidden = true) @AuthUser user: User, @RequestBody request: UserPetRegistrationRequest): BaseResponse<UserStatusResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithPetName(user, request.toServiceRequest()))
+    fun registerWithPetName(
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+        @RequestBody request: UserPetRegistrationRequest,
+    ): BaseResponse<UserStatusResponse> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.OK,
+            userService.registerWithPetName(user, request.toServiceRequest()),
+        )
     }
 
-    @Operation(summary = "반려견 미보유 상태 설정 API", description = "가입하는 유저가 반려견을 보유하지 않았음을 설정합니다. petOwnershipStatus가 NO_PET으로 설정됩니다._예림")
+    @Operation(
+        summary = "반려견 미보유 상태 설정 API",
+        description = "가입하는 유저가 반려견을 보유하지 않았음을 설정합니다. petOwnershipStatus가 NO_PET으로 설정됩니다._예림",
+    )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @PatchMapping("/pet/none")
-    fun registerWithoutPet(@Parameter(name = "user", hidden = true) @AuthUser user: User): BaseResponse<UserStatusResponse> {
+    fun registerWithoutPet(
+        @Parameter(
+            name = "user",
+            hidden = true,
+        ) @AuthUser user: User,
+    ): BaseResponse<UserStatusResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, userService.registerWithoutPet(user))
     }
 }
