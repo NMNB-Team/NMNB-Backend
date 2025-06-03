@@ -21,7 +21,10 @@ class SecurityConfig(
         "/v3/api-docs/**",
         "/api/login",
         "/v1/api/auth/**",
+    )
+    private val userUrl = arrayOf(
         "/v1/api/users/pet",
+        "/v1/api/users/profile",
     )
 
     @Bean
@@ -44,6 +47,7 @@ class SecurityConfig(
 
         http.authorizeHttpRequests {
             it.requestMatchers(*allowedUrl).permitAll()
+                .requestMatchers(*userUrl).hasRole("USER")
                 .anyRequest().authenticated()
         }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
