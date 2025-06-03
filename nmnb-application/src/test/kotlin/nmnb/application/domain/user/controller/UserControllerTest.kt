@@ -55,17 +55,7 @@ class UserControllerTest() : ControllerTestSupport() {
         mockMvc.perform(
             get("/v1/api/users/profile")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(csrf())
-                .content(
-                    """
-                {
-                    "email": "test@example.com",
-                    "profileImage": "profile_image.png",
-                    "petName": "dog",
-                    "petOwnershipStatus": "HAS_PET"
-                }
-                """,
-                ),
+                .with(csrf()),
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
