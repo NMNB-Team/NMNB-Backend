@@ -26,9 +26,6 @@ dependencies {
     // S3
     implementation("software.amazon.awssdk:s3:2.19.1")
 
-    // NanoID
-    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
-
     // Spring Security
     implementation ("org.springframework.boot:spring-boot-starter-security")
     testImplementation ("org.springframework.security:spring-security-test")
