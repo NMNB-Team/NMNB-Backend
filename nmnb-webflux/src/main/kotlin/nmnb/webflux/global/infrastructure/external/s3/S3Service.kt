@@ -50,7 +50,7 @@ class S3Service(
         try {
             val request = GetObjectRequest.builder()
                 .bucket(s3Properties.s3.bucket)
-                .key(fileName)
+                .key(generateS3Key(VIDEO_FOLDER, fileName))
                 .build()
 
             s3AsyncClient.getObject(request, AsyncResponseTransformer.toFile(tempFile.toPath())).await()
