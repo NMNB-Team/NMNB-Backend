@@ -77,4 +77,13 @@ class User(
     fun updateSignUpStatus(status: SignUpStatus) {
         this.signUpStatus = status
     }
+
+    fun updateProfileImage(profileImage: String) {
+        this.profileImage = profileImage
+    }
+
+    fun updateProfile(petName: String?, profileImage: String?) {
+        petName?.let { updatePetName(it) }
+        profileImage?.let { updateProfileImage(it) }
+    }
 }
