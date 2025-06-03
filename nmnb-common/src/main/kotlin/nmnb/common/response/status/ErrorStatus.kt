@@ -28,10 +28,13 @@ enum class ErrorStatus(
     // POST
     POST_NOTFOUND(HttpStatus.NOT_FOUND, "POST400", "게시물을 찾을 수 없습니다."),
     POST_THUMBNAIL_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST500", "영상 썸네일 생성 중 오류가 발생했습니다."),
-    POST_S3_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST500", "S3에서 영상을 다운로드하는 데 실패했습니다"),
 
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER400", "사용자를 찾을 수 없습니다."),
+
+    // S3
+    S3_DOWNLOAD_POST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3500", "S3에서 영상을 다운로드하는 데 실패했습니다"),
+    S3_UPLOAD_PROFILE_IMAGE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3501", "프로필 이미지 업로드 중 오류가 발생했습니다."),
     ;
 
     override fun getReasonHttpStatus(): ErrorReasonDTO {
