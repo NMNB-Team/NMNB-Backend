@@ -43,7 +43,7 @@ class PostControllerTest : ControllerTestSupport() {
 
         // when & then
         webTestClient.post()
-            .uri("/v1/api/upload")
+            .uri("/netty/v1/api/upload")
             .contentType(MediaType.MULTIPART_FORM_DATA)
             .body(BodyInserters.fromMultipartData(multipartData))
             .exchange()
