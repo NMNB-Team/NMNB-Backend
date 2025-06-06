@@ -24,7 +24,7 @@ class PostUploadServiceImpl(
     override suspend fun upload(user: R2dbcUser, file: FilePart, request: PostInfoServiceRequest) {
         val fileName = generateFileName(LocalDate.now().toString(), file.filename())
 
-        val url = s3Service.uploadVideo(fileName, file, request.duration)
+        val url = s3Service.uploadVideo(fileName, file, request.duration, request.accessStrategy)
 
         val post = R2dbcPost(
             url = url,
@@ -32,6 +32,6 @@ class PostUploadServiceImpl(
             userId = user.id,
         )
         val savedPost = postRepository.save(post).awaitSingle()
-        thumbnailJobProducer.enqueue(savedPost.id!!, fileName)
+        thumbnailJobProducer.enqueue(savedPost.id!!, fileName, request.accessStrategy)
     }
 }
