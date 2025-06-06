@@ -29,7 +29,7 @@ class S3Service(
             throw S3Exception(ErrorStatus.S3_UPLOAD_PROFILE_IMAGE_FAILED)
         }
 
-        return s3Utils.generatePresignedUrl(s3Key)
+        return s3Utils.generateUrl(s3Key, accessStrategy)
     }
 
     private fun createRequest(s3Key: String, profileImage: MultipartFile, access: ObjectCannedACL): PutObjectRequest =
