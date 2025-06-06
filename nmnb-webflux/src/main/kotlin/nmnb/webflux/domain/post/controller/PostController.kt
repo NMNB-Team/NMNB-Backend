@@ -31,7 +31,7 @@ class PostController(
     @ApiResponses(
         ApiResponse(responseCode = "COMMON202", description = "요청 성공 및 반환할 콘텐츠가 없음."),
         ApiResponse(responseCode = "POST500", description = "영상 썸네일 생성 중 오류가 발생했습니다."),
-        ApiResponse(responseCode = "POST501", description = "S3에서 영상을 다운로드하는 데 실패했습니다"),
+        ApiResponse(responseCode = "POST501", description = "영상을 다운로드하는 데 실패했습니다"),
     )
     @TokenApiResponse
     @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -39,14 +39,15 @@ class PostController(
         @Parameter(name = "user", hidden = true) @AuthUser user: R2dbcUser,
         @RequestPart(value = "file") file: FilePart,
         @Parameter(
-            description = """ 
+            description = """
         아래와 같은 JSON 형태로 입력해야 합니다:
 
         {
             "description": "강아지 영상입니다.",
-            "duration": 120
+            "duration": 120,
+            "accessStrategy": "PRIVATE"
         }
-    """
+    """,
         )
         @RequestPart("request") request: String,
     ): BaseResponse<Any> {

@@ -59,12 +59,13 @@ class ThumbnailWorker(
         val job = objectMapper.readValue(payload, ThumbnailJobPayload::class.java)
         val postId = job.postId
         val fileName = job.fileName
+        val accessStrategy = job.accessStrategy
 
         val localVideoFile = s3Service.download(fileName)
 
         val thumbnailFile = ffmpegService.createThumbnail(localVideoFile)
 
-        val thumbnailUrl = s3Service.uploadThumbnail(fileName, thumbnailFile)
+        val thumbnailUrl = s3Service.uploadThumbnail(fileName, thumbnailFile, accessStrategy)
 
         val post = postRepository.findById(postId).awaitSingleOrNull()
         post?.let {
