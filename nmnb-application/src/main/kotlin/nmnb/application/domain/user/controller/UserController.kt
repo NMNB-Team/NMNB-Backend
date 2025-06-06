@@ -54,7 +54,8 @@ class UserController(
         @RequestPart(value = "request") @Parameter(
             description = """다음과 같은 JSON 형태의 요청을 입력해야 합니다:
                 {
-                    "petName": "petName"
+                    "petName": "petName",
+                    "accessStrategy": "PUBLIC_READ"
                 }
                 """,
             schema = Schema(
