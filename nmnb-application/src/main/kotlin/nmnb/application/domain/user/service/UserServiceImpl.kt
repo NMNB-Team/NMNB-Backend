@@ -55,7 +55,7 @@ class UserServiceImpl(
             val originalFileName = it.originalFilename.toString()
 
             val fileName = generateFileName(timeStamp, originalFileName)
-            s3Service.uploadProfileImage(fileName, it)
+            s3Service.uploadProfileImage(fileName, it, request.accessStrategy)
         }
 
         user.updateProfile(request.petName, profileImageUrl)
