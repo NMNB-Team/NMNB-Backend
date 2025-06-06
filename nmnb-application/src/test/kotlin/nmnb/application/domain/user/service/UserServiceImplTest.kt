@@ -5,6 +5,7 @@ import nmnb.application.domain.user.controller.dto.request.EditProfileRequest
 import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRequest
 import nmnb.application.domain.user.exception.PetException
 import nmnb.application.global.infrastructure.external.s3.S3Service
+import nmnb.common.domain.AccessStrategy
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.domain.SignUpStatus
 import nmnb.common.properties.S3Properties
@@ -60,7 +61,7 @@ class UserServiceImplTest : IntegrationTestSupport() {
             petOwnershipStatus = PetOwnershipStatus.HAS_PET,
         )
         val newPetName = "newPetName"
-        val reqeust = EditProfileRequest(newPetName)
+        val reqeust = EditProfileRequest(newPetName, AccessStrategy.PUBLIC_READ)
 
         // when
         userService.editProfile(user, reqeust.toServiceRequest())
@@ -78,7 +79,7 @@ class UserServiceImplTest : IntegrationTestSupport() {
             petName = "petName",
             petOwnershipStatus = PetOwnershipStatus.HAS_PET,
         )
-        val request = EditProfileRequest(null)
+        val request = EditProfileRequest(null, AccessStrategy.PUBLIC_READ)
 
         // when
         val exception = assertThrows<PetException> {
@@ -103,10 +104,10 @@ class UserServiceImplTest : IntegrationTestSupport() {
             "image/png",
             "image-content".toByteArray(),
         )
-        val request = EditProfileRequest(defaultPetName)
+        val request = EditProfileRequest(defaultPetName, AccessStrategy.PUBLIC_READ)
 
         val newImageUrl = "profileImageUrl"
-        whenever(s3Service.uploadProfileImage(any(), any())).thenReturn(newImageUrl)
+        whenever(s3Service.uploadProfileImage(any(), any(), any())).thenReturn(newImageUrl)
 
         // when
         userService.editProfile(user, request.toServiceRequest(), profileImage)
@@ -129,10 +130,10 @@ class UserServiceImplTest : IntegrationTestSupport() {
             "image/png",
             "image-content".toByteArray(),
         )
-        val request = EditProfileRequest()
+        val request = EditProfileRequest(accessStrategy = AccessStrategy.PUBLIC_READ)
 
         val newImageUrl = "profileImageUrl"
-        whenever(s3Service.uploadProfileImage(any(), any())).thenReturn(newImageUrl)
+        whenever(s3Service.uploadProfileImage(any(), any(), any())).thenReturn(newImageUrl)
 
         // when
         userService.editProfile(user, request.toServiceRequest(), profileImage)

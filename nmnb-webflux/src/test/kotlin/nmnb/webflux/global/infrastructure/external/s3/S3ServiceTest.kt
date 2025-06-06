@@ -1,6 +1,7 @@
 package nmnb.webflux.global.infrastructure.external.s3
 
 import kotlinx.coroutines.test.runTest
+import nmnb.common.domain.AccessStrategy
 import nmnb.webflux.IntegrationTestSupport
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
@@ -33,7 +34,7 @@ class S3ServiceTest(
         val duration = 10
 
         // when
-        val result = s3Service.uploadVideo(fileName, filePart, duration)
+        val result = s3Service.uploadVideo(fileName, filePart, duration, AccessStrategy.PUBLIC_READ)
 
         // then
         assertThat(result).isNotEmpty

@@ -37,7 +37,7 @@ class PostControllerTest : ControllerTestSupport() {
         builder.part("file", ByteArrayResource("test content".toByteArray()))
             .filename("test.txt")
             .contentType(MediaType.TEXT_PLAIN)
-        builder.part("request", """{"description":"description", "duration":"10"}""")
+        builder.part("request", """{"description":"description", "duration":"10",  "accessStrategy": "PUBLIC_READ"}""")
 
         val multipartData = builder.build()
 

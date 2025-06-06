@@ -5,6 +5,7 @@ import nmnb.application.domain.user.controller.dto.request.EditProfileRequest
 import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRequest
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
+import nmnb.common.domain.AccessStrategy
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.domain.SignUpStatus
 import nmnb.common.response.status.SuccessStatus
@@ -128,7 +129,7 @@ class UserControllerTest() : ControllerTestSupport() {
     @Test
     fun editProfile() {
         // given
-        val request = EditProfileRequest()
+        val request = EditProfileRequest(accessStrategy = AccessStrategy.PUBLIC_READ)
         val requestToJson = MockMultipartFile(
             "request",
             null,

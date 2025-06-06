@@ -1,6 +1,7 @@
 package nmnb.application.global.infrastructure.external.s3
 
 import nmnb.application.IntegrationTestSupport
+import nmnb.common.domain.AccessStrategy
 import nmnb.common.response.exception.S3Exception
 import nmnb.common.response.status.ErrorStatus
 import org.assertj.core.api.Assertions.assertThat
@@ -45,7 +46,7 @@ class S3ServiceTest : IntegrationTestSupport() {
         whenever(s3Client.putObject(any<PutObjectRequest>(), any<RequestBody>())).thenReturn(mock())
 
         // When
-        val result = s3Service.uploadProfileImage(fileName, mockMultipartFile)
+        val result = s3Service.uploadProfileImage(fileName, mockMultipartFile, AccessStrategy.PUBLIC_READ)
 
         assertThat(result).isNotEmpty
         assertThat(result).startsWith("http").contains(fileName)
@@ -68,7 +69,7 @@ class S3ServiceTest : IntegrationTestSupport() {
 
         // When & Then
         val exception = assertThrows<S3Exception> {
-            s3Service.uploadProfileImage(fileName, mockMultipartFile)
+            s3Service.uploadProfileImage(fileName, mockMultipartFile, AccessStrategy.PUBLIC_READ)
         }
 
         assertEquals(ErrorStatus.S3_UPLOAD_PROFILE_IMAGE_FAILED, exception.getCode())
