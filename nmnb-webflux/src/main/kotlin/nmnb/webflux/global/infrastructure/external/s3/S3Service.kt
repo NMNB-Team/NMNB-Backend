@@ -53,7 +53,7 @@ class S3Service(
     suspend fun uploadThumbnail(baseFileName: String, file: File, access: AccessStrategy): String =
         withContext(Dispatchers.IO) {
             val s3Key = s3Utils.generateS3Key(THUMBNAIL_FOLDER, baseFileName)
-            uploadToS3(s3Key, file)
+            uploadToS3(s3Key, file, access.cannedAcl)
             s3Utils.generateUrl(s3Key, access)
         }
 
@@ -87,6 +87,7 @@ class S3Service(
     private suspend fun uploadToS3(
         s3Key: String,
         file: File,
+        access: ObjectCannedACL,
         metadata: Map<String, String> = emptyMap(),
     ) {
         val contentType = withContext(Dispatchers.IO) {
@@ -99,6 +100,7 @@ class S3Service(
             .contentType(contentType)
             .contentLength(file.length())
             .metadata(metadata)
+            .acl(access)
             .build()
 
         val requestBody = AsyncRequestBody.fromFile(file.toPath())
