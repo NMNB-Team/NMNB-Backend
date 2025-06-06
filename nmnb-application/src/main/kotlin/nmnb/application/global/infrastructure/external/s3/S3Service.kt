@@ -3,7 +3,7 @@ package nmnb.application.global.infrastructure.external.s3
 import nmnb.common.properties.S3Properties
 import nmnb.common.response.exception.S3Exception
 import nmnb.common.response.status.ErrorStatus
-import nmnb.common.utils.S3KeyUtils.generateS3Key
+import nmnb.common.utils.S3Utils
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import software.amazon.awssdk.core.exception.SdkClientException
@@ -20,9 +20,10 @@ class S3Service(
     private val s3Client: S3Client,
     private val s3Presigner: S3Presigner,
     private val s3Properties: S3Properties,
+    private val s3Utils: S3Utils,
 ) {
     fun uploadProfileImage(fileName: String, profileImage: MultipartFile): String {
-        val s3Key = generateS3Key(PROFILE_IMAGE_PATH, fileName)
+        val s3Key = s3Utils.generateS3Key(PROFILE_IMAGE_PATH, fileName)
         val request = createRequest(s3Key, profileImage)
 
         try {
