@@ -18,7 +18,7 @@ class Post(
     @Column(nullable = false)
     val url: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     val thumbnailUrl: String,
 
     var description: String? = null,

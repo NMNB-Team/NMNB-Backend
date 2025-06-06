@@ -22,7 +22,7 @@ class User(
     @Column(nullable = false, unique = true)
     val email: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     var profileImage: String,
 
     var petName: String? = null,
