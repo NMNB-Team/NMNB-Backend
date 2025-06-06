@@ -44,7 +44,8 @@ class PostController(
 
         {
             "description": "강아지 영상입니다.",
-            "duration": 120
+            "duration": 120,
+            "accessStrategy": "PRIVATE"
         }
     """,
         )
