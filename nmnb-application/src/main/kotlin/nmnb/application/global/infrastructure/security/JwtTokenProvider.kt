@@ -13,7 +13,6 @@ import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.security.SignatureException
 import java.sql.Date
@@ -54,10 +53,24 @@ class JwtTokenProvider(
         return builder.signWith(key, SignatureAlgorithm.HS256).compact()
     }
 
-        refreshTokenRepository.findByIdOrNull(email)?.update(refrehToken) ?: refreshTokenRepository.save(
-            RefreshToken(email, refrehToken),
+    private fun saveRefreshToken(
+        email: String,
+        deviceId: String,
+        refreshToken: String,
+        now: Instant?,
+    ) {
+        val redisKey = "$email:$deviceId"
+        val timeStamp = now?.atZone(ZoneId.systemDefault())?.toLocalDateTime()
+            ?: LocalDateTime.now()
+
+        val token = RefreshToken(
+            id = redisKey,
+            email = email,
+            refreshToken = refreshToken,
+            timeStamp = timeStamp,
+            deviceId = deviceId,
         )
-        return refrehToken
+        refreshTokenRepository.save(token)
     }
 
     fun getEmailWithValidation(token: String): String {
