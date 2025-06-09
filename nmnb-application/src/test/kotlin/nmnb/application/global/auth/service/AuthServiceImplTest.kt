@@ -12,6 +12,7 @@ import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -23,6 +24,9 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @Autowired
     private lateinit var authService: AuthService
+
+    @MockBean
+    private lateinit var refreshTokenService: RefreshTokenService
 
     @Autowired
     private lateinit var userRepository: UserRepository
@@ -97,5 +101,28 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         assertThat(result.accessToken).isNotBlank()
         assertThat(result.refreshToken).isNotBlank()
         assertThat(result.signUpStatus).isEqualTo(SignUpStatus.IN_PROGRESS)
+    }
+
+    @Test
+    @DisplayName("RefreshToken 재발급에 성공한다.")
+    fun refreshToken() {
+        // given
+        val deviceId = "deviceId"
+        val email = "user@example.com"
+        val refreshToken = "valid-refresh-token"
+        val newRefreshToken = "new-refresh-token"
+        val newAccessToken = "new-access-token"
+
+        whenever(refreshTokenService.validateRefreshToken(refreshToken, deviceId)).thenReturn(email)
+        whenever(refreshTokenService.removeOldestIfSessionLimitExceeded(any())).then {}
+        whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
+
+        // when
+        val result = authService.refreshToken(refreshToken, deviceId)
+
+        // then
+        assertEquals(newAccessToken, result.accessToken)
+        assertEquals(newRefreshToken, result.refreshToken)
     }
 }
