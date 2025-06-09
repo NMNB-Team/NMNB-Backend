@@ -16,12 +16,12 @@ class TestAuthService(
 ) {
 
     @Transactional
-    fun login(email: String): TestAuthResponse {
+    fun login(email: String, deviceId: String): TestAuthResponse {
         val user: User =
             userRepository
                 .findByEmail(email) ?: throw UserException(ErrorStatus.USER_NOT_FOUND)
 
-        val accessToken: String = jwtTokenProvider.createAccessToken(user.email)
+        val accessToken: String = jwtTokenProvider.createAccessToken(user.email, deviceId)
         return TestAuthResponse(accessToken)
     }
 }
