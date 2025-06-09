@@ -29,12 +29,22 @@ class AuthServiceImpl(
         val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode = accessCode)
         val email = profile.getEmail()
 
-        val user = userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.s3.defaultProfileImageUrl))
+        val user = userRepository.findByEmail(email) ?: userRepository.save(
+            User(
+                email,
+                profileImage = s3Properties.s3.defaultProfileImageUrl,
+            ),
+        )
 
         val refreshToken = tokenProvider.createRefreshToken(email, deviceId)
         val accessToken = tokenProvider.createAccessToken(email, deviceId)
 
-        return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken, signUpStatus = user.signUpStatus)
+        return AuthUserResponse(
+            email,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            signUpStatus = user.signUpStatus,
+        )
     }
 
     @Transactional
