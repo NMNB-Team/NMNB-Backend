@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.generator
 
-import nmnb.application.global.auth.exception.AuthException
 import nmnb.application.global.auth.generator.annotation.ExtractToken
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
