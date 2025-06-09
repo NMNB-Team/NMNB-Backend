@@ -1,5 +1,6 @@
 package nmnb.webflux.global.config
 
+import nmnb.webflux.global.infrastructure.security.DeviceValidationFilter
 import nmnb.webflux.global.infrastructure.security.JWTFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,6 +15,7 @@ import org.springframework.web.server.WebFilter
 @EnableWebFluxSecurity
 class SecurityConfig(
     private val jwtFilter: JWTFilter,
+    private val deviceValidationFilter: DeviceValidationFilter,
 ) {
 
     private val allowedUrl = arrayOf(
@@ -45,6 +47,7 @@ class SecurityConfig(
         }
 
         http.addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+        http.addFilterAt(deviceValidationFilter, SecurityWebFiltersOrder.AUTHORIZATION)
 
         return http.build()
     }

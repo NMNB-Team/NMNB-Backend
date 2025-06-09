@@ -1,5 +1,6 @@
 package nmnb.application.global.config
 
+import nmnb.application.global.infrastructure.security.DeviceValidationFilter
 import nmnb.application.global.infrastructure.security.JWTFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtFilter: JWTFilter,
+    private val deviceValidationFilter: DeviceValidationFilter,
 ) {
 
     val allowedUrl: Array<String> = arrayOf(
@@ -51,6 +53,7 @@ class SecurityConfig(
                 .anyRequest().authenticated()
         }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterAfter(deviceValidationFilter, JWTFilter::class.java)
 
         return http.build()
     }
