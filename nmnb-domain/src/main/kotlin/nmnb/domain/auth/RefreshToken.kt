@@ -13,9 +13,22 @@ data class RefreshToken(
     var deviceId: String,
     var timeStamp: LocalDateTime,
 
-    ) {
+) {
 
-    fun update(newToken: String) {
-        this.refreshToken = newToken
+    companion object {
+        fun fixture(
+            email: String = "email@gmail.com",
+            refreshToken: String,
+            timeStamp: LocalDateTime,
+            deviceId: String,
+        ): RefreshToken {
+            return RefreshToken(
+                id = "$email:$deviceId",
+                email = email,
+                refreshToken = refreshToken,
+                timeStamp = timeStamp,
+                deviceId = deviceId,
+            )
+        }
     }
 }
