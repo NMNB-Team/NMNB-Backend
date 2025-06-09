@@ -10,6 +10,7 @@ import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class AuthServiceImpl(
@@ -36,8 +37,9 @@ class AuthServiceImpl(
             ),
         )
 
-        val refreshToken = tokenProvider.createRefreshToken(email, deviceId)
-        val accessToken = tokenProvider.createAccessToken(email, deviceId)
+        val now = Instant.now()
+        val refreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
+        val accessToken = tokenProvider.createAccessToken(now, email, deviceId)
 
         return AuthUserResponse(
             email,
@@ -51,8 +53,9 @@ class AuthServiceImpl(
     override fun refreshToken(refreshToken: String, deviceId: String): AuthTokenResponse {
         val email = refreshTokenService.validateRefreshToken(refreshToken)
 
-        val newRefreshToken = tokenProvider.createRefreshToken(email, deviceId)
-        val newAccessToken = tokenProvider.createAccessToken(email, deviceId)
+        val now = Instant.now()
+        val newRefreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
+        val newAccessToken = tokenProvider.createAccessToken(now, email, deviceId)
 
         refreshTokenService.saveOrUpdateToken(email, newRefreshToken)
 
