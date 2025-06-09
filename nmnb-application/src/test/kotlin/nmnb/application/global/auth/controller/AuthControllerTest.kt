@@ -30,17 +30,20 @@ class AuthControllerTest() : ControllerTestSupport() {
     fun refreshToken() {
         // given
         val dummyRefreshToken = "dummy.refresh.token"
+        val dummyDeviceId = "deviceId"
+
         val expectedResponse = AuthTokenResponse(
             accessToken = "new.access.token",
             refreshToken = "new.refresh.token",
         )
 
-        whenever(authService.refreshToken(dummyRefreshToken)).thenReturn(expectedResponse)
+        whenever(authService.refreshToken(dummyRefreshToken, dummyDeviceId)).thenReturn(expectedResponse)
 
         // when & then
         mockMvc.perform(
             get("/v1/api/auth/refresh")
                 .header("Authorization", "Bearer $dummyRefreshToken")
+                .header("Device-Id", dummyDeviceId)
                 .with(csrf()),
         )
             .andExpect(status().isOk)
