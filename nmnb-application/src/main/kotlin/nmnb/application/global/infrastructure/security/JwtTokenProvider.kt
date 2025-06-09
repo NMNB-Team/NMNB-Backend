@@ -79,4 +79,9 @@ class JwtTokenProvider(
             throw AuthException(ErrorStatus.AUTH_EMPTY_TOKEN)
         }
     }
+
+    fun getClaimFromToken(token: String, claimKey: String): Any? {
+        val claims = parseClaims(token)
+        return claims[claimKey]
+    }
 }

@@ -49,4 +49,13 @@ class JwtTokenProvider(
         val keyBytes = Decoders.BASE64.decode(secret)
         return Keys.hmacShaKeyFor(keyBytes)
     }
+
+    fun getClaimFromToken(token: String, claimKey: String): Any? {
+        val claims = Jwts.parserBuilder()
+            .setSigningKey(token)
+            .build()
+            .parseClaimsJws(token)
+            .body
+        return claims[claimKey]
+    }
 }
