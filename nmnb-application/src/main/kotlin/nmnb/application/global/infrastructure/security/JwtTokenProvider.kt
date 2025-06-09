@@ -17,9 +17,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.security.SignatureException
 import java.sql.Date
-import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Component
@@ -32,21 +32,27 @@ class JwtTokenProvider(
 
     private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)) }
 
-    fun createAccessToken(email: String): String {
-        return Jwts.builder()
-            .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
-            .setExpiration(Date.from(Instant.now().plus(accessExpirationTime, ChronoUnit.SECONDS)))
-            .claim("email", email)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact()
+    fun createAccessToken(now: Instant, email: String, deviceId: String) =
+        generateJwtToken(now, email, accessExpirationTime, deviceId)
+
+    fun createRefreshToken(now: Instant, email: String, deviceId: String): String {
+        val refreshToken = generateJwtToken(now, email, refreshExpirationTime)
+        saveRefreshToken(email, deviceId, refreshToken, now)
+        return refreshToken
     }
 
-    fun createRefreshToken(email: String): String {
-        val refrehToken = Jwts.builder()
-            .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
-            .setExpiration(Date.from(Instant.now().plus(refreshExpirationTime, ChronoUnit.SECONDS)))
+    private fun generateJwtToken(now: Instant, email: String, expirationTime: Long, deviceId: String? = null): String {
+        val builder = Jwts.builder()
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(Instant.now().plus(expirationTime, ChronoUnit.SECONDS)))
             .claim("email", email)
-            .signWith(key, SignatureAlgorithm.HS256).compact()
+
+        deviceId?.let {
+            builder.claim("deviceId", it)
+        }
+
+        return builder.signWith(key, SignatureAlgorithm.HS256).compact()
+    }
 
         refreshTokenRepository.findByIdOrNull(email)?.update(refrehToken) ?: refreshTokenRepository.save(
             RefreshToken(email, refrehToken),
