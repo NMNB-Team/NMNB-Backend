@@ -8,6 +8,7 @@ import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class TestAuthService(
@@ -21,7 +22,8 @@ class TestAuthService(
             userRepository
                 .findByEmail(email) ?: throw UserException(ErrorStatus.USER_NOT_FOUND)
 
-        val accessToken: String = jwtTokenProvider.createAccessToken(user.email, deviceId)
+        val now = Instant.now()
+        val accessToken: String = jwtTokenProvider.createAccessToken(now, user.email, deviceId)
         return TestAuthResponse(accessToken)
     }
 }
