@@ -1,9 +1,11 @@
 package nmnb.application.global.auth.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import nmnb.application.global.auth.generator.annotation.ExtractDeviceId
 import nmnb.application.global.auth.generator.annotation.ExtractToken
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.application.global.auth.service.AuthService
@@ -31,15 +33,28 @@ class AuthController(
         ApiResponse(responseCode = "AUTH500", description = "OAuth 서버 응답을 처리하는 중 오류가 발생했습니다."),
     )
     @GetMapping("/login/{type}")
-    fun signIn(@RequestParam("code") accessCode: String, @PathVariable("type") type: SocialType): BaseResponse<AuthUserResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.OK, authService.signInWithSocial(accessCode, type))
+    fun signIn(
+        @RequestParam("code") accessCode: String,
+        @PathVariable("type") type: SocialType,
+        @Parameter(hidden = true) @ExtractDeviceId deviceId: String,
+    ): BaseResponse<AuthUserResponse> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.OK,
+            authService.signInWithSocial(accessCode, type, deviceId),
+        )
     }
 
     @Operation(summary = "토큰 재발급 API", description = "토큰을 재발급합니다_예림")
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @GetMapping("/refresh")
-    fun refreshToken(@Parameter(hidden = true) @ExtractToken refreshToken: String): BaseResponse<AuthTokenResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.OK, authService.refreshToken(refreshToken))
+    fun refreshToken(
+        @Parameter(hidden = true) @ExtractToken refreshToken: String,
+        @Parameter(hidden = true) @ExtractDeviceId deviceId: String,
+    ): BaseResponse<AuthTokenResponse> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.OK,
+            authService.refreshToken(refreshToken, deviceId),
+        )
     }
 }
