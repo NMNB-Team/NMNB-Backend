@@ -51,7 +51,7 @@ class AuthServiceImpl(
 
     @Transactional
     override fun refreshToken(refreshToken: String, deviceId: String): AuthTokenResponse {
-        val email = refreshTokenService.validateRefreshToken(refreshToken)
+        val email = refreshTokenService.validateRefreshToken(refreshToken, deviceId)
 
         val now = Instant.now()
         val newRefreshToken = tokenProvider.createRefreshToken(now, email, deviceId)

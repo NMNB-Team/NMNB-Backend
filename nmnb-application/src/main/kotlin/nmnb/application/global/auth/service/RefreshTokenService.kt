@@ -13,14 +13,14 @@ class RefreshTokenService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val tokenProvider: JwtTokenProvider,
 ) {
-    fun validateRefreshToken(refreshToken: String): String {
+    fun validateRefreshToken(refreshToken: String, deviceId: String): String {
         val email = tokenProvider.getEmailWithValidation(refreshToken)
-        verifyStoredTokenMatch(email, refreshToken)
+        verifyStoredTokenMatch("$email:$deviceId", refreshToken)
         return email
     }
 
-    fun verifyStoredTokenMatch(email: String, token: String) {
-        val storedToken = refreshTokenRepository.findByIdOrNull(email)?.refreshToken
+    fun verifyStoredTokenMatch(id: String, token: String) {
+        val storedToken = refreshTokenRepository.findByIdOrNull(id)?.refreshToken
 
         if (storedToken != token) {
             throw AuthException(ErrorStatus.AUTH_INVALID_TOKEN)
