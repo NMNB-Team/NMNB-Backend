@@ -21,24 +21,28 @@ class AuthServiceImpl(
 ) : AuthService {
 
     @Transactional
-    override fun signInWithSocial(accessCode: String, type: SocialType): AuthUserResponse {
+    override fun signInWithSocial(
+        accessCode: String,
+        type: SocialType,
+        deviceId: String,
+    ): AuthUserResponse {
         val profile = oAuthClientComposite.getClient(type).requestProfile(accessCode = accessCode)
         val email = profile.getEmail()
 
         val user = userRepository.findByEmail(email) ?: userRepository.save(User(email, profileImage = s3Properties.s3.defaultProfileImageUrl))
 
-        val accessToken = tokenProvider.createAccessToken(email)
-        val refreshToken = tokenProvider.createRefreshToken(email)
+        val refreshToken = tokenProvider.createRefreshToken(email, deviceId)
+        val accessToken = tokenProvider.createAccessToken(email, deviceId)
 
         return AuthUserResponse(email, accessToken = accessToken, refreshToken = refreshToken, signUpStatus = user.signUpStatus)
     }
 
     @Transactional
-    override fun refreshToken(refreshToken: String): AuthTokenResponse {
+    override fun refreshToken(refreshToken: String, deviceId: String): AuthTokenResponse {
         val email = refreshTokenService.validateRefreshToken(refreshToken)
 
-        val newAccessToken = tokenProvider.createAccessToken(email)
-        val newRefreshToken = tokenProvider.createRefreshToken(email)
+        val newRefreshToken = tokenProvider.createRefreshToken(email, deviceId)
+        val newAccessToken = tokenProvider.createAccessToken(email, deviceId)
 
         refreshTokenService.saveOrUpdateToken(email, newRefreshToken)
 
