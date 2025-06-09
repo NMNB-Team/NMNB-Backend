@@ -24,6 +24,8 @@ enum class ErrorStatus(
     AUTH_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "AUTH405", "토큰이 요청에 포함되어 있지 않습니다."),
     AUTH_EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH406", "빈 토큰이 전달되었습니다."),
     AUTH_CLAIM_EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH407", "토큰에 이메일 정보가 없습니다."),
+    DEVICE_ID_MISMATCH(HttpStatus.UNAUTHORIZED, "AUTH408", "인증되지 않는 기기입니다."),
+    DEVICE_ID_MISSING(HttpStatus.UNAUTHORIZED, "AUTH409", "디바이스 기기 정보가 요청에 포함되어 있지 않습니다."),
 
     // POST
     POST_NOTFOUND(HttpStatus.NOT_FOUND, "POST400", "게시물을 찾을 수 없습니다."),
