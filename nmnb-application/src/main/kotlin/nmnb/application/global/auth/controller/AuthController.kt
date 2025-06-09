@@ -39,7 +39,7 @@ class AuthController(
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
     @GetMapping("/refresh")
-    fun refreshToken(@ExtractToken refreshToken: String): BaseResponse<AuthTokenResponse> {
+    fun refreshToken(@Parameter(hidden = true) @ExtractToken refreshToken: String): BaseResponse<AuthTokenResponse> {
         return BaseResponse.onSuccess(SuccessStatus.OK, authService.refreshToken(refreshToken))
     }
 }
