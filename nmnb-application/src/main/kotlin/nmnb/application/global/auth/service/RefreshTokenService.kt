@@ -27,12 +27,22 @@ class RefreshTokenService(
         }
     }
 
-    fun saveOrUpdateToken(email: String, refreshToken: String) {
-        val existingToken = refreshTokenRepository.findByIdOrNull(email)
-        if (existingToken != null) {
-            existingToken.update(refreshToken)
-        } else {
-            refreshTokenRepository.save(RefreshToken(email, refreshToken))
+    fun removeOldestIfSessionLimitExceeded(email: String) {
+        val allTokens = getUserRefreshTokens(email)
+        if (allTokens.size >= MAX_SESSIONS) {
+            val oldest = findOldestToken(allTokens)
+            if (oldest != null) {
+                refreshTokenRepository.deleteById(oldest.id)
+            }
         }
+    }
+
+    private fun findOldestToken(allTokens: List<RefreshToken>) =
+        allTokens.minByOrNull { it.timeStamp }
+
+    private fun getUserRefreshTokens(email: String) = refreshTokenRepository.findAll().filter { it.email == email }
+
+    companion object {
+        const val MAX_SESSIONS = 4
     }
 }
