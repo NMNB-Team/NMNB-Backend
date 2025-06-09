@@ -5,6 +5,7 @@ import nmnb.application.global.auth.service.dto.KakaoAccount
 import nmnb.application.global.auth.service.dto.KakaoProfile
 import nmnb.application.global.infrastructure.external.oauth.KakaoOAuthClient
 import nmnb.application.global.infrastructure.external.oauth.OAuthClientComposite
+import nmnb.application.global.infrastructure.security.JwtTokenProvider
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
@@ -13,6 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -31,6 +33,9 @@ class AuthServiceImplTest : IntegrationTestSupport() {
     @MockBean
     private lateinit var oAuthClientComposite: OAuthClientComposite
 
+    @MockBean
+    private lateinit var tokenProvider: JwtTokenProvider
+
     @AfterEach
     fun tearDown() {
         userRepository.deleteAllInBatch()
@@ -43,6 +48,9 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         val email = "test@example.com"
         val accessToken = "dummy-access-token"
         val profileImage = "default.png"
+        val deviceId = "deviceId"
+        val newRefreshToken = "new-refresh-token"
+        val newAccessToken = "new-access-token"
 
         userRepository.save(
             User(email = email, profileImage = profileImage),
@@ -51,9 +59,11 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         val kakaoProfile = KakaoProfile(kakaoAccount = KakaoAccount(email = email))
         whenever(oAuthClientComposite.getClient(SocialType.KAKAO)).thenReturn(kakaoOAuthClient)
         whenever(kakaoOAuthClient.requestProfile(accessToken)).thenReturn(kakaoProfile)
+        whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
 
         // when
-        val result = authService.signInWithSocial(accessToken, SocialType.KAKAO)
+        val result = authService.signInWithSocial(accessToken, SocialType.KAKAO, deviceId)
 
         // then
         assertThat(userRepository.findAll()).hasSize(1)
@@ -68,13 +78,18 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // given
         val email = "test@example.com"
         val accessToken = "dummy-access-token"
+        val deviceId = "deviceId"
+        val newRefreshToken = "new-refresh-token"
+        val newAccessToken = "new-access-token"
 
         val kakaoProfile = KakaoProfile(kakaoAccount = KakaoAccount(email = email))
         whenever(oAuthClientComposite.getClient(SocialType.KAKAO)).thenReturn(kakaoOAuthClient)
-        whenever(kakaoOAuthClient.requestProfile(accessToken)).thenReturn(kakaoProfile)
+        whenever(kakaoOAuthClient.requestProfile(any())).thenReturn(kakaoProfile)
+        whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
 
         // when
-        val result = authService.signInWithSocial(accessToken, SocialType.KAKAO)
+        val result = authService.signInWithSocial(accessToken, SocialType.KAKAO, deviceId)
 
         // then
         assertThat(userRepository.findAll()).hasSize(1)
