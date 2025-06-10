@@ -60,6 +60,7 @@ class AuthServiceImpl(
         val now = Instant.now()
         val accessToken = tokenProvider.createAccessToken(now, email, deviceId)
         val refreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
+        refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken)
 
         refreshTokenService.removeOldestIfSessionLimitExceeded(email)
 

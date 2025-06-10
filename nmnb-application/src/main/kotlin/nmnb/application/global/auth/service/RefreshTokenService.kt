@@ -7,6 +7,7 @@ import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class RefreshTokenService(
@@ -24,6 +25,30 @@ class RefreshTokenService(
 
         if (storedToken != token) {
             throw AuthException(ErrorStatus.AUTH_INVALID_TOKEN)
+        }
+    }
+
+    fun upsertRefreshToken(email: String, deviceId: String, refreshToken: String) {
+        val tokenId = "$email:$deviceId"
+        val existingToken = refreshTokenRepository.findByIdOrNull(tokenId)
+
+        val now = LocalDateTime.now()
+
+        if (existingToken != null) {
+            val updated = existingToken.copy(
+                refreshToken = refreshToken,
+                timeStamp = now,
+            )
+            refreshTokenRepository.save(updated)
+        } else {
+            val newToken = RefreshToken(
+                id = tokenId,
+                email = email,
+                deviceId = deviceId,
+                refreshToken = refreshToken,
+                timeStamp = now,
+            )
+            refreshTokenRepository.save(newToken)
         }
     }
 
