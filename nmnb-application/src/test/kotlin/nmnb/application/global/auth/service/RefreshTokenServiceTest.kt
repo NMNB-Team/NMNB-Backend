@@ -35,6 +35,8 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         val tokens = listOf(
             RefreshToken.fixture(email, "refreshToken1", now.minusSeconds(50), "device1"),
             RefreshToken.fixture(email, "refreshToken2", now.minusSeconds(40), "device2"),
+            RefreshToken.fixture(email, "refreshToken3", now.minusSeconds(30), "device3"),
+            RefreshToken.fixture(email, "refreshToken4", now.minusSeconds(20), "device4"),
         )
         whenever(refreshTokenRepository.findAll()).thenReturn(tokens)
 
@@ -46,8 +48,8 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
     }
 
     @Test
-    @DisplayName("한 계정에 4개 이상의 RefreshToken이 저장될 때, 가장 오래된 기기의 토큰이 제거된다.")
-    fun removeOldestIfSessionLimitExceededIfMoreThanMaxSessions() {
+    @DisplayName("한 계정에 5개 이상의 RefreshToken이 저장될 때, 4개의 RefreshToken만 남겨두고 삭제된다. ")
+    fun removeOldestTokenIfLimitExceededWhen5TokenSaved() {
         // given
         val email = "email@email.com"
         val now = LocalDateTime.now()
