@@ -37,9 +37,7 @@ class AuthServiceImpl(
             ),
         )
 
-        val now = Instant.now()
-        val refreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
-        val accessToken = tokenProvider.createAccessToken(now, email, deviceId)
+        val (refreshToken, accessToken) = issueNewToken(email, deviceId)
 
         return AuthUserResponse(
             email,
@@ -53,12 +51,18 @@ class AuthServiceImpl(
     override fun refreshToken(refreshToken: String, deviceId: String): AuthTokenResponse {
         val email = refreshTokenService.validateRefreshToken(refreshToken, deviceId)
 
+        val (newRefreshToken, newAccessToken) = issueNewToken(email, deviceId)
+
+        return AuthTokenResponse(newAccessToken, newRefreshToken)
+    }
+
+    private fun issueNewToken(email: String, deviceId: String): Pair<String, String> {
         val now = Instant.now()
-        val newRefreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
-        val newAccessToken = tokenProvider.createAccessToken(now, email, deviceId)
+        val accessToken = tokenProvider.createAccessToken(now, email, deviceId)
+        val refreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
 
         refreshTokenService.removeOldestIfSessionLimitExceeded(email)
 
-        return AuthTokenResponse(newAccessToken, newRefreshToken)
+        return Pair(refreshToken, accessToken)
     }
 }
