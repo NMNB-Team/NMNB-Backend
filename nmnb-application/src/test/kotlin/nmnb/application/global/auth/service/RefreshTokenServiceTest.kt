@@ -41,7 +41,7 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         whenever(refreshTokenRepository.findAll()).thenReturn(tokens)
 
         // when
-        refreshTokenService.removeOldestIfSessionLimitExceeded(email)
+        refreshTokenService.removeOldestTokenIfLimitExceeded(email)
 
         // then
         verify(refreshTokenRepository, never()).deleteById(any())
@@ -63,7 +63,7 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         whenever(refreshTokenRepository.findAll()).thenReturn(tokens)
 
         // when
-        refreshTokenService.removeOldestIfSessionLimitExceeded(email)
+        refreshTokenService.removeOldestTokenIfLimitExceeded(email)
 
         // then
         verify(refreshTokenRepository, times(1)).deleteById("$email:device1")

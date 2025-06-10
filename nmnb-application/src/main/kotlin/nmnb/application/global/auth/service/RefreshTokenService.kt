@@ -52,7 +52,7 @@ class RefreshTokenService(
         }
     }
 
-    fun removeOldestIfSessionLimitExceeded(email: String) {
+    fun removeOldestTokenIfLimitExceeded(email: String) {
         val allTokens = getUserRefreshTokensSortedByTime(email)
 
         if (allTokens.size <= MAX_REFRESH_TOKENS) return

@@ -62,7 +62,7 @@ class AuthServiceImpl(
         val refreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
         refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken)
 
-        refreshTokenService.removeOldestIfSessionLimitExceeded(email)
+        refreshTokenService.removeOldestTokenIfLimitExceeded(email)
 
         return Pair(refreshToken, accessToken)
     }

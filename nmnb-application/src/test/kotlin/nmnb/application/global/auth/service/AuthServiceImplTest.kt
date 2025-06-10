@@ -114,7 +114,7 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         val newAccessToken = "new-access-token"
 
         whenever(refreshTokenService.validateRefreshToken(refreshToken, deviceId)).thenReturn(email)
-        whenever(refreshTokenService.removeOldestIfSessionLimitExceeded(any())).then {}
+        whenever(refreshTokenService.removeOldestTokenIfLimitExceeded(any())).then {}
         whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
         whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
 
