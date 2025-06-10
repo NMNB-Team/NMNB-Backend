@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,7 +64,8 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         refreshTokenService.removeOldestIfSessionLimitExceeded(email)
 
         // then
-        verify(refreshTokenRepository).deleteById("$email:device1")
+        verify(refreshTokenRepository, times(1)).deleteById("$email:device1")
+        verify(refreshTokenRepository, times(1)).deleteById(any())
     }
 
     @Test
