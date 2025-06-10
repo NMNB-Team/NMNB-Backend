@@ -3,15 +3,20 @@ package nmnb.application.global.auth.service
 import nmnb.application.IntegrationTestSupport
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import java.time.LocalDateTime
+import java.util.Optional
 
 class RefreshTokenServiceTest : IntegrationTestSupport() {
     @Autowired
@@ -59,5 +64,64 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
 
         // then
         verify(refreshTokenRepository).deleteById("$email:device1")
+    }
+
+    @Test
+    @DisplayName("저장되어있던 RefreshToken이 있다면 해당 값이 업데이트 된다.")
+    fun upsertRefreshTokenWhenExistRefreshToken() {
+        // given
+        val email = "email@email.com"
+        val deviceId = "device1"
+        val tokenId = "$email:$deviceId"
+        val oldToken = RefreshToken(
+            id = tokenId,
+            email = email,
+            deviceId = deviceId,
+            refreshToken = "oldToken",
+            timeStamp = LocalDateTime.now().minusDays(1),
+        )
+        val newRefreshToken = "newRefreshToken"
+        whenever(refreshTokenRepository.findById(tokenId)).thenReturn(Optional.of(oldToken))
+
+        // when
+        refreshTokenService.upsertRefreshToken(email, deviceId, newRefreshToken)
+
+        // then
+        val captor = argumentCaptor<RefreshToken>()
+        verify(refreshTokenRepository).save(captor.capture())
+
+        val savedToken = captor.firstValue
+        assertEquals(tokenId, savedToken.id)
+        assertEquals(email, savedToken.email)
+        assertEquals(deviceId, savedToken.deviceId)
+        assertEquals(newRefreshToken, savedToken.refreshToken)
+        assertTrue(savedToken.timeStamp.isAfter(oldToken.timeStamp))
+    }
+
+    @Test
+    @DisplayName("저장되어있던 RefreshToken이 없다면 새 토큰이 저장된다.")
+    fun upsertRefreshToken() {
+        // given
+        val email = "email@email.com"
+        val deviceId = "device1"
+        val tokenId = "$email:$deviceId"
+
+        val newRefreshToken = "newRefreshToken"
+
+        whenever(refreshTokenRepository.findById(tokenId)).thenReturn(Optional.empty())
+
+        // when
+        refreshTokenService.upsertRefreshToken(email, deviceId, newRefreshToken)
+
+        // then
+        val captor = argumentCaptor<RefreshToken>()
+        verify(refreshTokenRepository).save(captor.capture())
+
+        val savedToken = captor.firstValue
+        assertEquals(tokenId, savedToken.id)
+        assertEquals(email, savedToken.email)
+        assertEquals(deviceId, savedToken.deviceId)
+        assertEquals(newRefreshToken, savedToken.refreshToken)
+        assertThat(savedToken.timeStamp).isNotNull
     }
 }
