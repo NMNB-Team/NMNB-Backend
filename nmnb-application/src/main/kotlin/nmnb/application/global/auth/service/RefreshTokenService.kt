@@ -28,19 +28,20 @@ class RefreshTokenService(
     }
 
     fun removeOldestIfSessionLimitExceeded(email: String) {
-        val allTokens = getUserRefreshTokens(email)
-        if (allTokens.size >= MAX_REFRESH_TOKENS) {
-            val oldest = findOldestToken(allTokens)
-            if (oldest != null) {
-                refreshTokenRepository.deleteById(oldest.id)
-            }
-        }
+        val allTokens = getUserRefreshTokensSortedByTime(email)
+
+        if (allTokens.size <= MAX_REFRESH_TOKENS) return
+
+        val tokensToRemove = allTokens
+            .take(allTokens.size - MAX_REFRESH_TOKENS)
+
+        tokensToRemove.forEach { refreshTokenRepository.deleteById(it.id) }
     }
 
-    private fun findOldestToken(allTokens: List<RefreshToken>) =
-        allTokens.minByOrNull { it.timeStamp }
-
-    private fun getUserRefreshTokens(email: String) = refreshTokenRepository.findAll().filter { it.email == email }
+    private fun getUserRefreshTokensSortedByTime(email: String) =
+        refreshTokenRepository.findAll().filter { it.email == email }
+            .sortedBy { it.timeStamp }
+            .toMutableList()
 
     companion object {
         const val MAX_REFRESH_TOKENS = 4
