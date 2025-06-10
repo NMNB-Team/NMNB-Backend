@@ -72,8 +72,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // then
         assertThat(userRepository.findAll()).hasSize(1)
         assertThat(result.email).isEqualTo("test@example.com")
-        assertThat(result.accessToken).isNotBlank()
-        assertThat(result.refreshToken).isNotBlank()
+        assertThat(result.accessToken).isNotBlank
+        assertThat(result.refreshToken).isNotBlank
     }
 
     @Test
@@ -98,8 +98,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // then
         assertThat(userRepository.findAll()).hasSize(1)
         assertThat(result.email).isEqualTo("test@example.com")
-        assertThat(result.accessToken).isNotBlank()
-        assertThat(result.refreshToken).isNotBlank()
+        assertThat(result.accessToken).isNotBlank
+        assertThat(result.refreshToken).isNotBlank
         assertThat(result.signUpStatus).isEqualTo(SignUpStatus.IN_PROGRESS)
     }
 
