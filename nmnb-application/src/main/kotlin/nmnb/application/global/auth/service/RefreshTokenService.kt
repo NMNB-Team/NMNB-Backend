@@ -57,9 +57,7 @@ class RefreshTokenService(
 
         if (allTokens.size <= MAX_REFRESH_TOKENS) return
 
-        val tokensToRemove = allTokens
-            .take(allTokens.size - MAX_REFRESH_TOKENS)
-
+        val tokensToRemove = allTokens.dropLast(MAX_REFRESH_TOKENS)
         tokensToRemove.forEach { refreshTokenRepository.deleteById(it.id) }
     }
 
