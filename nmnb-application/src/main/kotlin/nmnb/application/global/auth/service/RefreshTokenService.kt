@@ -30,16 +30,16 @@ class RefreshTokenService(
 
     fun upsertRefreshToken(email: String, deviceId: String, refreshToken: String) {
         val tokenId = "$email:$deviceId"
-        val existingToken = refreshTokenRepository.findByIdOrNull(tokenId)
+        val token = refreshTokenRepository.findByIdOrNull(tokenId)
 
         val now = LocalDateTime.now()
 
-        if (existingToken != null) {
-            existingToken.update(
+        if (token != null) {
+            token.update(
                 refreshToken = refreshToken,
                 timeStamp = now,
             )
-            refreshTokenRepository.save(updated)
+            refreshTokenRepository.save(token)
         } else {
             val newToken = RefreshToken(
                 id = tokenId,
