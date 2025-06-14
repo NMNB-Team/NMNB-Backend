@@ -18,6 +18,7 @@ import nmnb.webflux.global.infrastructure.external.s3.S3Service
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
+import java.io.File
 
 @Component
 class ThumbnailWorker(
@@ -63,24 +64,34 @@ class ThumbnailWorker(
         val fileName = job.fileName
         val accessStrategy = job.accessStrategy
 
-        val downloadDeferred = async { s3Service.download(fileName) }
-        val thumbnailDeferred = async {
-            val localVideoFile = downloadDeferred.await()
-            ffmpegService.createThumbnail(localVideoFile)
-        }
-
-        val localVideoFile = downloadDeferred.await()
-        val thumbnailFile = thumbnailDeferred.await()
+        val thumbnailFile = createThumbnail(fileName)
         val thumbnailUrl = s3Service.uploadThumbnail(fileName, thumbnailFile, accessStrategy)
 
+        updatePostThumbnail(postId, thumbnailUrl)
+
+        thumbnailFile.delete()
+    }
+
+    private suspend fun createThumbnail(fileName: String): File =
+        coroutineScope {
+            val videoDownload = async { s3Service.download(fileName) }
+            val thumbnailGeneration = async {
+                val localVideoFile = videoDownload.await()
+                ffmpegService.createThumbnail(localVideoFile)
+            }
+
+            val thumbnailFile = thumbnailGeneration.await()
+
+            thumbnailFile
+    }
+
+
+    private suspend fun updatePostThumbnail(postId: Long, thumbnailUrl: String) {
         val post = postRepository.findById(postId).awaitSingleOrNull()
         post?.let {
             val updated = it.updateThumbnail(thumbnailUrl)
             postRepository.save(updated).awaitSingle()
         }
-
-        localVideoFile.delete()
-        thumbnailFile.delete()
     }
 
     companion object {
