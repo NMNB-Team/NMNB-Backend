@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class DeviceValidationFilter(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -21,7 +21,7 @@ class DeviceValidationFilter(
         if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
             try {
                 val token = authorizationHeader.substring(7)
-                val deviceIdInToken = jwtTokenProvider.getClaimFromToken(token, DEVICE_ID_HEADER) as? String
+                val deviceIdInToken = jwtProvider.getClaimFromToken(token, DEVICE_ID_HEADER) as? String
                 val deviceIdInRequest = request.getHeader(DEVICE_ID_HEADER)
 
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {

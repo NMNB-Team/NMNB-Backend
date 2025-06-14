@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.test
 
 import nmnb.application.global.auth.test.dto.TestAuthResponse
-import nmnb.application.global.infrastructure.security.JwtTokenProvider
+import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.response.exception.UserException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.user.User
@@ -13,7 +13,7 @@ import java.time.Instant
 @Service
 class TestAuthService(
     private val userRepository: UserRepository,
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
 ) {
 
     @Transactional
@@ -23,7 +23,7 @@ class TestAuthService(
                 .findByEmail(email) ?: throw UserException(ErrorStatus.USER_NOT_FOUND)
 
         val now = Instant.now()
-        val accessToken: String = jwtTokenProvider.createAccessToken(now, user.email, deviceId)
+        val accessToken: String = jwtProvider.createAccessToken(now, user.email, deviceId)
         return TestAuthResponse(accessToken)
     }
 }

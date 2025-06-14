@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class DeviceValidationFilter(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val authorizationHeader = exchange.request.headers.getFirst(AUTHORIZATION_HEADER)
@@ -19,7 +19,7 @@ class DeviceValidationFilter(
         if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
             return try {
                 val token = authorizationHeader.removePrefix(BEARER_PREFIX)
-                val deviceIdInToken = jwtTokenProvider.getClaimFromToken(token, DEVICE_ID_HEADER) as? String
+                val deviceIdInToken = jwtProvider.getClaimFromToken(token, DEVICE_ID_HEADER) as? String
                 val deviceIdInRequest = exchange.request.headers.getFirst(DEVICE_ID_HEADER)
 
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {

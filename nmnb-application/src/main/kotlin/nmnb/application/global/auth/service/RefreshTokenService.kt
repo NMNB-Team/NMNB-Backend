@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.service
 
-import nmnb.application.global.infrastructure.security.JwtTokenProvider
+import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.RefreshToken
@@ -12,10 +12,10 @@ import java.time.LocalDateTime
 @Component
 class RefreshTokenService(
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val tokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
 ) {
     fun validateRefreshToken(refreshToken: String, deviceId: String): String {
-        val email = tokenProvider.getEmailWithValidation(refreshToken)
+        val email = jwtProvider.getEmailWithValidation(refreshToken)
         verifyStoredTokenMatch("$email:$deviceId", refreshToken)
         return email
     }

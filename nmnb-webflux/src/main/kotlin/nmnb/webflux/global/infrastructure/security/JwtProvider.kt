@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 import javax.crypto.SecretKey
 
 @Component
-class JwtTokenProvider(
+class JwtProvider(
     @Value("\${jwt.secret}") private val secret: String,
 ) {
     fun isValidToken(token: String): Boolean {

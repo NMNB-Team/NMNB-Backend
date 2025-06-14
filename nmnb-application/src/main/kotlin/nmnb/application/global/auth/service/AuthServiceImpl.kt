@@ -3,7 +3,7 @@ package nmnb.application.global.auth.service
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.application.global.infrastructure.external.oauth.OAuthClientComposite
-import nmnb.application.global.infrastructure.security.JwtTokenProvider
+import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.properties.S3Properties
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
@@ -16,7 +16,7 @@ import java.time.Instant
 class AuthServiceImpl(
     private val oAuthClientComposite: OAuthClientComposite,
     private val userRepository: UserRepository,
-    private val tokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
     private val s3Properties: S3Properties,
     private val refreshTokenService: RefreshTokenService,
 ) : AuthService {
@@ -58,8 +58,8 @@ class AuthServiceImpl(
 
     private fun issueNewToken(email: String, deviceId: String): Pair<String, String> {
         val now = Instant.now()
-        val accessToken = tokenProvider.createAccessToken(now, email, deviceId)
-        val refreshToken = tokenProvider.createRefreshToken(now, email, deviceId)
+        val accessToken = jwtProvider.createAccessToken(now, email, deviceId)
+        val refreshToken = jwtProvider.createRefreshToken(now, email, deviceId)
         refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken)
 
         refreshTokenService.removeOldestTokenIfLimitExceeded(email)

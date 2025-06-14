@@ -5,7 +5,7 @@ import nmnb.application.global.auth.service.dto.KakaoAccount
 import nmnb.application.global.auth.service.dto.KakaoProfile
 import nmnb.application.global.infrastructure.external.oauth.KakaoOAuthClient
 import nmnb.application.global.infrastructure.external.oauth.OAuthClientComposite
-import nmnb.application.global.infrastructure.security.JwtTokenProvider
+import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
@@ -38,7 +38,7 @@ class AuthServiceImplTest : IntegrationTestSupport() {
     private lateinit var oAuthClientComposite: OAuthClientComposite
 
     @MockBean
-    private lateinit var tokenProvider: JwtTokenProvider
+    private lateinit var jwtProvider: JwtProvider
 
     @AfterEach
     fun tearDown() {
@@ -63,8 +63,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         val kakaoProfile = KakaoProfile(kakaoAccount = KakaoAccount(email = email))
         whenever(oAuthClientComposite.getClient(SocialType.KAKAO)).thenReturn(kakaoOAuthClient)
         whenever(kakaoOAuthClient.requestProfile(accessToken)).thenReturn(kakaoProfile)
-        whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
-        whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
+        whenever(jwtProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(jwtProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
 
         // when
         val result = authService.signInWithSocial(accessToken, SocialType.KAKAO, deviceId)
@@ -89,8 +89,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         val kakaoProfile = KakaoProfile(kakaoAccount = KakaoAccount(email = email))
         whenever(oAuthClientComposite.getClient(SocialType.KAKAO)).thenReturn(kakaoOAuthClient)
         whenever(kakaoOAuthClient.requestProfile(any())).thenReturn(kakaoProfile)
-        whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
-        whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
+        whenever(jwtProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(jwtProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
 
         // when
         val result = authService.signInWithSocial(accessToken, SocialType.KAKAO, deviceId)
@@ -115,8 +115,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
         whenever(refreshTokenService.validateRefreshToken(refreshToken, deviceId)).thenReturn(email)
         whenever(refreshTokenService.removeOldestTokenIfLimitExceeded(any())).then {}
-        whenever(tokenProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
-        whenever(tokenProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
+        whenever(jwtProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(jwtProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
 
         // when
         val result = authService.refreshToken(refreshToken, deviceId)

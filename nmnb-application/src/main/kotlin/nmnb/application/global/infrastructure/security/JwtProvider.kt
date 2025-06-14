@@ -22,7 +22,7 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Component
-class JwtTokenProvider(
+class JwtProvider(
     @Value("\${jwt.secret}") private val secret: String,
     @Value("\${jwt.access-expiration-time}") private val accessExpirationTime: Long,
     @Value("\${jwt.refresh-expiration-time}") private val refreshExpirationTime: Long,
@@ -32,15 +32,15 @@ class JwtTokenProvider(
     private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)) }
 
     fun createAccessToken(now: Instant, email: String, deviceId: String) =
-        generateJwtToken(now, email, accessExpirationTime, deviceId)
+        generateJwt(now, email, accessExpirationTime, deviceId)
 
     fun createRefreshToken(now: Instant, email: String, deviceId: String): String {
-        val refreshToken = generateJwtToken(now, email, refreshExpirationTime)
+        val refreshToken = generateJwt(now, email, refreshExpirationTime)
         saveRefreshToken(email, deviceId, refreshToken, now)
         return refreshToken
     }
 
-    private fun generateJwtToken(now: Instant, email: String, expirationTime: Long, deviceId: String? = null): String {
+    private fun generateJwt(now: Instant, email: String, expirationTime: Long, deviceId: String? = null): String {
         val builder = Jwts.builder()
             .setIssuedAt(Date.from(now))
             .setExpiration(Date.from(Instant.now().plus(expirationTime, ChronoUnit.SECONDS)))

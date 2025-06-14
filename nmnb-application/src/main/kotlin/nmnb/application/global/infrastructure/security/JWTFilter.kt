@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JWTFilter(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
     private val userRepository: UserRepository,
 ) : OncePerRequestFilter() {
 
@@ -30,7 +30,7 @@ class JWTFilter(
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
                 val token = authorizationHeader.substring(7)
-                val email = jwtTokenProvider.getEmailWithValidation(token)
+                val email = jwtProvider.getEmailWithValidation(token)
                 val user = userRepository.findByEmail(email)
                     ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
 
