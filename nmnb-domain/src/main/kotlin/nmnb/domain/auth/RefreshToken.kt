@@ -14,6 +14,10 @@ data class RefreshToken(
     var timeStamp: LocalDateTime,
 
 ) {
+    fun update(refreshToken: String, timeStamp: LocalDateTime) {
+        this.refreshToken = refreshToken
+        this.timeStamp = timeStamp
+    }
 
     companion object {
         fun fixture(
