@@ -35,7 +35,7 @@ class RefreshTokenService(
         val now = LocalDateTime.now()
 
         if (existingToken != null) {
-            val updated = existingToken.copy(
+            existingToken.update(
                 refreshToken = refreshToken,
                 timeStamp = now,
             )
