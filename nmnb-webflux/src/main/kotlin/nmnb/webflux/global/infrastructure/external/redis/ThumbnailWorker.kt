@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -55,16 +57,20 @@ class ThumbnailWorker(
         }
     }
 
-    private suspend fun processPayload(payload: String) {
+    private suspend fun processPayload(payload: String) = coroutineScope {
         val job = objectMapper.readValue(payload, ThumbnailJobPayload::class.java)
         val postId = job.postId
         val fileName = job.fileName
         val accessStrategy = job.accessStrategy
 
-        val localVideoFile = s3Service.download(fileName)
+        val downloadDeferred = async { s3Service.download(fileName) }
+        val thumbnailDeferred = async {
+            val localVideoFile = downloadDeferred.await()
+            ffmpegService.createThumbnail(localVideoFile)
+        }
 
-        val thumbnailFile = ffmpegService.createThumbnail(localVideoFile)
-
+        val localVideoFile = downloadDeferred.await()
+        val thumbnailFile = thumbnailDeferred.await()
         val thumbnailUrl = s3Service.uploadThumbnail(fileName, thumbnailFile, accessStrategy)
 
         val post = postRepository.findById(postId).awaitSingleOrNull()
