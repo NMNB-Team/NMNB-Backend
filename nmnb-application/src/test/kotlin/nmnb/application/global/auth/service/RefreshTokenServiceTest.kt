@@ -84,6 +84,8 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
             refreshToken = "oldToken",
             timeStamp = LocalDateTime.now().minusDays(1),
         )
+        val oldTimeStamp = oldToken.timeStamp
+
         val newRefreshToken = "newRefreshToken"
         whenever(refreshTokenRepository.findById(tokenId)).thenReturn(Optional.of(oldToken))
 
@@ -99,7 +101,7 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         assertEquals(email, savedToken.email)
         assertEquals(deviceId, savedToken.deviceId)
         assertEquals(newRefreshToken, savedToken.refreshToken)
-        assertTrue(savedToken.timeStamp.isAfter(oldToken.timeStamp))
+        assertTrue(savedToken.timeStamp.isAfter(oldTimeStamp))
     }
 
     @Test
