@@ -1,6 +1,8 @@
 package nmnb.application.global.auth.test
 
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import nmnb.application.global.auth.generator.annotation.ExtractDeviceId
 import nmnb.application.global.auth.test.dto.TestAuthResponse
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
@@ -16,7 +18,10 @@ class TestAuthController(
     private val testAuthService: TestAuthService,
 ) {
     @PostMapping("/login")
-    fun login(@RequestParam(value = "email") email: String): BaseResponse<TestAuthResponse> {
-        return BaseResponse.onSuccess(SuccessStatus.NO_CONTENT, testAuthService.login(email))
+    fun login(
+        @RequestParam(value = "email") email: String,
+        @Parameter(hidden = true) @ExtractDeviceId deviceId: String,
+    ): BaseResponse<TestAuthResponse> {
+        return BaseResponse.onSuccess(SuccessStatus.NO_CONTENT, testAuthService.login(email, deviceId))
     }
 }

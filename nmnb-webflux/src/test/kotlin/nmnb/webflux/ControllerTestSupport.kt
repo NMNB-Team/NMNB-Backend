@@ -5,7 +5,7 @@ import nmnb.webflux.domain.post.controller.PostController
 import nmnb.webflux.domain.post.service.PostUploadService
 import nmnb.webflux.global.config.SecurityConfig
 import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
-import nmnb.webflux.global.infrastructure.security.JwtTokenProvider
+import nmnb.webflux.global.infrastructure.security.JwtProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -23,7 +23,7 @@ abstract class ControllerTestSupport {
     protected lateinit var context: ApplicationContext
 
     @MockBean
-    protected lateinit var jwtTokenProvider: JwtTokenProvider
+    protected lateinit var jwtProvider: JwtProvider
 
     @MockBean
     protected lateinit var userRepository: R2dbcUserRepository

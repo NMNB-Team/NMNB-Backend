@@ -1,6 +1,7 @@
 package nmnb.application.global.auth.controller
 
 import nmnb.application.ControllerTestSupport
+import nmnb.application.global.auth.generator.ExtractDeviceIdArgumentResolver
 import nmnb.application.global.auth.generator.ExtractTokenArgumentResolver
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.common.response.status.SuccessStatus
@@ -20,7 +21,10 @@ class AuthControllerTest() : ControllerTestSupport() {
     @BeforeEach
     fun setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(AuthController(authService))
-            .setCustomArgumentResolvers(ExtractTokenArgumentResolver())
+            .setCustomArgumentResolvers(
+                ExtractTokenArgumentResolver(),
+                ExtractDeviceIdArgumentResolver(),
+            )
             .build()
     }
 
@@ -30,17 +34,20 @@ class AuthControllerTest() : ControllerTestSupport() {
     fun refreshToken() {
         // given
         val dummyRefreshToken = "dummy.refresh.token"
+        val dummyDeviceId = "deviceId"
+
         val expectedResponse = AuthTokenResponse(
             accessToken = "new.access.token",
             refreshToken = "new.refresh.token",
         )
 
-        whenever(authService.refreshToken(dummyRefreshToken)).thenReturn(expectedResponse)
+        whenever(authService.refreshToken(dummyRefreshToken, dummyDeviceId)).thenReturn(expectedResponse)
 
         // when & then
         mockMvc.perform(
             get("/v1/api/auth/refresh")
                 .header("Authorization", "Bearer $dummyRefreshToken")
+                .header("Device-Id", dummyDeviceId)
                 .with(csrf()),
         )
             .andExpect(status().isOk)

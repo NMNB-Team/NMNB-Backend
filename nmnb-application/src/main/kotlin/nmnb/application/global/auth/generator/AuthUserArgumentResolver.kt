@@ -1,7 +1,7 @@
 package nmnb.application.global.auth.generator
 
-import nmnb.application.global.auth.exception.AuthException
 import nmnb.application.global.auth.generator.annotation.AuthUser
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
@@ -21,7 +21,7 @@ class AuthUserArgumentResolver(
 ) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return (
-            parameter.getParameterType() == User::class.java &&
+            parameter.parameterType == User::class.java &&
                 parameter.hasParameterAnnotation(AuthUser::class.java)
             )
     }

@@ -10,7 +10,7 @@ import nmnb.application.domain.user.service.UserService
 import nmnb.application.global.auth.generator.AuthUserArgumentResolver
 import nmnb.application.global.auth.service.AuthService
 import nmnb.application.global.config.SecurityConfig
-import nmnb.application.global.infrastructure.security.JwtTokenProvider
+import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -51,5 +51,5 @@ abstract class ControllerTestSupport {
     protected lateinit var userRepository: UserRepository
 
     @MockBean
-    lateinit var jwtTokenProvider: JwtTokenProvider
+    lateinit var jwtProvider: JwtProvider
 }

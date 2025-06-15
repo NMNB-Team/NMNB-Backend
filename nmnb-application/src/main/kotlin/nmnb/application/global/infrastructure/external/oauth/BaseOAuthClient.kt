@@ -2,7 +2,7 @@ package nmnb.application.global.infrastructure.external.oauth
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import nmnb.application.global.auth.exception.AuthException
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity

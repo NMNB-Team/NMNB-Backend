@@ -20,8 +20,8 @@ class SwaggerConfig {
             .version("1.0.0")
 
         val jwtSchemeName = "JWT TOKEN"
-
-        val securityRequirement: SecurityRequirement = SecurityRequirement().addList(jwtSchemeName)
+        val deviceIdSchemeName = "DEVICE ID"
+        val securityRequirement = SecurityRequirement().addList(jwtSchemeName).addList(deviceIdSchemeName)
 
         val components = Components()
             .addSecuritySchemes(
@@ -31,6 +31,13 @@ class SwaggerConfig {
                     .type(SecurityScheme.Type.HTTP)
                     .scheme("bearer")
                     .bearerFormat("JWT"),
+            )
+            .addSecuritySchemes(
+                deviceIdSchemeName,
+                SecurityScheme()
+                    .type(SecurityScheme.Type.APIKEY)
+                    .`in`(SecurityScheme.In.HEADER)
+                    .name("Device-Id"),
             )
 
         return OpenAPI()

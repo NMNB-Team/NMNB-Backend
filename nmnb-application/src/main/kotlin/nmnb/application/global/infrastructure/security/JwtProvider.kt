@@ -8,22 +8,21 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import nmnb.application.global.auth.exception.AuthException
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.security.SignatureException
 import java.sql.Date
-import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Component
-class JwtTokenProvider(
+class JwtProvider(
     @Value("\${jwt.secret}") private val secret: String,
     @Value("\${jwt.access-expiration-time}") private val accessExpirationTime: Long,
     @Value("\${jwt.refresh-expiration-time}") private val refreshExpirationTime: Long,
@@ -32,26 +31,46 @@ class JwtTokenProvider(
 
     private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)) }
 
-    fun createAccessToken(email: String): String {
-        return Jwts.builder()
-            .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
-            .setExpiration(Date.from(Instant.now().plus(accessExpirationTime, ChronoUnit.SECONDS)))
-            .claim("email", email)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact()
+    fun createAccessToken(now: Instant, email: String, deviceId: String) =
+        generateJwt(now, email, accessExpirationTime, deviceId)
+
+    fun createRefreshToken(now: Instant, email: String, deviceId: String): String {
+        val refreshToken = generateJwt(now, email, refreshExpirationTime)
+        saveRefreshToken(email, deviceId, refreshToken, now)
+        return refreshToken
     }
 
-    fun createRefreshToken(email: String): String {
-        val refrehToken = Jwts.builder()
-            .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
-            .setExpiration(Date.from(Instant.now().plus(refreshExpirationTime, ChronoUnit.SECONDS)))
+    private fun generateJwt(now: Instant, email: String, expirationTime: Long, deviceId: String? = null): String {
+        val builder = Jwts.builder()
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(Instant.now().plus(expirationTime, ChronoUnit.SECONDS)))
             .claim("email", email)
-            .signWith(key, SignatureAlgorithm.HS256).compact()
 
-        refreshTokenRepository.findByIdOrNull(email)?.update(refrehToken) ?: refreshTokenRepository.save(
-            RefreshToken(email, refrehToken),
+        deviceId?.let {
+            builder.claim("deviceId", it)
+        }
+
+        return builder.signWith(key, SignatureAlgorithm.HS256).compact()
+    }
+
+    private fun saveRefreshToken(
+        email: String,
+        deviceId: String,
+        refreshToken: String,
+        now: Instant?,
+    ) {
+        val redisKey = "$email:$deviceId"
+        val timeStamp = now?.atZone(ZoneId.systemDefault())?.toLocalDateTime()
+            ?: LocalDateTime.now()
+
+        val token = RefreshToken(
+            id = redisKey,
+            email = email,
+            refreshToken = refreshToken,
+            timeStamp = timeStamp,
+            deviceId = deviceId,
         )
-        return refrehToken
+        refreshTokenRepository.save(token)
     }
 
     fun getEmailWithValidation(token: String): String {
@@ -78,5 +97,10 @@ class JwtTokenProvider(
         } catch (e: IllegalArgumentException) {
             throw AuthException(ErrorStatus.AUTH_EMPTY_TOKEN)
         }
+    }
+
+    fun getClaimFromToken(token: String, claimKey: String): Any? {
+        val claims = parseClaims(token)
+        return claims[claimKey]
     }
 }

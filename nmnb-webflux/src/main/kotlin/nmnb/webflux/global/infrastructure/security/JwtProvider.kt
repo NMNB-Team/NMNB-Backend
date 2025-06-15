@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 import javax.crypto.SecretKey
 
 @Component
-class JwtTokenProvider(
+class JwtProvider(
     @Value("\${jwt.secret}") private val secret: String,
 ) {
     fun isValidToken(token: String): Boolean {
@@ -48,5 +48,14 @@ class JwtTokenProvider(
     private fun getSigningKey(): SecretKey? {
         val keyBytes = Decoders.BASE64.decode(secret)
         return Keys.hmacShaKeyFor(keyBytes)
+    }
+
+    fun getClaimFromToken(token: String, claimKey: String): Any? {
+        val claims = Jwts.parserBuilder()
+            .setSigningKey(token)
+            .build()
+            .parseClaimsJws(token)
+            .body
+        return claims[claimKey]
     }
 }

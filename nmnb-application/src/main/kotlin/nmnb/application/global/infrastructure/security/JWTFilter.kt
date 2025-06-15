@@ -1,11 +1,10 @@
 package nmnb.application.global.infrastructure.security
 
 import jakarta.servlet.FilterChain
-import jakarta.servlet.ServletRequest
-import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import nmnb.application.global.auth.domain.CustomUserDetails
-import nmnb.application.global.auth.exception.AuthException
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.user.repository.UserRepository
@@ -13,24 +12,25 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
-import org.springframework.web.filter.GenericFilterBean
+import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JWTFilter(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
     private val userRepository: UserRepository,
-) : GenericFilterBean() {
+) : OncePerRequestFilter() {
 
-    override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
-        val httpRequest = request as? HttpServletRequest
-            ?: throw IllegalArgumentException("Request is not HttpServletRequest")
-
-        val authorizationHeader = httpRequest.getHeader(AUTHORIZATION_HEADER)
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain,
+    ) {
+        val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER)
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
                 val token = authorizationHeader.substring(7)
-                val email = jwtTokenProvider.getEmailWithValidation(token)
+                val email = jwtProvider.getEmailWithValidation(token)
                 val user = userRepository.findByEmail(email)
                     ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
 
@@ -41,7 +41,7 @@ class JWTFilter(
                     null,
                     userDetails.authorities,
                 ).apply {
-                    details = WebAuthenticationDetailsSource().buildDetails(httpRequest)
+                    details = WebAuthenticationDetailsSource().buildDetails(request)
                 }
 
                 SecurityContextHolder.getContext().authentication = authentication
@@ -50,7 +50,7 @@ class JWTFilter(
             }
         }
 
-        chain?.doFilter(request, response)
+        filterChain.doFilter(request, response)
     }
 
     companion object {

@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.converter
 
-import nmnb.application.global.auth.exception.AuthException
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.SocialType
 import org.springframework.core.convert.converter.Converter

@@ -1,6 +1,6 @@
 package nmnb.application.global.infrastructure.external.oauth
 
-import nmnb.application.global.auth.exception.AuthException
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.SocialType
 import org.springframework.stereotype.Component
