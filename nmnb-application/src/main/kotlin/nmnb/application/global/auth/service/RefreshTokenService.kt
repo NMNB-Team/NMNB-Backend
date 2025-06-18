@@ -8,8 +8,10 @@ import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
+@Transactional(readOnly = true)
 @Service
 class RefreshTokenService(
     private val refreshTokenRepository: RefreshTokenRepository,
@@ -30,6 +32,7 @@ class RefreshTokenService(
         }
     }
 
+    @Transactional
     fun upsertRefreshToken(email: String, deviceId: String, refreshToken: String) {
         val tokenId = "$email:$deviceId"
         val token = refreshTokenRepository.findByIdOrNull(tokenId)
@@ -54,6 +57,7 @@ class RefreshTokenService(
         }
     }
 
+    @Transactional
     fun removeOldestTokenIfLimitExceeded(email: String) {
         val allTokens = getUserRefreshTokensSortedByTime(email)
 
