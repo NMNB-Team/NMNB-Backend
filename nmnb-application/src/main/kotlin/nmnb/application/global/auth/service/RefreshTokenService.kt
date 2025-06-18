@@ -72,6 +72,14 @@ class RefreshTokenService(
             .sortedBy { it.timeStamp }
             .toMutableList()
 
+    @Transactional
+    fun deleteRefreshToken(id: String, refreshToken: String) {
+        jwtProvider.getEmailWithValidation(refreshToken)
+        verifyStoredTokenMatch(id, refreshToken)
+
+        refreshTokenRepository.deleteById(id)
+    }
+
     companion object {
         const val MAX_REFRESH_TOKENS = 4
     }
