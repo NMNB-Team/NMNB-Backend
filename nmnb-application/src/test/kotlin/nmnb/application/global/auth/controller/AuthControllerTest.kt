@@ -2,7 +2,7 @@ package nmnb.application.global.auth.controller
 
 import nmnb.application.ControllerTestSupport
 import nmnb.application.global.auth.generator.ExtractDeviceIdArgumentResolver
-import nmnb.application.global.auth.generator.ExtractTokenArgumentResolver
+import nmnb.application.global.auth.generator.ExtractRefreshTokenArgumentResolver
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.common.response.status.SuccessStatus
 import org.junit.jupiter.api.BeforeEach
@@ -22,7 +22,7 @@ class AuthControllerTest() : ControllerTestSupport() {
     fun setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(AuthController(authService))
             .setCustomArgumentResolvers(
-                ExtractTokenArgumentResolver(),
+                ExtractRefreshTokenArgumentResolver(),
                 ExtractDeviceIdArgumentResolver(),
             )
             .build()
@@ -46,7 +46,7 @@ class AuthControllerTest() : ControllerTestSupport() {
         // when & then
         mockMvc.perform(
             get("/v1/api/auth/refresh")
-                .header("Authorization", "Bearer $dummyRefreshToken")
+                .header("X-Refresh-Token", dummyRefreshToken)
                 .header("Device-Id", dummyDeviceId)
                 .with(csrf()),
         )
