@@ -34,7 +34,7 @@ abstract class BaseOAuthClient(
 
     protected fun requestGet(accessToken: String, url: String): String {
         val headers = defaultHeaders().apply {
-            setBearerAuth(accessToken)
+            set(ACCESS_TOKEN_HEADER, accessToken)
         }
         val request = HttpEntity<MultiValueMap<String, String>>(headers)
         val response = restTemplate.exchange(
@@ -45,5 +45,9 @@ abstract class BaseOAuthClient(
         )
         LoggerFactory.getLogger(javaClass).debug("Raw response from $url: ${response.body}")
         return response.body ?: ""
+    }
+
+    companion object {
+        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }
