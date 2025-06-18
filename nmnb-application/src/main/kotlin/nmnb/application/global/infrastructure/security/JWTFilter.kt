@@ -25,12 +25,10 @@ class JWTFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER)
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        val authorizationHeader = request.getHeader(ACCESS_TOKEN_HEADER)
+        if (authorizationHeader != null) {
             try {
-                val token = authorizationHeader.substring(7)
-                val email = jwtProvider.getEmailWithValidation(token)
+                val email = jwtProvider.getEmailWithValidation(authorizationHeader)
                 val user = userRepository.findByEmail(email)
                     ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
 
@@ -54,6 +52,6 @@ class JWTFilter(
     }
 
     companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
+        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }

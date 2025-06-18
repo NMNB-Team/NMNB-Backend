@@ -18,16 +18,11 @@ class JWTFilter(
     private val userRepository: R2dbcUserRepository,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        val authorizationHeader = exchange.request.headers.getFirst(AUTHORIZATION_HEADER)
+        val authorizationHeader =
+            exchange.request.headers.getFirst(ACCESS_TOKEN_HEADER) ?: return chain.filter(exchange)
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return chain.filter(exchange)
-        }
-
-        val parsedToken = authorizationHeader.substring(7)
-
-        return if (jwtProvider.isValidToken(parsedToken)) {
-            val username = jwtProvider.getEmail(parsedToken)
+        return if (jwtProvider.isValidToken(authorizationHeader)) {
+            val username = jwtProvider.getEmail(authorizationHeader)
 
             return userRepository.findByEmail(username)
                 .switchIfEmpty(Mono.error(GeneralException(ErrorStatus.USER_NOT_FOUND)))
@@ -47,7 +42,8 @@ class JWTFilter(
             Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
         }
     }
+
     companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
+        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }
