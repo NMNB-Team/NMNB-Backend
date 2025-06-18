@@ -103,4 +103,12 @@ class JwtProvider(
         val claims = parseClaims(token)
         return claims[claimKey]
     }
+
+    fun getRemainingTtl(token: String): Long {
+        val claims = parseClaims(token)
+        val expiration = claims.expiration.time
+        val now = System.currentTimeMillis()
+
+        return expiration - now
+    }
 }
