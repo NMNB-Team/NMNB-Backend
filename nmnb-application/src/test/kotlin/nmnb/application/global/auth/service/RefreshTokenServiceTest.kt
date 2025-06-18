@@ -1,6 +1,7 @@
 package nmnb.application.global.auth.service
 
 import nmnb.application.IntegrationTestSupport
+import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -76,7 +77,7 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         // given
         val email = "email@email.com"
         val deviceId = "device1"
-        val tokenId = "$email:$deviceId"
+        val tokenId = DeviceIdUtils.deviceIdFormatter(email, deviceId)
         val oldToken = RefreshToken(
             id = tokenId,
             email = email,
@@ -110,7 +111,7 @@ class RefreshTokenServiceTest : IntegrationTestSupport() {
         // given
         val email = "email@email.com"
         val deviceId = "device1"
-        val tokenId = "$email:$deviceId"
+        val tokenId = DeviceIdUtils.deviceIdFormatter(email, deviceId)
 
         val newRefreshToken = "newRefreshToken"
 

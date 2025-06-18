@@ -1,5 +1,6 @@
 package nmnb.application.global.auth.service
 
+import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
@@ -16,7 +17,8 @@ class RefreshTokenService(
 ) {
     fun validateRefreshToken(refreshToken: String, deviceId: String): String {
         val email = jwtProvider.getEmailWithValidation(refreshToken)
-        verifyStoredTokenMatch("$email:$deviceId", refreshToken)
+        val id = DeviceIdUtils.deviceIdFormatter(email, deviceId)
+        verifyStoredTokenMatch(id, refreshToken)
         return email
     }
 
