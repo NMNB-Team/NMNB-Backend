@@ -25,10 +25,10 @@ class JWTFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val authorizationHeader = request.getHeader(ACCESS_TOKEN_HEADER)
-        if (authorizationHeader != null) {
+        val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
+        if (accessToken != null) {
             try {
-                val email = jwtProvider.getEmailWithValidation(authorizationHeader)
+                val email = jwtProvider.getEmailWithValidation(accessToken)
                 val user = userRepository.findByEmail(email)
                     ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
 

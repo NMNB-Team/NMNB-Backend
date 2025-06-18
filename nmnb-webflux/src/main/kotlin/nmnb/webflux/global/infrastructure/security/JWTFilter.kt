@@ -18,11 +18,11 @@ class JWTFilter(
     private val userRepository: R2dbcUserRepository,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        val authorizationHeader =
+        val accessToken =
             exchange.request.headers.getFirst(ACCESS_TOKEN_HEADER) ?: return chain.filter(exchange)
 
-        return if (jwtProvider.isValidToken(authorizationHeader)) {
-            val username = jwtProvider.getEmail(authorizationHeader)
+        return if (jwtProvider.isValidToken(accessToken)) {
+            val username = jwtProvider.getEmail(accessToken)
 
             return userRepository.findByEmail(username)
                 .switchIfEmpty(Mono.error(GeneralException(ErrorStatus.USER_NOT_FOUND)))
