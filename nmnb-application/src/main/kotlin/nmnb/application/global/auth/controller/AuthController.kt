@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.global.auth.generator.annotation.ExtractDeviceId
-import nmnb.application.global.auth.generator.annotation.ExtractToken
+import nmnb.application.global.auth.generator.annotation.ExtractRefreshToken
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.application.global.auth.service.AuthService
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
@@ -49,7 +49,7 @@ class AuthController(
     @TokenApiResponse
     @GetMapping("/refresh")
     fun refreshToken(
-        @Parameter(hidden = true) @ExtractToken refreshToken: String,
+        @Parameter(hidden = true) @ExtractRefreshToken refreshToken: String,
         @Parameter(hidden = true) @ExtractDeviceId deviceId: String,
     ): BaseResponse<AuthTokenResponse> {
         return BaseResponse.onSuccess(
