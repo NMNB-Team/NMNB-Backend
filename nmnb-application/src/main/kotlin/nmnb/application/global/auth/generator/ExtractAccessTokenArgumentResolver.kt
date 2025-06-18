@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.generator
 
-import nmnb.application.global.auth.generator.annotation.ExtractToken
+import nmnb.application.global.auth.generator.annotation.ExtractAccessToken
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import org.springframework.core.MethodParameter
@@ -11,10 +11,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class ExtractTokenArgumentResolver : HandlerMethodArgumentResolver {
+class ExtractAccessTokenArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.parameterType == String::class.java && parameter.hasParameterAnnotation(
-            ExtractToken::class.java,
+            ExtractAccessToken::class.java,
         )
     }
 
@@ -24,13 +24,11 @@ class ExtractTokenArgumentResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any? {
-        val authorizationHeader = webRequest.getHeader(AUTHORIZATION_HEADER)
-            ?: throw AuthException(ErrorStatus.AUTH_TOKEN_MISSING)
-
-        return authorizationHeader.substring(7)
+        return webRequest.getHeader(ACCESS_TOKEN_HEADER)
+            ?: throw AuthException(ErrorStatus.AUTH_ACCESS_TOKEN_MISSING)
     }
 
     companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
+        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }
