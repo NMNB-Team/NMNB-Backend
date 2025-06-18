@@ -14,12 +14,11 @@ class DeviceValidationFilter(
     private val jwtProvider: JwtProvider,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        val authorizationHeader = exchange.request.headers.getFirst(AUTHORIZATION_HEADER)
+        val accessToken = exchange.request.headers.getFirst(ACCESS_TOKEN_HEADER)
 
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+        if (accessToken != null) {
             return try {
-                val token = authorizationHeader.removePrefix(BEARER_PREFIX)
-                val deviceIdInToken = jwtProvider.getClaimFromToken(token, DEVICE_ID_HEADER) as? String
+                val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_HEADER) as? String
                 val deviceIdInRequest = exchange.request.headers.getFirst(DEVICE_ID_HEADER)
 
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
@@ -36,8 +35,7 @@ class DeviceValidationFilter(
     }
 
     companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
-        const val BEARER_PREFIX = "Bearer "
+        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
         const val DEVICE_ID_HEADER = "Device-Id"
     }
 }

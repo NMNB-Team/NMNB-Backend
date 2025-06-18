@@ -17,11 +17,10 @@ class DeviceValidationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER)
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+        val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
+        if (accessToken != null) {
             try {
-                val token = authorizationHeader.substring(7)
-                val deviceIdInToken = jwtProvider.getClaimFromToken(token, DEVICE_ID_HEADER) as? String
+                val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_HEADER) as? String
                 val deviceIdInRequest = request.getHeader(DEVICE_ID_HEADER)
 
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
@@ -36,8 +35,7 @@ class DeviceValidationFilter(
     }
 
     companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
-        const val BEARER_PREFIX = "Bearer "
+        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
         const val DEVICE_ID_HEADER = "Device-Id"
     }
 }
