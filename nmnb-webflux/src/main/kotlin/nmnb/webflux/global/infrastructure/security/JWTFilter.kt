@@ -1,5 +1,6 @@
 package nmnb.webflux.global.infrastructure.security
 
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.r2dbc.user.R2dbcUserRepository
@@ -16,15 +17,20 @@ import reactor.core.publisher.Mono
 class JWTFilter(
     private val jwtProvider: JwtProvider,
     private val userRepository: R2dbcUserRepository,
+    private val blacklistService: BlacklistService,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val accessToken =
             exchange.request.headers.getFirst(ACCESS_TOKEN_HEADER) ?: return chain.filter(exchange)
+        if (!jwtProvider.isValidToken(accessToken)) return Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
 
-        return if (jwtProvider.isValidToken(accessToken)) {
+        return blacklistService.isBlacklisted(accessToken).flatMap { isBlacklisted ->
+            if (isBlacklisted) {
+                return@flatMap Mono.error(AuthException(ErrorStatus.TOKEN_LOGGED_OUT))
+            }
             val username = jwtProvider.getEmail(accessToken)
 
-            return userRepository.findByEmail(username)
+            return@flatMap userRepository.findByEmail(username)
                 .switchIfEmpty(Mono.error(GeneralException(ErrorStatus.USER_NOT_FOUND)))
                 .flatMap { user ->
                     val userDetails = CustomUserDetails(user)
@@ -38,8 +44,6 @@ class JWTFilter(
                     chain.filter(exchange)
                         .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken))
                 }
-        } else {
-            Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
         }
     }
 
