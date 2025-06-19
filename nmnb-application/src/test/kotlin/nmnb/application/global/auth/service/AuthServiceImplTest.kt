@@ -149,7 +149,7 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         authService.logout(user, deviceId, accessToken, refreshToken)
 
         // then
-        verify(refreshTokenService).deleteRefreshToken(deviceId, refreshToken)
+        verify(refreshTokenService).deleteRefreshToken(id, refreshToken)
         verify(blacklistService).register(accessToken)
     }
 }
