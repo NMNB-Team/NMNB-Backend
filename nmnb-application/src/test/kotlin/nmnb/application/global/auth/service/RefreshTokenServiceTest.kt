@@ -1,6 +1,5 @@
 package nmnb.application.global.auth.service
 
-import nmnb.application.IntegrationTestSupport
 import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
@@ -9,22 +8,27 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 import java.util.Optional
 
-class RefreshTokenServiceTest : IntegrationTestSupport() {
-    @Autowired
+@ActiveProfiles("test")
+@ExtendWith(MockitoExtension::class)
+class RefreshTokenServiceTest {
+    @InjectMocks
     private lateinit var refreshTokenService: RefreshTokenService
 
-    @MockBean
+    @Mock
     private lateinit var refreshTokenRepository: RefreshTokenRepository
 
     @Test
