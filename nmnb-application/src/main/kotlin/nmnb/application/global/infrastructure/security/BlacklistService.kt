@@ -21,6 +21,10 @@ class BlacklistService(
         }
     }
 
+    fun isBlacklisted(accessToken: String): Boolean {
+        return redisTemplate.hasKey(getBlacklistKey(accessToken))
+    }
+
     companion object {
         private const val BLACKLIST_KEY_PREFIX = "blacklist:"
         private const val BLACKLIST_VALUE = "logout"
