@@ -75,9 +75,7 @@ class AuthControllerTest() : ControllerTestSupport() {
         val accessToken = "access.token"
         val user = User.fixture()
 
-        mockAuthentication(user)
-
-        whenever(userRepository.findByEmail(user.email)).thenReturn(user)
+        mockUserAuthentication(user)
         whenever(authService.logout(any(), any(), any(), any())).then { }
 
         // when & then
@@ -92,9 +90,11 @@ class AuthControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
     }
 
-    private fun mockAuthentication(user: User) {
+    private fun mockUserAuthentication(user: User) {
         val userPrincipal = CustomUserDetails(user)
         SecurityContextHolder.getContext().authentication =
             UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.authorities)
+
+        whenever(userRepository.findByEmail(user.email)).thenReturn(user)
     }
 }
