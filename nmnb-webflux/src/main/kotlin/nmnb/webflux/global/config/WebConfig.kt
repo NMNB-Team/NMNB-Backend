@@ -1,6 +1,7 @@
 package nmnb.webflux.global.config
 
 import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
+import nmnb.webflux.global.handler.resolver.ExtractDeviceIdArgumentResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.cors.CorsConfiguration
@@ -13,6 +14,7 @@ import org.springframework.web.reactive.result.method.annotation.ArgumentResolve
 @Configuration
 class WebConfig(
     private val authUserArgumentResolver: AuthUserArgumentResolver,
+    private val extractDeviceIdArgumentResolver: ExtractDeviceIdArgumentResolver,
 ) : WebFluxConfigurer {
 
     @Bean
@@ -34,6 +36,7 @@ class WebConfig(
 
     override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
         configurer.addCustomResolver(authUserArgumentResolver)
+        configurer.addCustomResolver(extractDeviceIdArgumentResolver)
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
