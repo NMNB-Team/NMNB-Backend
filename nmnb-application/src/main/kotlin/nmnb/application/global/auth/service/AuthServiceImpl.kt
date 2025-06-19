@@ -2,7 +2,9 @@ package nmnb.application.global.auth.service
 
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
+import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.application.global.infrastructure.external.oauth.OAuthClientComposite
+import nmnb.application.global.infrastructure.security.BlacklistService
 import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.properties.S3Properties
 import nmnb.domain.auth.SocialType
@@ -19,6 +21,7 @@ class AuthServiceImpl(
     private val jwtProvider: JwtProvider,
     private val s3Properties: S3Properties,
     private val refreshTokenService: RefreshTokenService,
+    private val blacklistService: BlacklistService,
 ) : AuthService {
 
     @Transactional
@@ -65,5 +68,13 @@ class AuthServiceImpl(
         refreshTokenService.removeOldestTokenIfLimitExceeded(email)
 
         return Pair(refreshToken, accessToken)
+    }
+
+    @Transactional
+    override fun logout(user: User, deviceId: String, accessToken: String, refreshToken: String) {
+        val id = DeviceIdUtils.deviceIdFormatter(user, deviceId)
+        refreshTokenService.deleteRefreshToken(id, refreshToken)
+
+        blacklistService.register(accessToken)
     }
 }
