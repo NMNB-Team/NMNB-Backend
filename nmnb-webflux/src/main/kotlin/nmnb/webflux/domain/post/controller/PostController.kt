@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.common.handler.annotation.AuthUser
+import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.r2dbc.user.R2dbcUser
@@ -50,6 +51,7 @@ class PostController(
     """,
         )
         @RequestPart("request") request: String,
+        @Parameter(name = "deviceId", hidden = true) @ExtractDeviceId deviceId: String,
     ): BaseResponse<Any> {
         val postInfo = objectMapper.readValue(request, PostInfoRequest::class.java)
 
