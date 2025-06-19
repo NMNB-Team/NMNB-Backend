@@ -14,5 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
     ApiResponse(responseCode = "AUTH407", description = "토큰에 이메일 정보가 없습니다."),
     ApiResponse(responseCode = "AUTH408", description = "인증되지 않는 기기입니다."),
     ApiResponse(responseCode = "AUTH409", description = "디바이스 기기 정보가 요청에 포함되어 있지 않습니다."),
+    ApiResponse(responseCode = "AUTH410", description = "Refresh Token이 요청에 포함되어 있지 않습니다."),
+    ApiResponse(responseCode = "AUTH411", description = "이미 로그아웃되어 무효화된 토큰입니다."),
 )
 annotation class TokenApiResponse
