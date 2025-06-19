@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JWTFilter(
     private val jwtProvider: JwtProvider,
     private val userRepository: UserRepository,
+    private val blacklistService: BlacklistService,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -28,6 +29,10 @@ class JWTFilter(
         val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
         if (accessToken != null) {
             try {
+                if (blacklistService.isBlacklisted(accessToken)) {
+                    throw AuthException(ErrorStatus.TOKEN_LOGGED_OUT)
+                }
+
                 val email = jwtProvider.getEmailWithValidation(accessToken)
                 val user = userRepository.findByEmail(email)
                     ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
