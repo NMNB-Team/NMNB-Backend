@@ -7,7 +7,6 @@ import nmnb.application.domain.post.controller.PostController
 import nmnb.application.domain.post.service.PostService
 import nmnb.application.domain.user.controller.UserController
 import nmnb.application.domain.user.service.UserService
-import nmnb.application.global.auth.generator.AuthUserArgumentResolver
 import nmnb.application.global.auth.service.AuthService
 import nmnb.application.global.config.SecurityConfig
 import nmnb.application.global.infrastructure.security.BlacklistService
@@ -27,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc
         PostController::class,
     ],
 )
-@Import(SecurityConfig::class, AuthUserArgumentResolver::class)
+@Import(SecurityConfig::class)
 @ContextConfiguration(classes = [TestApplication::class])
 abstract class ControllerTestSupport {
     @Autowired
