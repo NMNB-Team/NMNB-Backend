@@ -1,43 +1,22 @@
 package nmnb.application.global.auth.controller
 
 import nmnb.application.ControllerTestSupport
-import nmnb.application.global.auth.domain.CustomUserDetails
-import nmnb.application.global.auth.generator.AuthUserArgumentResolver
-import nmnb.application.global.auth.generator.ExtractAccessTokenArgumentResolver
-import nmnb.application.global.auth.generator.ExtractDeviceIdArgumentResolver
-import nmnb.application.global.auth.generator.ExtractRefreshTokenArgumentResolver
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.common.response.status.SuccessStatus
+import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import nmnb.domain.user.User
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 class AuthControllerTest() : ControllerTestSupport() {
-
-    @BeforeEach
-    fun setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(AuthController(authService))
-            .setCustomArgumentResolvers(
-                AuthUserArgumentResolver(userRepository),
-                ExtractRefreshTokenArgumentResolver(),
-                ExtractAccessTokenArgumentResolver(),
-                ExtractDeviceIdArgumentResolver(),
-            )
-            .build()
-    }
-
     @DisplayName("정상적으로 토큰을 재발급받는다")
     @WithMockUser
     @Test
@@ -67,6 +46,7 @@ class AuthControllerTest() : ControllerTestSupport() {
     }
 
     @DisplayName("로그아웃에 성공한다.")
+    @WithMockUser
     @Test
     fun logout() {
         // given
@@ -75,7 +55,7 @@ class AuthControllerTest() : ControllerTestSupport() {
         val accessToken = "access.token"
         val user = User.fixture()
 
-        mockUserAuthentication(user)
+        mockUserAuthentication(user, accessToken, deviceId)
         whenever(authService.logout(any(), any(), any(), any())).then { }
 
         // when & then
@@ -90,11 +70,9 @@ class AuthControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
     }
 
-    private fun mockUserAuthentication(user: User) {
-        val userPrincipal = CustomUserDetails(user)
-        SecurityContextHolder.getContext().authentication =
-            UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.authorities)
-
+    private fun mockUserAuthentication(user: User, accessToken: String, deviceId: String) {
+        whenever(jwtProvider.getEmailWithValidation(accessToken)).thenReturn(user.email)
         whenever(userRepository.findByEmail(user.email)).thenReturn(user)
+        whenever(jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_HEADER)).thenReturn(deviceId)
     }
 }
