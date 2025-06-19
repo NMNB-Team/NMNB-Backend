@@ -5,6 +5,7 @@ import nmnb.webflux.domain.post.controller.PostController
 import nmnb.webflux.domain.post.service.PostUploadService
 import nmnb.webflux.global.config.SecurityConfig
 import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
+import nmnb.webflux.global.infrastructure.security.BlacklistService
 import nmnb.webflux.global.infrastructure.security.JwtProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -30,4 +31,7 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var postUploadService: PostUploadService
+
+    @MockBean
+    protected lateinit var blacklistService: BlacklistService
 }
