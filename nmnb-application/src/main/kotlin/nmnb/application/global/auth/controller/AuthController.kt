@@ -5,14 +5,14 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
-import nmnb.application.global.auth.generator.annotation.AuthUser
 import nmnb.application.global.auth.generator.annotation.ExtractAccessToken
-import nmnb.application.global.auth.generator.annotation.ExtractDeviceId
 import nmnb.application.global.auth.generator.annotation.ExtractRefreshToken
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.application.global.auth.service.AuthService
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
+import nmnb.common.handler.annotation.AuthUser
+import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.auth.SocialType

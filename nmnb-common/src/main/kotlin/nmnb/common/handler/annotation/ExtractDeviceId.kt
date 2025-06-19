@@ -1,4 +1,4 @@
-package nmnb.application.global.auth.generator.annotation
+package nmnb.common.handler.annotation
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.VALUE_PARAMETER)

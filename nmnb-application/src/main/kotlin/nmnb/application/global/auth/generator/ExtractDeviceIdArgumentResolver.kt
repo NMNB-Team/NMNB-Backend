@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.generator
 
-import nmnb.application.global.auth.generator.annotation.ExtractDeviceId
+import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import org.springframework.core.MethodParameter

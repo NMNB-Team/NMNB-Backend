@@ -11,8 +11,8 @@ import nmnb.application.domain.user.controller.dto.request.UserPetRegistrationRe
 import nmnb.application.domain.user.service.UserService
 import nmnb.application.domain.user.service.dto.response.UserProfileResponse
 import nmnb.application.domain.user.service.dto.response.UserStatusResponse
-import nmnb.application.global.auth.generator.annotation.AuthUser
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
+import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User
