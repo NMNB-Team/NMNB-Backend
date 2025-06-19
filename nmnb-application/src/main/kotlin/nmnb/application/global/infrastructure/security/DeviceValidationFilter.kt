@@ -26,6 +26,8 @@ class DeviceValidationFilter(
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
                     throw AuthException(ErrorStatus.DEVICE_ID_MISMATCH)
                 }
+            } catch (e: AuthException) {
+                throw e
             } catch (e: Exception) {
                 throw AuthException(ErrorStatus.UNAUTHORIZED)
             }

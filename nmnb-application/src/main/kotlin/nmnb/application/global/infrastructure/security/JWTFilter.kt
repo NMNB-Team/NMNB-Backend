@@ -35,7 +35,7 @@ class JWTFilter(
 
                 val email = jwtProvider.getEmailWithValidation(accessToken)
                 val user = userRepository.findByEmail(email)
-                    ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
+                    ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
 
                 val userDetails = CustomUserDetails(user)
 
@@ -48,6 +48,8 @@ class JWTFilter(
                 }
 
                 SecurityContextHolder.getContext().authentication = authentication
+            } catch (e: AuthException) {
+                throw e
             } catch (e: GeneralException) {
                 throw AuthException(ErrorStatus.UNAUTHORIZED)
             }
