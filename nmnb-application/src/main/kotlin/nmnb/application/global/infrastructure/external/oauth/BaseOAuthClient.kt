@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -45,9 +46,5 @@ abstract class BaseOAuthClient(
         )
         LoggerFactory.getLogger(javaClass).debug("Raw response from $url: ${response.body}")
         return response.body ?: ""
-    }
-
-    companion object {
-        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }

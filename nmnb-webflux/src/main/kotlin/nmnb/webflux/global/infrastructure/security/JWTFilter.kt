@@ -3,6 +3,7 @@ package nmnb.webflux.global.infrastructure.security
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.r2dbc.user.R2dbcUserRepository
 import nmnb.webflux.global.auth.domain.CustomUserDetails
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -45,9 +46,5 @@ class JWTFilter(
                         .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken))
                 }
         }
-    }
-
-    companion object {
-        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }

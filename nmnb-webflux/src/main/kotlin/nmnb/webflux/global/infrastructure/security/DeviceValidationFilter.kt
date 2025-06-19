@@ -3,6 +3,8 @@ package nmnb.webflux.global.infrastructure.security
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
+import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
@@ -32,10 +34,5 @@ class DeviceValidationFilter(
         }
 
         return Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
-    }
-
-    companion object {
-        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
-        const val DEVICE_ID_HEADER = "Device-Id"
     }
 }

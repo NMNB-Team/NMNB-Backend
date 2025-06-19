@@ -2,9 +2,9 @@ package nmnb.webflux.domain.post.controller
 
 import kotlinx.coroutines.runBlocking
 import nmnb.common.response.status.SuccessStatus
+import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.ControllerTestSupport
-import nmnb.webflux.global.infrastructure.security.DeviceValidationFilter
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -63,7 +63,7 @@ class PostControllerTest : ControllerTestSupport() {
     private fun mockUserAuthentication(accessToken: String, user: R2dbcUser, deviceId: String) {
         whenever(jwtProvider.isValidToken(accessToken)).thenReturn(true)
         whenever(jwtProvider.getEmail(accessToken)).thenReturn(user.email)
-        whenever(jwtProvider.getClaimFromToken(accessToken, DeviceValidationFilter.DEVICE_ID_HEADER)).thenReturn(
+        whenever(jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_HEADER)).thenReturn(
             deviceId,
         )
         whenever(blacklistService.isBlacklisted(accessToken)).thenReturn(Mono.just(false))

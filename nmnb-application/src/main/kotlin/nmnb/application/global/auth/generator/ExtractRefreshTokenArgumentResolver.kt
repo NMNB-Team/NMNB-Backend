@@ -3,6 +3,7 @@ package nmnb.application.global.auth.generator
 import nmnb.application.global.auth.generator.annotation.ExtractRefreshToken
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.REFRESH_TOKEN_HEADER
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -26,9 +27,5 @@ class ExtractRefreshTokenArgumentResolver : HandlerMethodArgumentResolver {
     ): Any? {
         return webRequest.getHeader(REFRESH_TOKEN_HEADER)
             ?: throw AuthException(ErrorStatus.AUTH_REFRESH_TOKEN_MISSING)
-    }
-
-    companion object {
-        const val REFRESH_TOKEN_HEADER = "X-Refresh-Token"
     }
 }

@@ -3,6 +3,7 @@ package nmnb.application.global.auth.generator
 import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -26,9 +27,5 @@ class ExtractDeviceIdArgumentResolver : HandlerMethodArgumentResolver {
     ): Any? {
         return webRequest.getHeader(DEVICE_ID_HEADER)
             ?: throw AuthException(ErrorStatus.DEVICE_ID_MISSING)
-    }
-
-    companion object {
-        const val DEVICE_ID_HEADER = "Device-Id"
     }
 }

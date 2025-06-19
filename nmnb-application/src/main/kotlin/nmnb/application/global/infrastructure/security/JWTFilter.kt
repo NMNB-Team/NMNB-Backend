@@ -7,6 +7,7 @@ import nmnb.application.global.auth.domain.CustomUserDetails
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -56,9 +57,5 @@ class JWTFilter(
         }
 
         filterChain.doFilter(request, response)
-    }
-
-    companion object {
-        const val ACCESS_TOKEN_HEADER = "X-Access-Token"
     }
 }
