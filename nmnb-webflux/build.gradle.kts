@@ -36,8 +36,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
     // Redis
-    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation ("org.springframework.session:spring-session-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation("org.springframework.session:spring-session-data-redis")
 
     // test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
