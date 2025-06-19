@@ -3,8 +3,10 @@ package nmnb.application.global.auth.service
 import nmnb.application.IntegrationTestSupport
 import nmnb.application.global.auth.service.dto.KakaoAccount
 import nmnb.application.global.auth.service.dto.KakaoProfile
+import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.application.global.infrastructure.external.oauth.KakaoOAuthClient
 import nmnb.application.global.infrastructure.external.oauth.OAuthClientComposite
+import nmnb.application.global.infrastructure.security.BlacklistService
 import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.auth.SocialType
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -27,6 +30,9 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @MockBean
     private lateinit var refreshTokenService: RefreshTokenService
+
+    @MockBean
+    private lateinit var blacklistService: BlacklistService
 
     @Autowired
     private lateinit var userRepository: UserRepository
@@ -124,5 +130,26 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // then
         assertEquals(newAccessToken, result.accessToken)
         assertEquals(newRefreshToken, result.refreshToken)
+    }
+
+    @Test
+    @DisplayName("로그아웃에 성공한다.")
+    fun logout() {
+        // given
+        val user = User.fixture()
+        val deviceId = "deviceId"
+        val id = DeviceIdUtils.deviceIdFormatter(user, deviceId)
+        val refreshToken = "refresh-token"
+        val accessToken = "access-token"
+
+        whenever(refreshTokenService.deleteRefreshToken(id, deviceId)).then {}
+        whenever(blacklistService.register(any())).then {}
+
+        // when
+        authService.logout(user, deviceId, accessToken, refreshToken)
+
+        // then
+        verify(refreshTokenService).deleteRefreshToken(deviceId, refreshToken)
+        verify(blacklistService).register(accessToken)
     }
 }
