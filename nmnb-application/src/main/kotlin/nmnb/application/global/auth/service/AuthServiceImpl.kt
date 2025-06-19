@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
+@Transactional(readOnly = true)
 @Service
 class AuthServiceImpl(
     private val oAuthClientComposite: OAuthClientComposite,
