@@ -7,6 +7,7 @@ import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
+import nmnb.common.utils.JwtConstants.DEVICE_ID_CLAIM_KEY
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -22,7 +23,7 @@ class DeviceValidationFilter(
         val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
         if (accessToken != null) {
             try {
-                val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_HEADER) as? String
+                val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_CLAIM_KEY) as? String
                 val deviceIdInRequest = request.getHeader(DEVICE_ID_HEADER)
 
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
