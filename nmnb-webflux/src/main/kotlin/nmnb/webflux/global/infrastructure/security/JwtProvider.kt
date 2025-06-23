@@ -10,6 +10,7 @@ import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.JwtConstants.EMAIL_CLAIM_KEY
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import javax.crypto.SecretKey
@@ -38,7 +39,7 @@ class JwtProvider(
     }
 
     fun getEmail(token: String): String {
-        return getClaims(token).body.get("email", String::class.java)
+        return getClaims(token).body.get(EMAIL_CLAIM_KEY, String::class.java)
     }
 
     private fun getClaims(token: String): Jws<Claims> {

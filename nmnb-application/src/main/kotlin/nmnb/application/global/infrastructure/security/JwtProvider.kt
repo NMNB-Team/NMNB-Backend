@@ -10,6 +10,8 @@ import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.JwtConstants.DEVICE_ID_CLAIM_KEY
+import nmnb.common.utils.JwtConstants.EMAIL_CLAIM_KEY
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Value
@@ -44,10 +46,10 @@ class JwtProvider(
         val builder = Jwts.builder()
             .setIssuedAt(Date.from(now))
             .setExpiration(Date.from(Instant.now().plus(expirationTime, ChronoUnit.SECONDS)))
-            .claim("email", email)
+            .claim(EMAIL_CLAIM_KEY, email)
 
         deviceId?.let {
-            builder.claim("deviceId", it)
+            builder.claim(DEVICE_ID_CLAIM_KEY, it)
         }
 
         return builder.signWith(key, SignatureAlgorithm.HS256).compact()
@@ -75,7 +77,7 @@ class JwtProvider(
 
     fun getEmailWithValidation(token: String): String {
         val claims = parseClaims(token)
-        return claims["email"] as? String
+        return claims[EMAIL_CLAIM_KEY] as? String
             ?: throw AuthException(ErrorStatus.AUTH_CLAIM_EMAIL_NOT_FOUND)
     }
 
