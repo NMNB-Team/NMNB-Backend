@@ -44,7 +44,7 @@ class BlacklistServiceTest {
         blacklistService.register(accessToken)
 
         // then
-        verify(valueOperations).set(eq(key), eq("logout"), eq(ttl), eq(TimeUnit.MILLISECONDS))
+        verify(valueOperations).setIfAbsent(eq(key), eq("logout"), eq(ttl), eq(TimeUnit.MILLISECONDS))
     }
 
     @DisplayName("유효하지 않은 TTL이 있는 AccessToken를 저장하려고할때 예외가 발생한다.")
