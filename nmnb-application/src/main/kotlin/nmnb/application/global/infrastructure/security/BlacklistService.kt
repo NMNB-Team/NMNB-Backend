@@ -39,7 +39,7 @@ class BlacklistService(
         private const val BLACKLIST_KEY_PREFIX = "blacklist:"
         private const val BLACKLIST_VALUE = "logout"
 
-        fun getBlacklistKey(accessToken: String): String {
+        private fun getBlacklistKey(accessToken: String): String {
             return "$BLACKLIST_KEY_PREFIX$accessToken"
         }
     }
