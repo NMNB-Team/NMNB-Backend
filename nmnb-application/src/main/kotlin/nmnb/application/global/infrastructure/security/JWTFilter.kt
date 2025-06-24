@@ -7,6 +7,7 @@ import nmnb.application.global.auth.domain.CustomUserDetails
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JWTFilter(
     private val jwtProvider: JwtProvider,
     private val userRepository: UserRepository,
+    private val blacklistService: BlacklistService,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -25,14 +27,16 @@ class JWTFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER)
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
+        if (accessToken != null) {
             try {
-                val token = authorizationHeader.substring(7)
-                val email = jwtProvider.getEmailWithValidation(token)
+                if (blacklistService.isBlacklisted(accessToken)) {
+                    throw AuthException(ErrorStatus.TOKEN_LOGGED_OUT)
+                }
+
+                val email = jwtProvider.getEmailWithValidation(accessToken)
                 val user = userRepository.findByEmail(email)
-                    ?: throw GeneralException(ErrorStatus.USER_NOT_FOUND)
+                    ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
 
                 val userDetails = CustomUserDetails(user)
 
@@ -45,15 +49,13 @@ class JWTFilter(
                 }
 
                 SecurityContextHolder.getContext().authentication = authentication
+            } catch (e: AuthException) {
+                throw e
             } catch (e: GeneralException) {
                 throw AuthException(ErrorStatus.UNAUTHORIZED)
             }
         }
 
         filterChain.doFilter(request, response)
-    }
-
-    companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
     }
 }

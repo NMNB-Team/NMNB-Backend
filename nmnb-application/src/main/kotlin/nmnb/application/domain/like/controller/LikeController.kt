@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.domain.like.controller.dto.request.PostLikeRequest
 import nmnb.application.domain.like.service.LikeService
-import nmnb.application.global.auth.generator.annotation.AuthUser
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
+import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User

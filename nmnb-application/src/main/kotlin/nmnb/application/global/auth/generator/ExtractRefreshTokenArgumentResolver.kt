@@ -1,9 +1,9 @@
 package nmnb.application.global.auth.generator
 
-import nmnb.common.handler.annotation.ExtractDeviceId
+import nmnb.application.global.auth.generator.annotation.ExtractRefreshToken
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
-import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
+import nmnb.common.utils.HeaderConstants.REFRESH_TOKEN_HEADER
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -12,10 +12,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class ExtractDeviceIdArgumentResolver : HandlerMethodArgumentResolver {
+class ExtractRefreshTokenArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.parameterType == String::class.java && parameter.hasParameterAnnotation(
-            ExtractDeviceId::class.java,
+            ExtractRefreshToken::class.java,
         )
     }
 
@@ -25,7 +25,7 @@ class ExtractDeviceIdArgumentResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any? {
-        return webRequest.getHeader(DEVICE_ID_HEADER)
-            ?: throw AuthException(ErrorStatus.DEVICE_ID_MISSING)
+        return webRequest.getHeader(REFRESH_TOKEN_HEADER)
+            ?: throw AuthException(ErrorStatus.AUTH_REFRESH_TOKEN_MISSING)
     }
 }

@@ -1,4 +1,4 @@
-package nmnb.webflux.global.handler.annotation
+package nmnb.common.handler.annotation
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
