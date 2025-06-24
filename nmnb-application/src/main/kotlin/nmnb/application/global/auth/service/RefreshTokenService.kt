@@ -19,7 +19,7 @@ class RefreshTokenService(
 ) {
     fun validateRefreshToken(refreshToken: String, deviceId: String): String {
         val email = jwtProvider.getEmailWithValidation(refreshToken)
-        val id = DeviceIdUtils.deviceIdFormatter(email, deviceId)
+        val id = DeviceIdUtils.formatDeviceId(email, deviceId)
         verifyStoredTokenMatch(id, refreshToken)
         return email
     }

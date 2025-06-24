@@ -85,7 +85,7 @@ class RefreshTokenServiceTest {
         // given
         val email = "email@email.com"
         val deviceId = "device1"
-        val tokenId = DeviceIdUtils.deviceIdFormatter(email, deviceId)
+        val tokenId = DeviceIdUtils.formatDeviceId(email, deviceId)
         val oldToken = RefreshToken(
             id = tokenId,
             email = email,
@@ -119,7 +119,7 @@ class RefreshTokenServiceTest {
         // given
         val email = "email@email.com"
         val deviceId = "device1"
-        val tokenId = DeviceIdUtils.deviceIdFormatter(email, deviceId)
+        val tokenId = DeviceIdUtils.formatDeviceId(email, deviceId)
 
         val newRefreshToken = "newRefreshToken"
 
@@ -147,7 +147,7 @@ class RefreshTokenServiceTest {
         val email = "email@email.com"
         val deviceId = "device1"
         val refreshToken = "refresh-token"
-        val id = DeviceIdUtils.deviceIdFormatter(email, deviceId)
+        val id = DeviceIdUtils.formatDeviceId(email, deviceId)
         val token = RefreshToken.fixture(email, refreshToken, LocalDateTime.now(), deviceId)
 
         whenever(jwtProvider.getEmailWithValidation(any())).thenReturn(email)

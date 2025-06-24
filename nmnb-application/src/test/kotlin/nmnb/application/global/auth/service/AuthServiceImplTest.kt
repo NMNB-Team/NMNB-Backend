@@ -138,7 +138,7 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // given
         val user = User.fixture()
         val deviceId = "deviceId"
-        val id = DeviceIdUtils.deviceIdFormatter(user, deviceId)
+        val id = DeviceIdUtils.formatDeviceId(user, deviceId)
         val refreshToken = "refresh-token"
         val accessToken = "access-token"
 

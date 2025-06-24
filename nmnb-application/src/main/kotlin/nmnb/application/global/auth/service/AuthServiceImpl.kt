@@ -73,7 +73,7 @@ class AuthServiceImpl(
 
     @Transactional
     override fun logout(user: User, deviceId: String, accessToken: String, refreshToken: String) {
-        val id = DeviceIdUtils.deviceIdFormatter(user, deviceId)
+        val id = DeviceIdUtils.formatDeviceId(user, deviceId)
         refreshTokenService.deleteRefreshToken(id, refreshToken)
 
         blacklistService.register(accessToken)
