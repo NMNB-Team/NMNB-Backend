@@ -6,13 +6,14 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import nmnb.common.handler.annotation.AuthUser
+import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.webflux.domain.post.controller.dto.request.PostInfoRequest
 import nmnb.webflux.domain.post.service.PostUploadService
 import nmnb.webflux.global.auth.generator.annotation.TokenApiResponse
-import nmnb.webflux.global.handler.annotation.AuthUser
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.web.bind.annotation.PostMapping
@@ -50,6 +51,7 @@ class PostController(
     """,
         )
         @RequestPart("request") request: String,
+        @Parameter(name = "deviceId", hidden = true) @ExtractDeviceId deviceId: String,
     ): BaseResponse<Any> {
         val postInfo = objectMapper.readValue(request, PostInfoRequest::class.java)
 

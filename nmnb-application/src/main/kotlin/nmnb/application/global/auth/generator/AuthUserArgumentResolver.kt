@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.generator
 
-import nmnb.application.global.auth.generator.annotation.AuthUser
+import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.user.User
@@ -34,8 +34,7 @@ class AuthUserArgumentResolver(
     ): Any? {
         val authentication = SecurityContextHolder.getContext().authentication
         val userEmail = getUserEmail(authentication)
-        val user = userRepository.findByEmail(userEmail) ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
-        return user
+        return userRepository.findByEmail(userEmail) ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
     }
 
     companion object {

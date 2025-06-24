@@ -2,8 +2,8 @@ package nmnb.application.global.auth.test
 
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
-import nmnb.application.global.auth.generator.annotation.ExtractDeviceId
 import nmnb.application.global.auth.test.dto.TestAuthResponse
+import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import org.springframework.web.bind.annotation.PostMapping

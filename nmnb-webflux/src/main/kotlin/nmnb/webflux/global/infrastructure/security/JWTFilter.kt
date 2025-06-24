@@ -1,7 +1,9 @@
 package nmnb.webflux.global.infrastructure.security
 
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.r2dbc.user.R2dbcUserRepository
 import nmnb.webflux.global.auth.domain.CustomUserDetails
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -16,20 +18,20 @@ import reactor.core.publisher.Mono
 class JWTFilter(
     private val jwtProvider: JwtProvider,
     private val userRepository: R2dbcUserRepository,
+    private val blacklistService: BlacklistService,
 ) : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        val authorizationHeader = exchange.request.headers.getFirst(AUTHORIZATION_HEADER)
+        val accessToken =
+            exchange.request.headers.getFirst(ACCESS_TOKEN_HEADER) ?: return chain.filter(exchange)
+        if (!jwtProvider.isValidToken(accessToken)) return Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return chain.filter(exchange)
-        }
+        return blacklistService.isBlacklisted(accessToken).flatMap { isBlacklisted ->
+            if (isBlacklisted) {
+                return@flatMap Mono.error(AuthException(ErrorStatus.TOKEN_LOGGED_OUT))
+            }
+            val username = jwtProvider.getEmail(accessToken)
 
-        val parsedToken = authorizationHeader.substring(7)
-
-        return if (jwtProvider.isValidToken(parsedToken)) {
-            val username = jwtProvider.getEmail(parsedToken)
-
-            return userRepository.findByEmail(username)
+            return@flatMap userRepository.findByEmail(username)
                 .switchIfEmpty(Mono.error(GeneralException(ErrorStatus.USER_NOT_FOUND)))
                 .flatMap { user ->
                     val userDetails = CustomUserDetails(user)
@@ -43,11 +45,6 @@ class JWTFilter(
                     chain.filter(exchange)
                         .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken))
                 }
-        } else {
-            Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
         }
-    }
-    companion object {
-        const val AUTHORIZATION_HEADER = "Authorization"
     }
 }

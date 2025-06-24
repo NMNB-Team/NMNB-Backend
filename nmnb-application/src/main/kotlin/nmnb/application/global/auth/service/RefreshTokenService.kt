@@ -1,22 +1,26 @@
 package nmnb.application.global.auth.service
 
+import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
-@Component
+@Transactional(readOnly = true)
+@Service
 class RefreshTokenService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtProvider: JwtProvider,
 ) {
     fun validateRefreshToken(refreshToken: String, deviceId: String): String {
         val email = jwtProvider.getEmailWithValidation(refreshToken)
-        verifyStoredTokenMatch("$email:$deviceId", refreshToken)
+        val id = DeviceIdUtils.formatDeviceId(email, deviceId)
+        verifyStoredTokenMatch(id, refreshToken)
         return email
     }
 
@@ -28,6 +32,7 @@ class RefreshTokenService(
         }
     }
 
+    @Transactional
     fun upsertRefreshToken(email: String, deviceId: String, refreshToken: String) {
         val tokenId = "$email:$deviceId"
         val token = refreshTokenRepository.findByIdOrNull(tokenId)
@@ -52,6 +57,7 @@ class RefreshTokenService(
         }
     }
 
+    @Transactional
     fun removeOldestTokenIfLimitExceeded(email: String) {
         val allTokens = getUserRefreshTokensSortedByTime(email)
 
@@ -65,6 +71,14 @@ class RefreshTokenService(
         refreshTokenRepository.findAll().filter { it.email == email }
             .sortedBy { it.timeStamp }
             .toMutableList()
+
+    @Transactional
+    fun deleteRefreshToken(id: String, refreshToken: String) {
+        jwtProvider.getEmailWithValidation(refreshToken)
+        verifyStoredTokenMatch(id, refreshToken)
+
+        refreshTokenRepository.deleteById(id)
+    }
 
     companion object {
         const val MAX_REFRESH_TOKENS = 4

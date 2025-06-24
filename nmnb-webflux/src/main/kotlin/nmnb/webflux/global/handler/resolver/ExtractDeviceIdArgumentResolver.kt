@@ -1,4 +1,4 @@
-package nmnb.application.global.auth.generator
+package nmnb.webflux.global.handler.resolver
 
 import nmnb.common.handler.annotation.ExtractDeviceId
 import nmnb.common.response.exception.AuthException
@@ -6,10 +6,10 @@ import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.support.WebDataBinderFactory
-import org.springframework.web.context.request.NativeWebRequest
-import org.springframework.web.method.support.HandlerMethodArgumentResolver
-import org.springframework.web.method.support.ModelAndViewContainer
+import org.springframework.web.reactive.BindingContext
+import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver
+import org.springframework.web.server.ServerWebExchange
+import reactor.core.publisher.Mono
 
 @Component
 class ExtractDeviceIdArgumentResolver : HandlerMethodArgumentResolver {
@@ -21,11 +21,14 @@ class ExtractDeviceIdArgumentResolver : HandlerMethodArgumentResolver {
 
     override fun resolveArgument(
         parameter: MethodParameter,
-        mavContainer: ModelAndViewContainer?,
-        webRequest: NativeWebRequest,
-        binderFactory: WebDataBinderFactory?,
-    ): Any? {
-        return webRequest.getHeader(DEVICE_ID_HEADER)
-            ?: throw AuthException(ErrorStatus.DEVICE_ID_MISSING)
+        bindingContext: BindingContext,
+        exchange: ServerWebExchange,
+    ): Mono<Any> {
+        val deviceId = exchange.request.headers.getFirst(DEVICE_ID_HEADER)
+        return if (deviceId != null) {
+            Mono.just(deviceId)
+        } else {
+            Mono.error(AuthException(ErrorStatus.DEVICE_ID_MISSING))
+        }
     }
 }

@@ -22,11 +22,13 @@ class SecurityConfig(
         "/swagger-ui/**",
         "/v3/api-docs/**",
         "/api/login",
-        "/v1/api/auth/**",
+        "/v1/api/auth/login",
     )
     private val userUrl = arrayOf(
         "/v1/api/users/pet",
         "/v1/api/users/profile",
+        "/v1/api/auth/refresh",
+        "/v1/api/auth/logout",
     )
 
     @Bean
