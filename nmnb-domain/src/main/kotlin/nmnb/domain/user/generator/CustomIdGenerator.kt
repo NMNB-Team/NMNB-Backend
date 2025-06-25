@@ -14,6 +14,6 @@ class CustomIdGenerator : IdentifierGenerator {
 
     companion object {
         private const val ID_LENGTH: Int = 16
-        private const val CUSTOM_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#\$%^&*"
+        private const val CUSTOM_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@"
     }
 }
