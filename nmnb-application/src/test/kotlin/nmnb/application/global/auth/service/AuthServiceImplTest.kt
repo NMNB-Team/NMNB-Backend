@@ -20,8 +20,14 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
+import java.util.*
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import kotlin.test.assertTrue
 
 class AuthServiceImplTest : IntegrationTestSupport() {
 
@@ -45,6 +51,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @MockBean
     private lateinit var jwtProvider: JwtProvider
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @AfterEach
     fun tearDown() {
@@ -151,5 +159,52 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // then
         verify(refreshTokenService).deleteRefreshToken(id, refreshToken)
         verify(blacklistService).register(accessToken)
+    }
+
+    @Test
+    @DisplayName("동시에 여러 요청이 들어와도 user는 1명만 생성되어야 한다")
+    fun signInWithKakaoForConcurrencyTest() {
+        // given
+        val accessCode = "mock-code"
+        val type = SocialType.KAKAO
+        val deviceId = "deviceId"
+        val email = "test@example.com"
+        val newRefreshToken = "new-refresh-token"
+        val newAccessToken = "new-access-token"
+
+        val kakaoProfile = KakaoProfile(kakaoAccount = KakaoAccount(email = email))
+
+        val threadCount = 10
+        val latch = CountDownLatch(threadCount)
+        val executor = Executors.newFixedThreadPool(threadCount)
+
+        // when
+        whenever(oAuthClientComposite.getClient(SocialType.KAKAO)).thenReturn(kakaoOAuthClient)
+        whenever(kakaoOAuthClient.requestProfile(any())).thenReturn(kakaoProfile)
+        whenever(jwtProvider.createRefreshToken(any(), any(), any())).thenReturn(newRefreshToken)
+        whenever(jwtProvider.createAccessToken(any(), any(), any())).thenReturn(newAccessToken)
+
+        val futures = mutableListOf<Future<*>>()
+
+        repeat(threadCount) {
+            val future = executor.submit {
+                try {
+                    authService.signInWithSocial(accessCode, type, deviceId)
+                    logger.info("요청 성공")
+                } finally {
+                    latch.countDown()
+                }
+            }
+            futures.add(future)
+        }
+
+        latch.await()
+
+        // 모든 Future 결과를 검사해서 예외 발생 여부 확인
+        futures.forEach { future ->
+            future.get() // 예외 발생 시 여기서 던져져 테스트 실패함
+        }
+
+        logger.info("모든 쓰레드 작업 완료")
     }
 }
