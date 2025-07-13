@@ -5,6 +5,7 @@ import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
+import nmnb.webflux.global.utils.SecurityConstants
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
@@ -15,7 +16,16 @@ import reactor.core.publisher.Mono
 class DeviceValidationFilter(
     private val jwtProvider: JwtProvider,
 ) : WebFilter {
+
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+        val path = exchange.request.path.value()
+        if (SecurityConstants.SWAGGER_PATHS.any { swaggerPath ->
+                path == swaggerPath || path.startsWith("$swaggerPath/")
+            }
+        ) {
+            return chain.filter(exchange)
+        }
+
         val accessToken = exchange.request.headers.getFirst(ACCESS_TOKEN_HEADER)
 
         if (accessToken != null) {

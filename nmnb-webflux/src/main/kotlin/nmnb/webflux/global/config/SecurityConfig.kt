@@ -2,6 +2,7 @@ package nmnb.webflux.global.config
 
 import nmnb.webflux.global.infrastructure.security.DeviceValidationFilter
 import nmnb.webflux.global.infrastructure.security.JWTFilter
+import nmnb.webflux.global.utils.SecurityConstants
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
@@ -17,14 +18,6 @@ class SecurityConfig(
     private val jwtFilter: JWTFilter,
     private val deviceValidationFilter: DeviceValidationFilter,
 ) {
-
-    private val allowedUrl = arrayOf(
-        "/netty/health",
-        "/netty/webjars/swagger-ui/**",
-        "/netty/swagger-ui.html/**",
-        "/netty/v3/api-docs/**",
-    )
-
     private val userUrl = arrayOf(
         "/netty/v1/api/upload",
     )
@@ -40,7 +33,7 @@ class SecurityConfig(
             .securityContextRepository(WebSessionServerSecurityContextRepository())
 
         http.authorizeExchange {
-            it.pathMatchers(*allowedUrl).permitAll()
+            it.pathMatchers(*SecurityConstants.SWAGGER_PATHS.map { path -> "$path/**" }.toTypedArray()).permitAll()
                 .pathMatchers(*userUrl)
                 .hasRole("USER")
                 .anyExchange().authenticated()
