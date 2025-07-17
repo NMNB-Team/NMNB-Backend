@@ -22,7 +22,7 @@ class SecurityConfig(
         "/swagger-ui/**",
         "/v3/api-docs/**",
         "/api/login",
-        "/v1/api/auth/login",
+        "/v1/api/auth/login/**",
         "/v1/api/videos",
     )
     private val userUrl = arrayOf(
