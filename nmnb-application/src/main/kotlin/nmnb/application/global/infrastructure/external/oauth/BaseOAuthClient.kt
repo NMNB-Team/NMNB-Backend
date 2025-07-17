@@ -35,7 +35,7 @@ abstract class BaseOAuthClient(
         val headers = defaultHeaders().apply {
             setBearerAuth(accessToken)
         }
-        val request = HttpEntity<MultiValueMap<String, String>>(headers)
+        val request = HttpEntity<Any>(headers)
         val response = restTemplate.exchange(
             url,
             HttpMethod.GET,
