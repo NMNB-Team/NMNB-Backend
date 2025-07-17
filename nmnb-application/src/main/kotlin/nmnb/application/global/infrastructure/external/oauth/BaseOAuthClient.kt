@@ -4,13 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
-import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 
 abstract class BaseOAuthClient(
@@ -35,7 +33,7 @@ abstract class BaseOAuthClient(
 
     protected fun requestGet(accessToken: String, url: String): String {
         val headers = defaultHeaders().apply {
-            set(ACCESS_TOKEN_HEADER, accessToken)
+            setBearerAuth(accessToken)
         }
         val request = HttpEntity<MultiValueMap<String, String>>(headers)
         val response = restTemplate.exchange(
