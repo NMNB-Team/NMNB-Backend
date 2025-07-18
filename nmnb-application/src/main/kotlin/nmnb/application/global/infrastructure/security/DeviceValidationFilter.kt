@@ -7,7 +7,7 @@ import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import nmnb.common.utils.JwtConstants.DEVICE_ID_CLAIM_KEY
-import nmnb.common.utils.ResponseUtils
+import nmnb.application.global.common.utils.ResponseUtils
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 

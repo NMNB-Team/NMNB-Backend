@@ -8,7 +8,7 @@ import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
-import nmnb.common.utils.ResponseUtils
+import nmnb.application.global.common.utils.ResponseUtils
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder

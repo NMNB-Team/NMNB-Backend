@@ -1,4 +1,4 @@
-package nmnb.common.utils
+package nmnb.application.global.common.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletResponse
