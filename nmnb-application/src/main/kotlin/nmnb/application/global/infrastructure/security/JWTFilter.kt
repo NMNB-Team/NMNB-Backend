@@ -31,37 +31,34 @@ class JWTFilter(
     ) {
         val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
 
-        if (accessToken == null) {
-            responseUtils.sendErrorResponse(response, ErrorStatus.AUTH_ACCESS_TOKEN_MISSING.getReasonHttpStatus())
-            return
-        }
+        if (accessToken != null) {
+            try {
+                if (blacklistService.isBlacklisted(accessToken)) {
+                    throw AuthException(ErrorStatus.TOKEN_LOGGED_OUT)
+                }
 
-        try {
-            if (blacklistService.isBlacklisted(accessToken)) {
-                throw AuthException(ErrorStatus.TOKEN_LOGGED_OUT)
+                val email = jwtProvider.getEmailWithValidation(accessToken)
+                val user = userRepository.findByEmail(email)
+                    ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
+
+                val userDetails = CustomUserDetails(user)
+
+                val authentication = UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.authorities,
+                ).apply {
+                    details = WebAuthenticationDetailsSource().buildDetails(request)
+                }
+
+                SecurityContextHolder.getContext().authentication = authentication
+            } catch (e: GeneralException) {
+                responseUtils.sendErrorResponse(response, e.getErrorReasonHttpStatus())
+                return
+            } catch (e: Exception) {
+                responseUtils.sendErrorResponse(response, ErrorStatus.UNAUTHORIZED.getReasonHttpStatus())
+                return
             }
-
-            val email = jwtProvider.getEmailWithValidation(accessToken)
-            val user = userRepository.findByEmail(email)
-                ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
-
-            val userDetails = CustomUserDetails(user)
-
-            val authentication = UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.authorities,
-            ).apply {
-                details = WebAuthenticationDetailsSource().buildDetails(request)
-            }
-
-            SecurityContextHolder.getContext().authentication = authentication
-        } catch (e: GeneralException) {
-            responseUtils.sendErrorResponse(response, e.getErrorReasonHttpStatus())
-            return
-        } catch (e: Exception) {
-            responseUtils.sendErrorResponse(response, ErrorStatus.UNAUTHORIZED.getReasonHttpStatus())
-            return
         }
 
         filterChain.doFilter(request, response)
