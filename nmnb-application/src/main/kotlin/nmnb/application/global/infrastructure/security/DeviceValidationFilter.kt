@@ -28,11 +28,13 @@ class DeviceValidationFilter(
                 val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_CLAIM_KEY) as? String
                 val deviceIdInRequest = request.getHeader(DEVICE_ID_HEADER)
 
-                if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
+                if (deviceIdInRequest == null) {
+                    throw AuthException(ErrorStatus.DEVICE_ID_MISSING)
+                } else if (deviceIdInToken == null || deviceIdInToken != deviceIdInRequest) {
                     throw AuthException(ErrorStatus.DEVICE_ID_MISMATCH)
                 }
             } catch (e: AuthException) {
-                responseUtils.sendErrorResponse(response, ErrorStatus.DEVICE_ID_MISMATCH.getReasonHttpStatus())
+                responseUtils.sendErrorResponse(response, e.getErrorReasonHttpStatus())
                 return
             } catch (e: Exception) {
                 responseUtils.sendErrorResponse(response, ErrorStatus.UNAUTHORIZED.getReasonHttpStatus())
