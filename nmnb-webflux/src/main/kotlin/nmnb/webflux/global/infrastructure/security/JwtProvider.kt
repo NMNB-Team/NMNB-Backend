@@ -19,6 +19,8 @@ import javax.crypto.SecretKey
 class JwtProvider(
     @Value("\${jwt.secret}") private val secret: String,
 ) {
+    private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)) }
+
     fun isValidToken(token: String): Boolean {
         return try {
             val claims = getClaims(token)
@@ -53,7 +55,7 @@ class JwtProvider(
 
     fun getClaimFromToken(token: String, claimKey: String): Any? {
         val claims = Jwts.parserBuilder()
-            .setSigningKey(token)
+            .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .body
