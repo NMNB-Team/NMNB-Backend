@@ -48,6 +48,7 @@ class UserController(
         ApiResponse(responseCode = "PET402", description = "반려동물 상태 값이 유효하지 않습니다."),
         ApiResponse(responseCode = "USER500", description = "프로필 이미지 업로드 중 오류가 발생했습니다."),
     )
+    @TokenApiResponse
     @PostMapping("/profile", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun editProfile(
         @Parameter(name = "user", hidden = true) @AuthUser user: User,
@@ -93,6 +94,7 @@ class UserController(
         description = "가입하는 유저가 반려견을 보유하지 않았음을 설정합니다. petOwnershipStatus가 NO_PET으로 설정됩니다._예림",
     )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
+    @TokenApiResponse
     @PatchMapping("/pet/none")
     fun registerWithoutPet(
         @Parameter(
