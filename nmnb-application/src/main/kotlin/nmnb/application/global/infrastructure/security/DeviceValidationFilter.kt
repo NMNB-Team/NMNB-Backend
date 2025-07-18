@@ -1,8 +1,10 @@
 package nmnb.application.global.infrastructure.security
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
@@ -14,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class DeviceValidationFilter(
     private val jwtProvider: JwtProvider,
+    private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -27,15 +30,28 @@ class DeviceValidationFilter(
                 val deviceIdInRequest = request.getHeader(DEVICE_ID_HEADER)
 
                 if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
-                    throw AuthException(ErrorStatus.DEVICE_ID_MISMATCH)
+                    sendErrorResponse(response, ErrorStatus.DEVICE_ID_MISMATCH)
+                    return
                 }
-            } catch (e: AuthException) {
-                throw e
             } catch (e: Exception) {
-                throw AuthException(ErrorStatus.UNAUTHORIZED)
+                sendErrorResponse(response, ErrorStatus.UNAUTHORIZED)
+                return
             }
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    private fun sendErrorResponse(response: HttpServletResponse, errorStatus: ErrorStatus) {
+        response.status = errorStatus.httpStatus!!.value()
+        response.contentType = "application/json;charset=UTF-8"
+
+        val errorBody = BaseResponse.onFailure(
+            errorStatus.code,
+            errorStatus.message,
+            null
+        )
+
+        response.writer.write(objectMapper.writeValueAsString(errorBody))
     }
 }
