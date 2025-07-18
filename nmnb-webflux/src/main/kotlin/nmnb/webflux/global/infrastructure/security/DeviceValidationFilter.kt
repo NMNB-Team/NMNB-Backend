@@ -6,6 +6,7 @@ import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
 import nmnb.common.utils.HeaderConstants.DEVICE_ID_HEADER
 import nmnb.common.utils.JwtConstants.DEVICE_ID_CLAIM_KEY
+import nmnb.webflux.global.utils.ResponseUtils
 import nmnb.webflux.global.utils.SecurityConstants
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono
 @Component
 class DeviceValidationFilter(
     private val jwtProvider: JwtProvider,
+    private val responseUtils: ResponseUtils,
 ) : WebFilter {
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
@@ -34,13 +36,29 @@ class DeviceValidationFilter(
                 val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_CLAIM_KEY) as? String
                 val deviceIdInRequest = exchange.request.headers.getFirst(DEVICE_ID_HEADER)
 
-                if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
-                    Mono.error(AuthException(ErrorStatus.DEVICE_ID_MISMATCH))
-                } else {
-                    chain.filter(exchange)
+                val validationMono = when {
+                    deviceIdInRequest == null ->
+                        Mono.error(AuthException(ErrorStatus.DEVICE_ID_MISSING))
+                    deviceIdInToken == null || deviceIdInToken != deviceIdInRequest ->
+                        Mono.error(AuthException(ErrorStatus.DEVICE_ID_MISMATCH))
+                    else ->
+                        chain.filter(exchange)
                 }
+
+                validationMono
             } catch (e: Exception) {
                 Mono.error(AuthException(ErrorStatus.UNAUTHORIZED))
+            }.onErrorResume { throwable ->
+                when (throwable) {
+                    is GeneralException -> responseUtils.sendErrorResponse(
+                        exchange,
+                        throwable.getErrorReasonHttpStatus(),
+                    )
+                    else -> responseUtils.sendErrorResponse(
+                        exchange,
+                        ErrorStatus.UNAUTHORIZED.getReasonHttpStatus(),
+                    )
+                }
             }
         }
 
