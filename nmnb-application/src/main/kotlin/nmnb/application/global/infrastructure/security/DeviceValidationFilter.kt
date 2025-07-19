@@ -3,6 +3,7 @@ package nmnb.application.global.infrastructure.security
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import nmnb.application.global.common.utils.ResponseUtils
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.common.utils.HeaderConstants.ACCESS_TOKEN_HEADER
@@ -14,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class DeviceValidationFilter(
     private val jwtProvider: JwtProvider,
+    private val responseUtils: ResponseUtils,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -26,13 +28,17 @@ class DeviceValidationFilter(
                 val deviceIdInToken = jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_CLAIM_KEY) as? String
                 val deviceIdInRequest = request.getHeader(DEVICE_ID_HEADER)
 
-                if (deviceIdInToken == null || deviceIdInRequest == null || deviceIdInToken != deviceIdInRequest) {
+                if (deviceIdInRequest == null) {
+                    throw AuthException(ErrorStatus.DEVICE_ID_MISSING)
+                } else if (deviceIdInToken == null || deviceIdInToken != deviceIdInRequest) {
                     throw AuthException(ErrorStatus.DEVICE_ID_MISMATCH)
                 }
             } catch (e: AuthException) {
-                throw e
+                responseUtils.sendErrorResponse(response, e.getErrorReasonHttpStatus())
+                return
             } catch (e: Exception) {
-                throw AuthException(ErrorStatus.UNAUTHORIZED)
+                responseUtils.sendErrorResponse(response, ErrorStatus.UNAUTHORIZED.getReasonHttpStatus())
+                return
             }
         }
 

@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import nmnb.application.global.auth.domain.CustomUserDetails
+import nmnb.application.global.common.utils.ResponseUtils
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.exception.GeneralException
 import nmnb.common.response.status.ErrorStatus
@@ -20,6 +21,7 @@ class JWTFilter(
     private val jwtProvider: JwtProvider,
     private val userRepository: UserRepository,
     private val blacklistService: BlacklistService,
+    private val responseUtils: ResponseUtils,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -28,6 +30,7 @@ class JWTFilter(
         filterChain: FilterChain,
     ) {
         val accessToken = request.getHeader(ACCESS_TOKEN_HEADER)
+
         if (accessToken != null) {
             try {
                 if (blacklistService.isBlacklisted(accessToken)) {
@@ -49,10 +52,12 @@ class JWTFilter(
                 }
 
                 SecurityContextHolder.getContext().authentication = authentication
-            } catch (e: AuthException) {
-                throw e
             } catch (e: GeneralException) {
-                throw AuthException(ErrorStatus.UNAUTHORIZED)
+                responseUtils.sendErrorResponse(response, e.getErrorReasonHttpStatus())
+                return
+            } catch (e: Exception) {
+                responseUtils.sendErrorResponse(response, ErrorStatus.UNAUTHORIZED.getReasonHttpStatus())
+                return
             }
         }
 
