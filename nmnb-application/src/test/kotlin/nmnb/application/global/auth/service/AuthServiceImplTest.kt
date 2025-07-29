@@ -1,5 +1,7 @@
 package nmnb.application.global.auth.service
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import nmnb.application.IntegrationTestSupport
 import nmnb.application.global.auth.service.dto.KakaoAccount
 import nmnb.application.global.auth.service.dto.KakaoProfile
@@ -45,6 +47,9 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @MockBean
     private lateinit var jwtProvider: JwtProvider
+
+    @PersistenceContext
+    private lateinit var em: EntityManager
 
     @AfterEach
     fun tearDown() {
@@ -151,5 +156,24 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         // then
         verify(refreshTokenService).deleteRefreshToken(id, refreshToken)
         verify(blacklistService).register(accessToken)
+    }
+
+    @Test
+    @DisplayName("회원탈퇴에 성공한다. soft delete 되어 데이터는 남아있지만, 조회에서는 제외된다. ")
+    fun withdraw() {
+        // given
+        val user = User.fixture()
+        userRepository.save(user)
+
+        // when
+        authService.withdraw(user)
+
+        // then
+        val deleteValue = em.createNativeQuery("SELECT deleted FROM users u WHERE u.user_id = ?")
+            .setParameter(1, user.id)
+            .singleResult
+        assertThat(deleteValue).isEqualTo(true)
+
+        assertThat(userRepository.findByEmail(user.email)).isNull()
     }
 }
