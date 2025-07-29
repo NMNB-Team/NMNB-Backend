@@ -14,9 +14,13 @@ import nmnb.common.domain.SignUpStatus
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
 import nmnb.domain.user.generator.annotation.UserId
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 import java.util.UUID
 
 @Entity
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE user_id = ?")
+@SQLRestriction("deleted = false")
 @Table(name = "users")
 class User(
     @Column(nullable = false, unique = true)
@@ -31,6 +35,8 @@ class User(
     @field:UserId
     @Column(name = "user_id")
     val id: String? = null
+
+    var deleted: Boolean = false
 
     @Enumerated(EnumType.STRING)
     var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.UNKNOWN
