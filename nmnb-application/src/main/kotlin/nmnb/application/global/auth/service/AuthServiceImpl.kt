@@ -78,4 +78,9 @@ class AuthServiceImpl(
 
         blacklistService.register(accessToken)
     }
+
+    @Transactional
+    override fun withdraw(user: User) {
+        userRepository.delete(user)
+    }
 }
