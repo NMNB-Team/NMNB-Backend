@@ -12,6 +12,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -62,6 +63,28 @@ class AuthControllerTest() : ControllerTestSupport() {
         mockMvc.perform(
             post("/v1/api/auth/logout")
                 .header("X-Refresh-Token", refreshToken)
+                .header("X-Access-Token", accessToken)
+                .header("Device-Id", deviceId)
+                .with(csrf()),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
+    }
+
+    @DisplayName("회원탈퇴에 성공한다.")
+    @WithMockUser
+    @Test
+    fun withdraw() {
+        // given
+        val deviceId = "deviceId"
+        val accessToken = "access.token"
+        val user = User.fixture()
+
+        mockUserAuthentication(user, accessToken, deviceId)
+
+        // when & then
+        mockMvc.perform(
+            patch("/v1/api/auth/withdraw")
                 .header("X-Access-Token", accessToken)
                 .header("Device-Id", deviceId)
                 .with(csrf()),
