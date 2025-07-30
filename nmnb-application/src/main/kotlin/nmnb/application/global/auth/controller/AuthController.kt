@@ -18,6 +18,7 @@ import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -75,5 +76,17 @@ class AuthController(
         @Parameter(name = "accessToken", hidden = true) @ExtractAccessToken accessToken: String,
     ): BaseResponse<Any> {
         return BaseResponse.onSuccess(SuccessStatus.OK, authService.logout(user, deviceId, accessToken, refreshToken))
+    }
+
+    @Operation(summary = "회원탈퇴 API", description = "soft delete를 수행합니다. 데이터는 남아있으나, 조회에서 제외됩니다._숙희")
+    @ApiResponses(
+        ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
+    )
+    @TokenApiResponse
+    @PatchMapping("/withdraw")
+    fun withdraw(
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+    ): BaseResponse<Any> {
+        return BaseResponse.onSuccess(SuccessStatus.OK, authService.withdraw(user))
     }
 }

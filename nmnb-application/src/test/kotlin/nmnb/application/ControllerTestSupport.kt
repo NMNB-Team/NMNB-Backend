@@ -13,6 +13,7 @@ import nmnb.application.global.auth.generator.ExtractAccessTokenArgumentResolver
 import nmnb.application.global.auth.generator.ExtractDeviceIdArgumentResolver
 import nmnb.application.global.auth.generator.ExtractRefreshTokenArgumentResolver
 import nmnb.application.global.auth.service.AuthService
+import nmnb.application.global.common.utils.ResponseUtils
 import nmnb.application.global.config.SecurityConfig
 import nmnb.application.global.infrastructure.security.BlacklistService
 import nmnb.application.global.infrastructure.security.JwtProvider
@@ -67,4 +68,7 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var blacklistService: BlacklistService
+
+    @MockBean
+    protected lateinit var responseUtils: ResponseUtils
 }

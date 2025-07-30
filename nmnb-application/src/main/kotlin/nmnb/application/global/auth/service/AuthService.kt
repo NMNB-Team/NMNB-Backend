@@ -9,4 +9,5 @@ interface AuthService {
     fun signInWithSocial(accessCode: String, type: SocialType, deviceId: String): AuthUserResponse
     fun refreshToken(refreshToken: String, deviceId: String): AuthTokenResponse
     fun logout(user: User, deviceId: String, accessToken: String, refreshToken: String)
+    fun withdraw(user: User)
 }
