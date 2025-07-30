@@ -29,3 +29,7 @@ cloud:
   aws:
     s3:
       bucket: ${S3_BUCKET_NAME_FOR_PROD_SERVICE}
+
+jwt:
+  refresh-expiration-time: ${PROD_REFRESH_EXPIRATION_TIME}
+  access-expiration-time: ${PROD_ACCESS_EXPIRATION_TIME}

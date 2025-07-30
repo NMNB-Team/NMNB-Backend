@@ -50,18 +50,17 @@ class JWTFilter(
                             .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken))
                     }
             }
-
         } catch (e: Exception) {
             Mono.error(e)
         }.onErrorResume { throwable ->
             when (throwable) {
                 is GeneralException -> responseUtils.sendErrorResponse(
                     exchange,
-                    throwable.getErrorReasonHttpStatus()
+                    throwable.getErrorReasonHttpStatus(),
                 )
                 else -> responseUtils.sendErrorResponse(
                     exchange,
-                    ErrorStatus.UNAUTHORIZED.getReasonHttpStatus()
+                    ErrorStatus.UNAUTHORIZED.getReasonHttpStatus(),
                 )
             }
         }

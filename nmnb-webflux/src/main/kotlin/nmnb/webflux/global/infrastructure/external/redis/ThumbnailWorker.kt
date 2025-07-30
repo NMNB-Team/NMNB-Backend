@@ -83,8 +83,7 @@ class ThumbnailWorker(
             val thumbnailFile = thumbnailGeneration.await()
 
             thumbnailFile
-    }
-
+        }
 
     private suspend fun updatePostThumbnail(postId: Long, thumbnailUrl: String) {
         val post = postRepository.findById(postId).awaitSingleOrNull()
