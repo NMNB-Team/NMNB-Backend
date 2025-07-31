@@ -26,9 +26,6 @@ dependencies {
     // S3
     implementation("software.amazon.awssdk:s3:2.19.1")
 
-    // NanoID
-    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
-
     // Spring Security
     implementation ("org.springframework.boot:spring-boot-starter-security")
     testImplementation ("org.springframework.security:spring-security-test")
@@ -39,8 +36,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
     // Redis
-    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation ("org.springframework.session:spring-session-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation("org.springframework.session:spring-session-data-redis")
 
     // test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")

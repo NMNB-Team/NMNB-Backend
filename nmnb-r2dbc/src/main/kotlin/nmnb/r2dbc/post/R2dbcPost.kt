@@ -11,7 +11,7 @@ data class R2dbcPost(
     val url: String,
 
     @Column("thumbnail_url")
-    val thumbnailUrl: String,
+    var thumbnailUrl: String? = null,
 
     @Column("description")
     var description: String? = null,
@@ -24,14 +24,28 @@ data class R2dbcPost(
     val id: Long? = null,
 ) : R2dbcBaseEntity() {
 
+    fun updateThumbnail(newThumbnailUrl: String): R2dbcPost {
+        return R2dbcPost(
+            url = this.url,
+            thumbnailUrl = newThumbnailUrl,
+            description = this.description,
+            userId = this.userId,
+            id = this.id,
+        ).also { updated ->
+            updated.createdAt = this.createdAt
+            updated.modifiedAt = this.modifiedAt
+        }
+    }
+
     companion object {
         fun fixture(
             url: String = "url",
             thumbnailUrl: String = "thumbnail",
             description: String? = null,
             userId: String? = null,
+            id: Long? = null,
         ): R2dbcPost {
-            return R2dbcPost(url, thumbnailUrl, description, userId)
+            return R2dbcPost(url, thumbnailUrl, description, userId, id)
         }
     }
 }

@@ -19,18 +19,36 @@ class SwaggerConfig {
             .description("내멍냥봐 API 명세서")
             .version("1.0.0")
 
-        val jwtSchemeName = "JWT TOKEN"
+        val accessTokenSchemeName = "AccessToken"
+        val refreshTokenSchemeName = "RefreshToken"
+        val deviceIdSchemeName = "DeviceId"
 
-        val securityRequirement: SecurityRequirement = SecurityRequirement().addList(jwtSchemeName)
+        val securityRequirement = SecurityRequirement()
+            .addList(accessTokenSchemeName)
+            .addList(refreshTokenSchemeName)
+            .addList(deviceIdSchemeName)
 
         val components = Components()
             .addSecuritySchemes(
-                jwtSchemeName,
+                accessTokenSchemeName,
                 SecurityScheme()
-                    .name(jwtSchemeName)
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT"),
+                    .type(SecurityScheme.Type.APIKEY)
+                    .`in`(SecurityScheme.In.HEADER)
+                    .name("X-Access-Token"),
+            )
+            .addSecuritySchemes(
+                refreshTokenSchemeName,
+                SecurityScheme()
+                    .type(SecurityScheme.Type.APIKEY)
+                    .`in`(SecurityScheme.In.HEADER)
+                    .name("X-Refresh-Token"),
+            )
+            .addSecuritySchemes(
+                deviceIdSchemeName,
+                SecurityScheme()
+                    .type(SecurityScheme.Type.APIKEY)
+                    .`in`(SecurityScheme.In.HEADER)
+                    .name("Device-Id"),
             )
 
         return OpenAPI()

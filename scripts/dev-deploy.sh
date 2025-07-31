@@ -22,6 +22,19 @@ echo ".env 파일 복사 완료"
 echo "-----------------------------"
 echo
 
+set -o allexport
+source "$PROJECT_DIR/.dev_env"
+set +o allexport
+
+if ! docker info > /dev/null 2>&1; then
+  echo "Docker 데몬이 실행 중인지 확인하세요."
+  exit 1
+fi
+
+echo "Docker Hub 로그인 중..."
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin || { echo "Docker 로그인 실패"; exit 1; }
+echo "Docker 로그인 완료"
+
 echo "기존 컨테이너 중단 중..."
 sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" stop $MVC_API_ENV $WEBFLUX_API_ENV  || { echo "이전 환경 중지 실패"; exit 1; }
 
@@ -29,16 +42,8 @@ echo "기존 컨테이너 삭제 중..."
 sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" rm -f $MVC_API_ENV $WEBFLUX_API_ENV  || { echo "이전 환경 삭제 실패"; exit 1; }
 echo
 echo "-----------------------------"
-echo "도커 허브에서 새로운 이미지 pull 중: $MVC_API_ENV"
-sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" pull $MVC_API_ENV || { echo "이미지 pull 실패"; exit 1; }
-echo "이미지 pull 완료"
-echo "-----------------------------"
-echo
-
-echo
-echo "-----------------------------"
-echo "도커 허브에서 새로운 이미지 pull 중(webflux): $WEBFLUX_API_ENV"
-sudo docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" pull $WEBFLUX_API_ENV || { echo "이미지 pull 실패"; exit 1; }
+echo "도커 허브에서 새로운 이미지 pull 중:"
+docker-compose --env-file "$PROJECT_DIR/.dev_env" -f "$COMPOSE_PATH" pull $MVC_API_ENV $WEBFLUX_API_ENV || { echo "이미지 pull 실패"; exit 1; }
 echo "이미지 pull 완료"
 echo "-----------------------------"
 echo

@@ -1,38 +1,86 @@
 package nmnb.application.global.auth.service
 
-import nmnb.application.global.auth.exception.AuthException
-import nmnb.application.global.auth.utils.JwtTokenProvider
+import nmnb.application.global.common.utils.DeviceIdUtils
+import nmnb.application.global.infrastructure.security.JwtProvider
+import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.auth.RefreshToken
 import nmnb.domain.auth.repository.RefreshTokenRepository
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
-@Component
+@Transactional(readOnly = true)
+@Service
 class RefreshTokenService(
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val tokenProvider: JwtTokenProvider,
+    private val jwtProvider: JwtProvider,
 ) {
-    fun validateRefreshToken(refreshToken: String): String {
-        val email = tokenProvider.getEmailWithValidation(refreshToken)
-        verifyStoredTokenMatch(email, refreshToken)
+    fun validateRefreshToken(refreshToken: String, deviceId: String): String {
+        val email = jwtProvider.getEmailWithValidation(refreshToken)
+        val id = DeviceIdUtils.formatDeviceId(email, deviceId)
+        verifyStoredTokenMatch(id, refreshToken)
         return email
     }
 
-    fun verifyStoredTokenMatch(email: String, token: String) {
-        val storedToken = refreshTokenRepository.findByIdOrNull(email)?.refreshToken
+    fun verifyStoredTokenMatch(id: String, token: String) {
+        val storedToken = refreshTokenRepository.findByIdOrNull(id)?.refreshToken
 
         if (storedToken != token) {
             throw AuthException(ErrorStatus.AUTH_INVALID_TOKEN)
         }
     }
 
-    fun saveOrUpdateToken(email: String, refreshToken: String) {
-        val existingToken = refreshTokenRepository.findByIdOrNull(email)
-        if (existingToken != null) {
-            existingToken.update(refreshToken)
+    @Transactional
+    fun upsertRefreshToken(email: String, deviceId: String, refreshToken: String) {
+        val tokenId = "$email:$deviceId"
+        val token = refreshTokenRepository.findByIdOrNull(tokenId)
+
+        val now = LocalDateTime.now()
+
+        if (token != null) {
+            token.update(
+                refreshToken = refreshToken,
+                timeStamp = now,
+            )
+            refreshTokenRepository.save(token)
         } else {
-            refreshTokenRepository.save(RefreshToken(email, refreshToken))
+            val newToken = RefreshToken(
+                id = tokenId,
+                email = email,
+                deviceId = deviceId,
+                refreshToken = refreshToken,
+                timeStamp = now,
+            )
+            refreshTokenRepository.save(newToken)
         }
+    }
+
+    @Transactional
+    fun removeOldestTokenIfLimitExceeded(email: String) {
+        val allTokens = getUserRefreshTokensSortedByTime(email)
+
+        if (allTokens.size <= MAX_REFRESH_TOKENS) return
+
+        val tokensToRemove = allTokens.dropLast(MAX_REFRESH_TOKENS)
+        tokensToRemove.forEach { refreshTokenRepository.deleteById(it.id) }
+    }
+
+    private fun getUserRefreshTokensSortedByTime(email: String) =
+        refreshTokenRepository.findAll().filter { it.email == email }
+            .sortedBy { it.timeStamp }
+            .toMutableList()
+
+    @Transactional
+    fun deleteRefreshToken(id: String, refreshToken: String) {
+        jwtProvider.getEmailWithValidation(refreshToken)
+        verifyStoredTokenMatch(id, refreshToken)
+
+        refreshTokenRepository.deleteById(id)
+    }
+
+    companion object {
+        const val MAX_REFRESH_TOKENS = 4
     }
 }

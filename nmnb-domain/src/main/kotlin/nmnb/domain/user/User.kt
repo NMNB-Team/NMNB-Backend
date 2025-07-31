@@ -14,15 +14,19 @@ import nmnb.common.domain.SignUpStatus
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.post.Post
 import nmnb.domain.user.generator.annotation.UserId
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 import java.util.UUID
 
 @Entity
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE user_id = ?")
+@SQLRestriction("deleted = false")
 @Table(name = "users")
 class User(
     @Column(nullable = false, unique = true)
     val email: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     var profileImage: String,
 
     var petName: String? = null,
@@ -31,6 +35,8 @@ class User(
     @field:UserId
     @Column(name = "user_id")
     val id: String? = null
+
+    var deleted: Boolean = false
 
     @Enumerated(EnumType.STRING)
     var petOwnershipStatus: PetOwnershipStatus = PetOwnershipStatus.UNKNOWN
@@ -76,5 +82,14 @@ class User(
 
     fun updateSignUpStatus(status: SignUpStatus) {
         this.signUpStatus = status
+    }
+
+    fun updateProfileImage(profileImage: String) {
+        this.profileImage = profileImage
+    }
+
+    fun updateProfile(petName: String?, profileImage: String?) {
+        petName?.let { if (petName != this.petName) updatePetName(it) }
+        profileImage?.let { updateProfileImage(it) }
     }
 }
