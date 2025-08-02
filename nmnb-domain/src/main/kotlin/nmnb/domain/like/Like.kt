@@ -32,4 +32,13 @@ class Like(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
     val id: Long? = null
+
+    companion object {
+        fun fixture(
+            likedBy: User,
+            post: Post,
+        ): Like {
+            return Like(likedBy, post)
+        }
+    }
 }
