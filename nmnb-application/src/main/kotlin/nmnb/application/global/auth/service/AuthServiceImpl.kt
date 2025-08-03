@@ -1,6 +1,6 @@
 package nmnb.application.global.auth.service
 
-import jakarta.persistence.EntityManager
+import nmnb.application.domain.user.service.UserDeletionService
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.application.global.common.utils.DeviceIdUtils
@@ -25,7 +25,7 @@ class AuthServiceImpl(
     private val s3Properties: S3Properties,
     private val refreshTokenService: RefreshTokenService,
     private val blacklistService: BlacklistService,
-    private val entityManager: EntityManager,
+    private val userDeletionService: UserDeletionService,
 ) : AuthService {
 
     @Transactional
@@ -86,33 +86,12 @@ class AuthServiceImpl(
     override fun withdraw(user: User, withdrawType: WithdrawType) {
         when (withdrawType) {
             WithdrawType.HARD -> {
-                hardDeleteUser(user.id!!)
+                userDeletionService.hardDeleteUser(user.id!!)
             }
+
             WithdrawType.SOFT -> {
                 userRepository.delete(user)
             }
         }
-    }
-
-    private fun hardDeleteUser(userId: String) {
-        // 유저가 누른 좋아요 삭제
-        entityManager.createNativeQuery("DELETE FROM user_post_likes WHERE user_id = :id")
-            .setParameter("id", userId)
-            .executeUpdate()
-
-        // 유저가 작성한 게시글에 달린 좋아요 삭제
-        entityManager.createNativeQuery("DELETE FROM user_post_likes WHERE post_id IN (SELECT post_id FROM posts WHERE user_id = :id)")
-            .setParameter("id", userId)
-            .executeUpdate()
-
-        // 유저가 작성한 게시글 삭제
-        entityManager.createNativeQuery("DELETE FROM posts WHERE user_id = :id")
-            .setParameter("id", userId)
-            .executeUpdate()
-
-        // 유저 삭제
-        entityManager.createNativeQuery("DELETE FROM users WHERE user_id = :id")
-            .setParameter("id", userId)
-            .executeUpdate()
     }
 }
