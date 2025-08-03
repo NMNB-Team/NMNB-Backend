@@ -11,6 +11,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -71,7 +72,7 @@ class AuthControllerTest() : ControllerTestSupport() {
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
     }
 
-    @DisplayName("회원탈퇴에 성공한다.")
+    @DisplayName("회원탈퇴(soft delete 방식)에 성공한다.")
     @WithMockUser
     @Test
     fun withdraw() {
@@ -85,6 +86,28 @@ class AuthControllerTest() : ControllerTestSupport() {
         // when & then
         mockMvc.perform(
             patch("/v1/api/auth/withdraw")
+                .header("X-Access-Token", accessToken)
+                .header("Device-Id", deviceId)
+                .with(csrf()),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
+    }
+
+    @DisplayName("회원탈퇴(hard delete 방식)에 성공한다.")
+    @WithMockUser
+    @Test
+    fun withdrawWithHardDelete() {
+        // given
+        val deviceId = "deviceId"
+        val accessToken = "access.token"
+        val user = User.fixture()
+
+        mockUserAuthentication(user, accessToken, deviceId)
+
+        // when & then
+        mockMvc.perform(
+            delete("/v1/api/auth/withdraw")
                 .header("X-Access-Token", accessToken)
                 .header("Device-Id", deviceId)
                 .with(csrf()),
