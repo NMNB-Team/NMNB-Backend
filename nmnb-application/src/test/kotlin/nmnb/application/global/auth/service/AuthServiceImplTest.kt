@@ -12,7 +12,12 @@ import nmnb.application.global.infrastructure.security.BlacklistService
 import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.auth.SocialType
+import nmnb.domain.like.Like
+import nmnb.domain.like.repository.LikeRepository
+import nmnb.domain.post.Post
+import nmnb.domain.post.repository.PostRepository
 import nmnb.domain.user.User
+import nmnb.domain.user.WithdrawType
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -24,6 +29,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.transaction.annotation.Transactional
 
 class AuthServiceImplTest : IntegrationTestSupport() {
 
@@ -39,6 +45,12 @@ class AuthServiceImplTest : IntegrationTestSupport() {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    @Autowired
+    private lateinit var postRepository: PostRepository
+
+    @Autowired
+    private lateinit var likeRepository: LikeRepository
+
     @MockBean
     private lateinit var kakaoOAuthClient: KakaoOAuthClient
 
@@ -53,6 +65,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @AfterEach
     fun tearDown() {
+        likeRepository.deleteAllInBatch()
+        postRepository.deleteAllInBatch()
         userRepository.deleteAllInBatch()
     }
 
@@ -175,5 +189,89 @@ class AuthServiceImplTest : IntegrationTestSupport() {
         assertThat(deleteValue).isEqualTo(true)
 
         assertThat(userRepository.findByEmail(user.email)).isNull()
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원 탈퇴 시 유저가 데이터베이스에서 삭제된다. ")
+    fun withdrawWithHardDelete_removeUser() {
+        // given
+        val user = User.fixture()
+        userRepository.save(user)
+
+        // when
+        authService.withdraw(user, withdrawType = WithdrawType.HARD)
+
+        em.flush()
+        em.clear()
+
+        // then
+        assertThat(userRepository.findById(user.id!!)).isEmpty
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원 탈퇴 시 유저가 게시한 영상은 데이터베이스에서 삭제된다. ")
+    fun withdrawWithHardDelete_removeUserPosts() {
+        // given
+        val user1 = User.fixture()
+        val user2 = User.fixture()
+        userRepository.saveAll(listOf(user1, user2))
+
+        val post1 = Post.fixture(user = user1)
+        val post2 = Post.fixture(user = user1)
+        val post3 = Post.fixture(user = user2)
+        postRepository.saveAll(listOf(post1, post2, post3))
+
+        // when
+        authService.withdraw(user1, withdrawType = WithdrawType.HARD)
+
+        em.flush()
+        em.clear()
+
+        // then
+        val posts = em.createQuery("SELECT p FROM Post p WHERE p.user.id = :id", Post::class.java)
+            .setParameter("id", user1.id)
+            .resultList
+        assertThat(posts).isEmpty()
+
+        assertThat(postRepository.findById(post1.id!!)).isEmpty
+        assertThat(postRepository.findById(post3.id!!)).isPresent
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원 탈퇴 시 유저가 게시글에 누른 좋아요는 데이터베이스에서 삭제된다. ")
+    fun withdrawWithHardDelete_removeUserLikes() {
+        // given
+        val user1 = User.fixture()
+        val user2 = User.fixture()
+        userRepository.saveAll(listOf(user1, user2))
+
+        val post1 = Post.fixture(user = user1)
+        val post2 = Post.fixture(user = user1)
+        val post3 = Post.fixture(user = user2)
+        postRepository.saveAll(listOf(post1, post2, post3))
+
+        likeRepository.saveAll(
+            listOf(
+                Like.fixture(user1, post1),
+                Like.fixture(user1, post2),
+                Like.fixture(user1, post3),
+                Like.fixture(user2, post1),
+                Like.fixture(user2, post3),
+            ),
+        )
+
+        // when
+        authService.withdraw(user1, withdrawType = WithdrawType.HARD)
+
+        // then
+        val likes = em.createNativeQuery("SELECT * FROM user_post_likes l WHERE l.user_id = :id")
+            .setParameter("id", user1.id)
+            .resultList
+        assertThat(likes).isEmpty()
+
+        assertThat(likeRepository.findAll().size).isEqualTo(1)
     }
 }
