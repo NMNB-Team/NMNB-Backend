@@ -17,6 +17,8 @@ import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
+import nmnb.domain.user.WithdrawType
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -78,15 +80,27 @@ class AuthController(
         return BaseResponse.onSuccess(SuccessStatus.OK, authService.logout(user, deviceId, accessToken, refreshToken))
     }
 
-    @Operation(summary = "회원탈퇴 API", description = "soft delete를 수행합니다. 데이터는 남아있으나, 조회에서 제외됩니다._숙희")
+    @Operation(summary = "회원탈퇴 API (Soft Delete)", description = "회원탈퇴를 진행합니다. 데이터는 남아있으나, 조회에서 제외됩니다._숙희")
     @ApiResponses(
         ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
     )
     @TokenApiResponse
     @PatchMapping("/withdraw")
-    fun withdraw(
+    fun softWithdraw(
         @Parameter(name = "user", hidden = true) @AuthUser user: User,
     ): BaseResponse<Any> {
         return BaseResponse.onSuccess(SuccessStatus.OK, authService.withdraw(user))
+    }
+
+    @Operation(summary = "회원탈퇴 API (Hard Delete)", description = "회원탈퇴를 진행합니다. 관련 데이터가 즉시 삭제됩니다._숙희")
+    @ApiResponses(
+        ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
+    )
+    @TokenApiResponse
+    @DeleteMapping("/withdraw")
+    fun hardWithdraw(
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+    ): BaseResponse<Any> {
+        return BaseResponse.onSuccess(SuccessStatus.OK, authService.withdraw(user, withdrawType = WithdrawType.HARD))
     }
 }

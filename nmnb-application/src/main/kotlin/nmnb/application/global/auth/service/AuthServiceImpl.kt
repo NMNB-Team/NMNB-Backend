@@ -1,5 +1,6 @@
 package nmnb.application.global.auth.service
 
+import nmnb.application.domain.user.service.UserDeletionService
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.application.global.auth.service.dto.response.AuthUserResponse
 import nmnb.application.global.common.utils.DeviceIdUtils
@@ -9,6 +10,7 @@ import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.properties.S3Properties
 import nmnb.domain.auth.SocialType
 import nmnb.domain.user.User
+import nmnb.domain.user.WithdrawType
 import nmnb.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,6 +25,7 @@ class AuthServiceImpl(
     private val s3Properties: S3Properties,
     private val refreshTokenService: RefreshTokenService,
     private val blacklistService: BlacklistService,
+    private val userDeletionService: UserDeletionService,
 ) : AuthService {
 
     @Transactional
@@ -80,7 +83,15 @@ class AuthServiceImpl(
     }
 
     @Transactional
-    override fun withdraw(user: User) {
-        userRepository.delete(user)
+    override fun withdraw(user: User, withdrawType: WithdrawType) {
+        when (withdrawType) {
+            WithdrawType.HARD -> {
+                userDeletionService.hardDeleteUser(user.id!!)
+            }
+
+            WithdrawType.SOFT -> {
+                userRepository.delete(user)
+            }
+        }
     }
 }
