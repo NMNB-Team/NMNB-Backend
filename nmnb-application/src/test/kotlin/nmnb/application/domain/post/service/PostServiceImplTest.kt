@@ -7,9 +7,11 @@ import nmnb.domain.post.repository.PostRepository
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -17,7 +19,17 @@ class PostServiceImplTest(
     @Autowired private val userRepository: UserRepository,
     @Autowired private val postRepository: PostRepository,
     @Autowired private val postService: PostService,
+    @Autowired private var cacheManager: CacheManager,
 ) : IntegrationTestSupport() {
+
+    @AfterEach
+    fun tearDown() {
+        postRepository.deleteAllInBatch()
+        userRepository.deleteAllInBatch()
+
+        cacheManager.getCache("postIds")?.clear()
+        cacheManager.getCache("shuffledIds")?.clear()
+    }
 
     @DisplayName("게시글을 랜덤 페이지 조회 시, 여러 번 요청하여 전체 게시글을 모두 조회할 수 있다")
     @Test
@@ -49,11 +61,32 @@ class PostServiceImplTest(
         assertThat(result1.hasNext).isTrue
 
         assertThat(result2.postInfo).hasSize(1)
-        assertThat(result2.nextCursor).isEqualTo(2)
         assertThat(result2.hasNext).isFalse
 
         assertThat(allResult).hasSize(3)
             .extracting("url")
             .containsExactlyInAnyOrder("url1", "url2", "url3")
+    }
+
+    @DisplayName("마지막 페이지를 조회할 경우, cursor 값은 -1이다.")
+    @Test
+    fun getPostsLastPage() {
+        // given
+        val user = User.fixture()
+        userRepository.save(user)
+
+        val post1 = Post.fixture(url = "url1", user = user)
+        val post2 = Post.fixture(url = "url2", user = user)
+        postRepository.saveAll(listOf(post1, post2))
+
+        val seed = 1234
+        val size = 2
+
+        // when
+        val request = PostPageServiceRequest(seed = seed, cursor = -1, size = size)
+        val result = postService.getPostPage(request)
+
+        // then
+        assertThat(result.nextCursor).isEqualTo(-1)
     }
 }
