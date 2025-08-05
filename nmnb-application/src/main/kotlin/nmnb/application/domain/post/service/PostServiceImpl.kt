@@ -32,7 +32,7 @@ class PostServiceImpl(
     ): PostPageResponse {
         val postsInfoResponse = mapPostsToResponse(pageIds)
         val hasNext = shuffledPostIds.size > (startIndex + pageIds.size)
-        val nextCursor = startIndex + pageIds.size - 1
+        val nextCursor = if (!hasNext) -1 else startIndex + pageIds.size - 1
 
         return PostPageResponse.of(postsInfoResponse, hasNext, nextCursor)
     }

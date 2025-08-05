@@ -12,6 +12,8 @@ import nmnb.application.global.infrastructure.security.BlacklistService
 import nmnb.application.global.infrastructure.security.JwtProvider
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.auth.SocialType
+import nmnb.domain.like.repository.LikeRepository
+import nmnb.domain.post.repository.PostRepository
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -39,6 +41,12 @@ class AuthServiceImplTest : IntegrationTestSupport() {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    @Autowired
+    private lateinit var postRepository: PostRepository
+
+    @Autowired
+    private lateinit var likeRepository: LikeRepository
+
     @MockBean
     private lateinit var kakaoOAuthClient: KakaoOAuthClient
 
@@ -53,6 +61,8 @@ class AuthServiceImplTest : IntegrationTestSupport() {
 
     @AfterEach
     fun tearDown() {
+        likeRepository.deleteAllInBatch()
+        postRepository.deleteAllInBatch()
         userRepository.deleteAllInBatch()
     }
 
