@@ -46,8 +46,11 @@ class ThumbnailWorker(
                         .awaitSingleOrNull()
 
                     if (payload != null) {
+                        logger.info("Received payload from queue---------")
                         processPayload(payload)
+                        logger.info("Finished payload from queue---------")
                     } else {
+                        logger.info("No payload in queue")
                         delay(1000)
                     }
                 } catch (e: Exception) {
@@ -65,15 +68,24 @@ class ThumbnailWorker(
         val accessStrategy = job.accessStrategy
 
         val thumbnailFile = createThumbnail(fileName)
+        logger.info("Thumbnail created for file: $fileName")
+
         val thumbnailUrl = s3Service.uploadThumbnail(fileName, thumbnailFile, accessStrategy)
+        logger.info("Thumbnail updated to S3: $thumbnailUrl")
 
         updatePostThumbnail(postId, thumbnailUrl)
+        logger.info("Post updated with thumbnail url")
 
-        thumbnailFile.delete()
+        if (thumbnailFile.delete()) {
+            logger.info("Temporary thumbnail file deleted : ${thumbnailFile.absolutePath}")
+        } else {
+            logger.warn("Failed to delete temporary thumbnail file : ${thumbnailFile.absolutePath}")
+        }
     }
 
     private suspend fun createThumbnail(fileName: String): File =
         coroutineScope {
+            logger.info("Starting thumbnail creation for video file : $fileName")
             val videoDownload = async { s3Service.download(fileName) }
             val thumbnailGeneration = async {
                 val localVideoFile = videoDownload.await()
@@ -81,15 +93,19 @@ class ThumbnailWorker(
             }
 
             val thumbnailFile = thumbnailGeneration.await()
+            logger.info("Thumbnail generation completed for file : $fileName")
 
             thumbnailFile
         }
 
     private suspend fun updatePostThumbnail(postId: Long, thumbnailUrl: String) {
         val post = postRepository.findById(postId).awaitSingleOrNull()
-        post?.let {
-            val updated = it.updateThumbnail(thumbnailUrl)
+        if (post != null) {
+            val updated = post.updateThumbnail(thumbnailUrl)
             postRepository.save(updated).awaitSingle()
+            logger.info("post $postId successfully updated")
+        } else {
+            logger.warn("Post $postId not found")
         }
     }
 
