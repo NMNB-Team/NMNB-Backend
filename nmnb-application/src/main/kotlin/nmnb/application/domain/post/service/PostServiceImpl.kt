@@ -16,6 +16,7 @@ class PostServiceImpl(
     private val postCacheService: PostCacheService,
 ) : PostService {
     override fun getPostPage(request: PostPageServiceRequest): PostPageResponse {
+        postCacheService.refreshPostcache(request)
         val allPostIds = postCacheService.getAllPostIds()
         val shuffledPostIds = postCacheService.getShuffledIds(allPostIds, request.seed)
 
@@ -32,7 +33,7 @@ class PostServiceImpl(
     ): PostPageResponse {
         val postsInfoResponse = mapPostsToResponse(pageIds)
         val hasNext = shuffledPostIds.size > (startIndex + pageIds.size)
-        val nextCursor = if (!hasNext) -1 else startIndex + pageIds.size - 1
+        val nextCursor = if (!hasNext) INITIAL_CURSOR else startIndex + pageIds.size - 1
 
         return PostPageResponse.of(postsInfoResponse, hasNext, nextCursor)
     }
@@ -47,5 +48,9 @@ class PostServiceImpl(
     private fun fetchPostsByIds(pageIds: List<Long>): Map<Long, Post> {
         val posts = postRepository.findAllByIdIn(pageIds)
         return posts.associateBy { it.id!! }
+    }
+
+    companion object {
+        private const val INITIAL_CURSOR = -1
     }
 }

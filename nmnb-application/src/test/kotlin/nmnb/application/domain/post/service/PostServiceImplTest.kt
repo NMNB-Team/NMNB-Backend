@@ -10,7 +10,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.cache.CacheManager
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,6 +25,9 @@ class PostServiceImplTest(
     @Autowired private val postService: PostService,
     @Autowired private var cacheManager: CacheManager,
 ) : IntegrationTestSupport() {
+
+    @MockBean
+    private lateinit var postCacheEvictor: PostCacheEvictor
 
     @AfterEach
     fun tearDown() {
@@ -88,5 +95,33 @@ class PostServiceImplTest(
 
         // then
         assertThat(result.nextCursor).isEqualTo(-1)
+    }
+
+    @DisplayName("조회 커서가 초기 값(-1)일 경우 캐시가 무효화된다.")
+    @Test
+    fun refreshCacheWhenInitialCursor() {
+        // given
+        val seed = 1234
+        val request = PostPageServiceRequest(seed = seed, cursor = -1, size = 7)
+
+        // when
+        postService.getPostPage(request)
+
+        // then
+        verify(postCacheEvictor, times(1)).refreshPostIds()
+    }
+
+    @DisplayName("조회 커서가 초기 값(-1)이 아닐 경우 캐시가 무효화되지 않는다.")
+    @Test
+    fun refreshCacheWhenNotInitialCursor() {
+        // given
+        val seed = 1234
+        val request = PostPageServiceRequest(seed = seed, cursor = 1, size = 7)
+
+        // when
+        postService.getPostPage(request)
+
+        // then
+        verify(postCacheEvictor, never()).refreshPostIds()
     }
 }
