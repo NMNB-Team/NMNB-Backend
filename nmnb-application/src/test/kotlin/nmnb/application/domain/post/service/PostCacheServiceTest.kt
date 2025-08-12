@@ -1,8 +1,10 @@
 package nmnb.application.domain.post.service
 
 import nmnb.application.IntegrationTestSupport
+import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.domain.post.repository.PostRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,10 +22,18 @@ class PostCacheServiceTest(
     @Autowired
     var postCacheService: PostCacheService,
     @Autowired
+    var postCacheEvictor: PostCacheEvictor,
+    @Autowired
     var cacheManager: CacheManager,
 ) : IntegrationTestSupport() {
     @MockBean
     lateinit var postRepository: PostRepository
+
+    @AfterEach
+    fun tearDown() {
+        cacheManager.getCache("postIds")?.clear()
+        cacheManager.getCache("shuffledIds")?.clear()
+    }
 
     @DisplayName("getAllPostIds 메서드는 캐시에 저장되며, 두 번째 호출부터는 캐시된 값이 반환된다")
     @Test
@@ -63,5 +73,28 @@ class PostCacheServiceTest(
         // then
         assertThat(result1).isEqualTo(result2)
         assertThat(result1).isNotEqualTo(result3)
+    }
+
+    @DisplayName("캐시를 무효화하는데 성공한다.")
+    @Test
+    fun refreshCache() {
+        // given
+        val ids = listOf(1L, 2L, 3L, 4L, 5L)
+        whenever(postRepository.findAllPostId()).thenReturn(ids)
+        val seed = 1234
+        val request = PostPageServiceRequest(seed = seed, cursor = -1, size = 7)
+
+        postCacheService.getAllPostIds()
+        postCacheService.getShuffledIds(ids, seed)
+
+        assertThat(cacheManager.getCache("postIds")?.get(SimpleKey.EMPTY)).isNotNull
+        assertThat(cacheManager.getCache("shuffledIds")?.get(seed)).isNotNull
+
+        // when
+        postCacheService.refreshPostcache(request)
+
+        // then
+        assertThat(cacheManager.getCache("postIds")?.get(SimpleKey.EMPTY)).isNull()
+        assertThat(cacheManager.getCache("shuffledIds")?.get(seed)).isNull()
     }
 }
