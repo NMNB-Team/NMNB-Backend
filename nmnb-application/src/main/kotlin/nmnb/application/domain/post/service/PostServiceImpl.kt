@@ -16,6 +16,7 @@ class PostServiceImpl(
     private val postCacheService: PostCacheService,
 ) : PostService {
     override fun getPostPage(request: PostPageServiceRequest): PostPageResponse {
+        postCacheService.refreshPostcache(request)
         val allPostIds = postCacheService.getAllPostIds()
         val shuffledPostIds = postCacheService.getShuffledIds(allPostIds, request.seed)
 

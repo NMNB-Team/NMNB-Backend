@@ -1,5 +1,6 @@
 package nmnb.application.domain.post.service
 
+import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.application.domain.post.utils.RandomSelector
 import nmnb.domain.post.repository.PostRepository
 import org.springframework.cache.annotation.Cacheable
@@ -18,8 +19,14 @@ class PostCacheServiceImpl(
         return RandomSelector.shuffleIds(ids, seed)
     }
 
-    override fun refreshPostcache(seed: Int) {
-        postCacheEvictor.refreshPostIds()
-        postCacheEvictor.refreshShuffledIds(seed)
+    override fun refreshPostcache(request: PostPageServiceRequest) {
+        if (request.cursor == INITIAL_CURSOR) {
+            postCacheEvictor.refreshPostIds()
+            postCacheEvictor.refreshShuffledIds(request.seed)
+        }
+    }
+
+    companion object {
+        private const val INITIAL_CURSOR = -1
     }
 }
