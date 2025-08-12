@@ -50,7 +50,6 @@ class ThumbnailWorker(
                         processPayload(payload)
                         logger.info("Finished payload from queue---------")
                     } else {
-                        logger.info("No payload in queue")
                         delay(1000)
                     }
                 } catch (e: Exception) {
