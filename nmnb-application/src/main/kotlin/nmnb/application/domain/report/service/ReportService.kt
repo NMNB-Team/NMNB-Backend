@@ -12,9 +12,12 @@ abstract class ReportService<R : Report, Request>(
 
     @Transactional
     open fun report(user: User, request: Request) {
+        validateReport(user, request)
         val report = createReport(user, request)
         save(report)
     }
+
+    abstract fun validateReport(user: User, request: Request)
 
     abstract fun createReport(user: User, request: Request): R
 }
