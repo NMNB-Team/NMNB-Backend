@@ -69,7 +69,7 @@ class PostReportServiceTest : IntegrationTestSupport() {
         val post = Post.fixture(user = poster)
         postRepository.save(post)
 
-        val report = PostReport.fixture(post.id!!, reporter.id!!)
+        val report = PostReport.fixture(post.id!!, reporter)
         reportRepository.save(report)
 
         val request = PostReportServiceRequest(post.id!!, ContentType.SEXUAL)

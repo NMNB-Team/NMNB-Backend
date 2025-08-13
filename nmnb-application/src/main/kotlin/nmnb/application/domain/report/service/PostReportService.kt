@@ -21,7 +21,7 @@ class PostReportService(
     override fun validateReport(user: User, request: PostReportServiceRequest) {
         val post = fetchPost(request.targetId)
         validateNotSelfReport(user.id!!, post)
-        validateNotDuplicateReport(user.id!!, request.targetId)
+        validateNotDuplicateReport(user, request.targetId)
     }
 
     private fun fetchPost(targetId: Long): Post {
@@ -40,15 +40,15 @@ class PostReportService(
     }
 
     private fun validateNotDuplicateReport(
-        reporterId: String,
+        reporter: User,
         targetId: Long,
     ) {
-        if (reportRepository.existsPostReport(reporterId, targetId)) {
+        if (reportRepository.existsPostReport(reporter, targetId)) {
             throw ReportException(ErrorStatus.ALREADY_REPORTED)
         }
     }
 
     override fun createReport(user: User, request: PostReportServiceRequest): PostReport {
-        return PostReport(request.targetId, user.id!!, request.contentType)
+        return PostReport(request.targetId, user, request.contentType)
     }
 }
