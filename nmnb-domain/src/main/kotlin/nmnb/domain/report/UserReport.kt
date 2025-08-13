@@ -17,4 +17,14 @@ class UserReport(
     @JoinColumn(name = "reporter_id", nullable = false, insertable = false, updatable = false)
     override val reporter: User,
     override val content: ContentType,
-) : Report(reporter = reporter, content = content)
+) : Report(reporter = reporter, content = content) {
+    companion object {
+        fun fixture(
+            targetUserId: String,
+            reporter: User,
+            content: ContentType = ContentType.SEXUAL,
+        ): UserReport {
+            return UserReport(targetUserId, reporter, content)
+        }
+    }
+}
