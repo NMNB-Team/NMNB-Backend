@@ -7,8 +7,8 @@ import jakarta.persistence.Entity
 @Entity
 @DiscriminatorValue("USER")
 class UserReport(
-    @Column(nullable = false)
-    val userId: String,
+    @Column(nullable = true)
+    val userId: String? = null,
     override val reporterId: String,
     override val content: ContentType,
 ) : Report(reporterId = reporterId, content = content)

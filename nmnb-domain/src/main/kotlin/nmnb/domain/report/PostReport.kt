@@ -7,8 +7,8 @@ import jakarta.persistence.Entity
 @Entity
 @DiscriminatorValue("POST")
 class PostReport(
-    @Column(nullable = false)
-    val postId: Long,
+    @Column(nullable = true)
+    val postId: Long? = null,
     override val reporterId: String,
     override val content: ContentType,
 ) : Report(reporterId = reporterId, content = content)
