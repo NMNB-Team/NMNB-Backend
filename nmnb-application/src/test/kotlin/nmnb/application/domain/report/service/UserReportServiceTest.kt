@@ -5,6 +5,7 @@ import nmnb.application.domain.report.service.dto.request.UserReportServiceReque
 import nmnb.common.response.exception.ReportException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.report.ContentType
+import nmnb.domain.report.UserReport
 import nmnb.domain.report.repository.ReportRepository
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
@@ -50,7 +51,7 @@ class UserReportServiceTest : IntegrationTestSupport() {
 
     @DisplayName("본인을 신고할 시 예외가 발생한다.")
     @Test
-    fun postReportSelf() {
+    fun userReportSelf() {
         // given
         val reporter = User.fixture()
         userRepository.save(reporter)
@@ -64,5 +65,29 @@ class UserReportServiceTest : IntegrationTestSupport() {
 
         // then
         Assertions.assertThat(exception.getCode()).isEqualTo(ErrorStatus.CANNOT_REPORT_SELF)
+    }
+
+    @DisplayName("사용자를 중복 신고할 시 예외가 발생한다.")
+    @Test
+    fun userReportDuplicate() {
+        // given
+        // given
+        val poster = User.fixture()
+        val reporter = User.fixture()
+        userRepository.saveAll(listOf(poster, reporter))
+
+        val report = UserReport.fixture(poster.id!!, reporter)
+        reportRepository.save(report)
+
+        val request = UserReportServiceRequest(poster.id!!, ContentType.SEXUAL)
+
+        // when
+        val exception = assertThrows<ReportException> {
+            userReportService.validateReport(reporter, request)
+        }
+
+        // then
+        Assertions.assertThat(exception.getCode()).isEqualTo(ErrorStatus.ALREADY_REPORTED)
+        Assertions.assertThat(reportRepository.findAll()).hasSize(1)
     }
 }
