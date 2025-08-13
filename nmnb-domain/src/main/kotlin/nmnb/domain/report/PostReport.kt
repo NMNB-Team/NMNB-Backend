@@ -11,4 +11,14 @@ class PostReport(
     val postId: Long? = null,
     override val reporterId: String,
     override val content: ContentType,
-) : Report(reporterId = reporterId, content = content)
+) : Report(reporterId = reporterId, content = content) {
+    companion object {
+        fun fixture(
+            postId: Long,
+            reporterId: String,
+            content: ContentType = ContentType.SEXUAL,
+        ): PostReport {
+            return PostReport(postId, reporterId, content)
+        }
+    }
+}
