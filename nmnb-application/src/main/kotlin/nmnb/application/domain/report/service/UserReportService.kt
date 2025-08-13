@@ -37,5 +37,5 @@ class UserReportService(
     }
 
     override fun createReport(user: User, request: UserReportServiceRequest): UserReport =
-        UserReport(request.targetId, user.id!!, request.contentType)
+        UserReport(request.targetId, user, request.contentType)
 }
