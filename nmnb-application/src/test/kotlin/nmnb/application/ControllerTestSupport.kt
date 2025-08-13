@@ -5,6 +5,10 @@ import nmnb.application.domain.like.controller.LikeController
 import nmnb.application.domain.like.service.LikeService
 import nmnb.application.domain.post.controller.PostController
 import nmnb.application.domain.post.service.PostService
+import nmnb.application.domain.report.controller.ReportController
+import nmnb.application.domain.report.service.PostReportService
+import nmnb.application.domain.report.service.ReportService
+import nmnb.application.domain.report.service.UserReportService
 import nmnb.application.domain.user.controller.UserController
 import nmnb.application.domain.user.service.UserService
 import nmnb.application.global.auth.controller.AuthController
@@ -31,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc
         LikeController::class,
         PostController::class,
         AuthController::class,
+        ReportController::class,
     ],
 )
 @Import(
@@ -59,6 +64,15 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var authService: AuthService
+
+    @MockBean
+    protected lateinit var reportService: ReportService<*, *>
+
+    @MockBean
+    lateinit var postReportService: PostReportService
+
+    @MockBean
+    lateinit var userReportService: UserReportService
 
     @MockBean
     protected lateinit var userRepository: UserRepository
