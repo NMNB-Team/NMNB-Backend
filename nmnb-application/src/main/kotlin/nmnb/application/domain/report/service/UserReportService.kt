@@ -14,12 +14,13 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class UserReportService(
-    reportRepository: ReportRepository,
+    private val reportRepository: ReportRepository,
     private val userRepository: UserRepository,
 ) : ReportService<UserReport, UserReportServiceRequest>(reportRepository) {
     override fun validateReport(user: User, request: UserReportServiceRequest) {
         validateTarget(request.targetId)
         validateNotSelfReport(user.id!!, request.targetId)
+        validateNotDuplicateReport(user, request.targetId)
     }
 
     private fun validateTarget(targetId: String): User =
@@ -33,6 +34,15 @@ class UserReportService(
     ) {
         if (targetId == reporterId) {
             throw ReportException(ErrorStatus.CANNOT_REPORT_SELF)
+        }
+    }
+
+    private fun validateNotDuplicateReport(
+        reporter: User,
+        targetId: String,
+    ) {
+        if (reportRepository.existsUserReport(reporter, targetId)) {
+            throw ReportException(ErrorStatus.ALREADY_REPORTED)
         }
     }
 
