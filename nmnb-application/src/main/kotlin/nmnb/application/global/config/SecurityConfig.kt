@@ -31,6 +31,7 @@ class SecurityConfig(
         "/v1/api/auth/refresh",
         "/v1/api/auth/logout",
         "/v1/api/auth/withdraw",
+        "/v1/api/reports",
     )
 
     @Bean
