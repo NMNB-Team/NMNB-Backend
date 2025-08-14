@@ -25,4 +25,13 @@ class Block(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    companion object {
+        fun fixture(
+            blocker: User,
+            blockedUser: User,
+        ): Block {
+            return Block(blocker, blockedUser)
+        }
+    }
 }
