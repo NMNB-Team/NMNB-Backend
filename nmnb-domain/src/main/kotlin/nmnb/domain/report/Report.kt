@@ -15,11 +15,18 @@ import jakarta.persistence.InheritanceType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.user.User
 
 @Entity
-@Table(name = "reports")
+@Table(
+    name = "reports",
+    uniqueConstraints = [
+        UniqueConstraint(columnNames = ["user_id", "target_post_id"]),
+        UniqueConstraint(columnNames = ["user_id", "target_user_id"]),
+    ],
+)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "report_type", discriminatorType = DiscriminatorType.STRING)
 abstract class Report(
