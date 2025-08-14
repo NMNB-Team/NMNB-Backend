@@ -2,6 +2,8 @@ package nmnb.application.domain.post.service
 
 import nmnb.application.IntegrationTestSupport
 import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
+import nmnb.domain.block.Block
+import nmnb.domain.block.repository.BlockRepository
 import nmnb.domain.post.Post
 import nmnb.domain.post.repository.PostRepository
 import nmnb.domain.user.User
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 class PostServiceImplTest(
     @Autowired private val userRepository: UserRepository,
     @Autowired private val postRepository: PostRepository,
+    @Autowired private val blockRepository: BlockRepository,
     @Autowired private val postService: PostService,
     @Autowired private var cacheManager: CacheManager,
 ) : IntegrationTestSupport() {
@@ -31,6 +34,7 @@ class PostServiceImplTest(
 
     @AfterEach
     fun tearDown() {
+        blockRepository.deleteAllInBatch()
         postRepository.deleteAllInBatch()
         userRepository.deleteAllInBatch()
 
@@ -123,5 +127,43 @@ class PostServiceImplTest(
 
         // then
         verify(postCacheEvictor, never()).refreshPostIds()
+    }
+
+    @DisplayName("게시글 조회시, 차단한 사용자의 게시글은 조회되지 않는다.")
+    @Test
+    fun getPostsPageWithoutBlockUserPosts() {
+        // given
+        val writer = User.fixture()
+        val blocker = User.fixture()
+        val blockedUser = User.fixture(email = "user2@email.com")
+        userRepository.saveAll(listOf(writer, blocker, blockedUser))
+
+        postRepository.saveAll(
+            listOf(
+                Post.fixture(url = "url1", user = writer),
+                Post.fixture(url = "url2", user = writer),
+                Post.fixture(url = "url3", user = blockedUser),
+                Post.fixture(url = "url4", user = writer),
+                Post.fixture(url = "url5", user = blockedUser),
+                Post.fixture(url = "url6", user = writer),
+                Post.fixture(url = "url7", user = blockedUser),
+            ),
+        )
+
+        val seed = 1234
+        val size = 5
+
+        blockRepository.save(Block.fixture(blocker, blockedUser))
+
+        // when
+        val request = PostPageServiceRequest(seed = seed, cursor = -1, size = size)
+        val result = postService.getPostPage(blocker.id, request)
+
+        // then
+        assertThat(result.postInfo).hasSize(4)
+            .extracting("url")
+            .containsExactlyInAnyOrder("url1", "url2", "url4", "url6")
+        assertThat(result.nextCursor).isEqualTo(-1)
+        assertThat(result.hasNext).isFalse
     }
 }
