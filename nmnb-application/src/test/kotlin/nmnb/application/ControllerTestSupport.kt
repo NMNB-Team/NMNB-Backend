@@ -1,6 +1,8 @@
 package nmnb.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import nmnb.application.domain.block.controller.BlockController
+import nmnb.application.domain.block.service.UserBlockService
 import nmnb.application.domain.like.controller.LikeController
 import nmnb.application.domain.like.service.LikeService
 import nmnb.application.domain.post.controller.PostController
@@ -36,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc
         PostController::class,
         AuthController::class,
         ReportController::class,
+        BlockController::class,
     ],
 )
 @Import(
@@ -73,6 +76,9 @@ abstract class ControllerTestSupport {
 
     @MockBean
     lateinit var userReportService: UserReportService
+
+    @MockBean
+    lateinit var userBlockService: UserBlockService
 
     @MockBean
     protected lateinit var userRepository: UserRepository
