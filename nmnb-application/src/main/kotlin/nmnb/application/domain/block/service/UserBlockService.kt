@@ -1,12 +1,14 @@
 package nmnb.application.domain.block.service
 
 import nmnb.application.domain.block.service.dto.request.UserBlockServiceRequest
+import nmnb.common.response.exception.BlockException
 import nmnb.common.response.exception.UserException
 import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.block.Block
 import nmnb.domain.block.repository.BlockRepository
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,7 +23,12 @@ class UserBlockService(
         val blockedUser = userRepository.findById(request.userId).orElseThrow {
             UserException(ErrorStatus.USER_NOT_FOUND)
         }
-        blockRepository.save(Block(blocker = user, blockedUser = blockedUser))
+
+        try {
+            blockRepository.save(Block(blocker = user, blockedUser = blockedUser))
+        } catch (e: DataIntegrityViolationException) {
+            throw BlockException(ErrorStatus.ALREADY_BLOCKED)
+        }
     }
 
     @Transactional
