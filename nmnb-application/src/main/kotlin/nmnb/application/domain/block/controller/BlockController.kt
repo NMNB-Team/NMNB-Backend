@@ -27,7 +27,10 @@ class BlockController(
         summary = "사용자 차단 API",
         description = "사용자를 차단합니다. 차단한 사용자는 페이지에 조회되지 않습니다._숙희",
     )
-    @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
+    @ApiResponses(
+        ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
+        ApiResponse(responseCode = "BLOCK400", description = "이미 차단한적이 있습니다."),
+    )
     @PostMapping("/users/blocks")
     fun blockUser(
         @Parameter(name = "user", hidden = true) @AuthUser user: User,
