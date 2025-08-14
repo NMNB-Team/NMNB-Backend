@@ -21,7 +21,7 @@ class PostControllerTest : ControllerTestSupport() {
     fun getPostPage() {
         // given
         // when
-        whenever(postService.getPostPage(any()))
+        whenever(postService.getPostPage(any(), any()))
             .thenReturn(
                 PostPageResponse(
                     listOf(),

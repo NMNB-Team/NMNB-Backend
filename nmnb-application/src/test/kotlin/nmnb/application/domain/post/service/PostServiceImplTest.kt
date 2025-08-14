@@ -56,9 +56,9 @@ class PostServiceImplTest(
 
         // when
         val request1 = PostPageServiceRequest(seed = seed, cursor = -1, size = size)
-        val result1 = postService.getPostPage(request1)
+        val result1 = postService.getPostPage(null, request1)
         val request2 = PostPageServiceRequest(seed = seed, cursor = result1.nextCursor!!, size = size)
-        val result2 = postService.getPostPage(request2)
+        val result2 = postService.getPostPage(null, request2)
 
         val allResult = (result1.postInfo + result2.postInfo)
 
@@ -91,7 +91,7 @@ class PostServiceImplTest(
 
         // when
         val request = PostPageServiceRequest(seed = seed, cursor = -1, size = size)
-        val result = postService.getPostPage(request)
+        val result = postService.getPostPage(null, request)
 
         // then
         assertThat(result.nextCursor).isEqualTo(-1)
@@ -105,7 +105,7 @@ class PostServiceImplTest(
         val request = PostPageServiceRequest(seed = seed, cursor = -1, size = 7)
 
         // when
-        postService.getPostPage(request)
+        postService.getPostPage(null, request)
 
         // then
         verify(postCacheEvictor, times(1)).refreshPostIds()
@@ -119,7 +119,7 @@ class PostServiceImplTest(
         val request = PostPageServiceRequest(seed = seed, cursor = 1, size = 7)
 
         // when
-        postService.getPostPage(request)
+        postService.getPostPage(null, request)
 
         // then
         verify(postCacheEvictor, never()).refreshPostIds()
