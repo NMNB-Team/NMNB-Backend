@@ -20,7 +20,6 @@ class UserReportService(
     override fun validateReport(user: User, request: UserReportServiceRequest) {
         validateTarget(request.targetId)
         validateNotSelfReport(user.id!!, request.targetId)
-        validateNotDuplicateReport(user, request.targetId)
     }
 
     private fun validateTarget(targetId: String): User =
@@ -34,15 +33,6 @@ class UserReportService(
     ) {
         if (targetId == reporterId) {
             throw ReportException(ErrorStatus.CANNOT_REPORT_SELF)
-        }
-    }
-
-    private fun validateNotDuplicateReport(
-        reporter: User,
-        targetId: String,
-    ) {
-        if (reportRepository.existsUserReport(reporter, targetId)) {
-            throw ReportException(ErrorStatus.ALREADY_REPORTED)
         }
     }
 

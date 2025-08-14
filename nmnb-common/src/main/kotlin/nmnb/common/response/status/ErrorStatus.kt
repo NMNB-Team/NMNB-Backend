@@ -47,6 +47,9 @@ enum class ErrorStatus(
     INVALID_POST_TARGET_ID(HttpStatus.NOT_FOUND, "REPORT401", "유효한 Post 아이디가 아닙니다."),
     CANNOT_REPORT_SELF(HttpStatus.BAD_REQUEST, "REPORT402", "본인을 신고할 수 없습니다."),
     ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "REPORT403", "이미 신고한적이 있습니다."),
+
+    // BLOCK
+    ALREADY_BLOCKED(HttpStatus.BAD_REQUEST, "BLOCK400", "이미 차단한적이 있습니다."),
     ;
 
     override fun getReasonHttpStatus(): ErrorReasonDTO {
