@@ -37,4 +37,20 @@ class BlockController(
             userBlockService.block(user, request.toUserBlockServiceRequest()),
         )
     }
+
+    @Operation(
+        summary = "사용자 차단 해제 API",
+        description = "사용자를 차단을 해제합니다. 차단을 해제한 사용자는 페이지에 조회됩니다._숙희",
+    )
+    @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
+    @DeleteMapping("/users/blocks")
+    fun unBlockUser(
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+        @RequestBody request: UserBlockRequest,
+    ): BaseResponse<Any> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.OK,
+            userBlockService.unBlock(user, request.toUserBlockServiceRequest()),
+        )
+    }
 }
