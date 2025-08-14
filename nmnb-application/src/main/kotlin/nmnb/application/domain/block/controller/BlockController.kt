@@ -11,6 +11,7 @@ import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Tag(name = "Block 🔒", description = "차단 관련 API")
-@RequestMapping("/v1/api/blocks")
+@RequestMapping("/v1/api")
 class BlockController(
     private val userBlockService: UserBlockService,
 ) {
@@ -27,7 +28,7 @@ class BlockController(
         description = "사용자를 차단합니다. 차단한 사용자는 페이지에 조회되지 않습니다._숙희",
     )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
-    @PostMapping("")
+    @PostMapping("/users/blocks")
     fun blockUser(
         @Parameter(name = "user", hidden = true) @AuthUser user: User,
         @RequestBody request: UserBlockRequest,
