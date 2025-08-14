@@ -32,17 +32,21 @@ class AuthUserArgumentResolver(
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any? {
+        val required = parameter.getParameterAnnotation(AuthUser::class.java)?.required ?: true
         val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication.name == "anonymousUser") {
+            return if (required) {
+                AuthException(ErrorStatus.UNAUTHORIZED)
+            } else {
+                null
+            }
+        }
         val userEmail = getUserEmail(authentication)
         return userRepository.findByEmail(userEmail) ?: throw AuthException(ErrorStatus.USER_NOT_FOUND)
     }
 
     companion object {
         private fun getUserEmail(authentication: Authentication): String {
-            if (authentication.name == "anonymousUser") {
-                throw AuthException(ErrorStatus.UNAUTHORIZED)
-            }
-
             val principal = authentication.principal
             if (principal is String) {
                 throw AuthException(ErrorStatus.AUTH_INVALID_AUTH_PRINCIPAL)
