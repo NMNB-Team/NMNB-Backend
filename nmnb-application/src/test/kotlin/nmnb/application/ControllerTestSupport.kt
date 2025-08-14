@@ -1,6 +1,8 @@
 package nmnb.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import nmnb.application.domain.block.controller.BlockController
+import nmnb.application.domain.block.service.UserBlockService
 import nmnb.application.domain.like.controller.LikeController
 import nmnb.application.domain.like.service.LikeService
 import nmnb.application.domain.post.controller.PostController
@@ -21,7 +23,10 @@ import nmnb.application.global.common.utils.ResponseUtils
 import nmnb.application.global.config.SecurityConfig
 import nmnb.application.global.infrastructure.security.BlacklistService
 import nmnb.application.global.infrastructure.security.JwtProvider
+import nmnb.common.utils.JwtConstants
+import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -36,6 +41,7 @@ import org.springframework.test.web.servlet.MockMvc
         PostController::class,
         AuthController::class,
         ReportController::class,
+        BlockController::class,
     ],
 )
 @Import(
@@ -75,6 +81,9 @@ abstract class ControllerTestSupport {
     lateinit var userReportService: UserReportService
 
     @MockBean
+    lateinit var userBlockService: UserBlockService
+
+    @MockBean
     protected lateinit var userRepository: UserRepository
 
     @MockBean
@@ -85,4 +94,10 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var responseUtils: ResponseUtils
+
+    fun mockUserAuthentication(user: User, accessToken: String, deviceId: String) {
+        whenever(jwtProvider.getEmailWithValidation(accessToken)).thenReturn(user.email)
+        whenever(userRepository.findByEmail(user.email)).thenReturn(user)
+        whenever(jwtProvider.getClaimFromToken(accessToken, JwtConstants.DEVICE_ID_CLAIM_KEY)).thenReturn(deviceId)
+    }
 }

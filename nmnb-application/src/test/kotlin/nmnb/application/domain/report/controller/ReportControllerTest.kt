@@ -6,7 +6,6 @@ import nmnb.application.domain.report.service.ReportService
 import nmnb.application.domain.report.service.dto.request.PostReportServiceRequest
 import nmnb.application.domain.report.service.dto.request.UserReportServiceRequest
 import nmnb.common.response.status.SuccessStatus
-import nmnb.common.utils.JwtConstants
 import nmnb.domain.report.ContentType
 import nmnb.domain.report.PostReport
 import nmnb.domain.report.ReportType
@@ -59,14 +58,9 @@ class ReportControllerTest : ControllerTestSupport() {
         when (reportType) {
             ReportType.POST -> doNothing().whenever(reportService as ReportService<PostReport, PostReportServiceRequest>)
                 .report(any(), any<PostReportServiceRequest>())
+
             ReportType.USER -> doNothing().whenever(reportService as ReportService<UserReport, UserReportServiceRequest>)
                 .report(any(), any<UserReportServiceRequest>())
         }
-    }
-
-    private fun mockUserAuthentication(user: User, accessToken: String, deviceId: String) {
-        whenever(jwtProvider.getEmailWithValidation(accessToken)).thenReturn(user.email)
-        whenever(userRepository.findByEmail(user.email)).thenReturn(user)
-        whenever(jwtProvider.getClaimFromToken(accessToken, JwtConstants.DEVICE_ID_CLAIM_KEY)).thenReturn(deviceId)
     }
 }

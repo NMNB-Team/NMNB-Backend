@@ -4,5 +4,5 @@ import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.application.domain.post.service.dto.response.PostPageResponse
 
 interface PostService {
-    fun getPostPage(request: PostPageServiceRequest): PostPageResponse
+    fun getPostPage(userId: String?, request: PostPageServiceRequest): PostPageResponse
 }

@@ -1,6 +1,7 @@
 package nmnb.application.domain.post.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -8,8 +9,10 @@ import nmnb.application.domain.post.service.PostService
 import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.application.domain.post.service.dto.response.PostPageResponse
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
+import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
+import nmnb.domain.user.User
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -35,10 +38,11 @@ class PostController(
         @RequestParam seed: Int,
         @RequestParam(required = false, defaultValue = "-1") cursor: Int,
         @RequestParam(required = false, defaultValue = "7") size: Int,
+        @Parameter(name = "user", hidden = true) @AuthUser(required = false) user: User?,
     ): BaseResponse<PostPageResponse> {
         return BaseResponse.onSuccess(
             SuccessStatus.OK,
-            postService.getPostPage(PostPageServiceRequest(seed, cursor, size)),
+            postService.getPostPage(user?.id, PostPageServiceRequest(seed, cursor, size)),
         )
     }
 }

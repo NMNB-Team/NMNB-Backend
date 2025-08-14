@@ -1,5 +1,6 @@
 package nmnb.domain.post.repository
 
+import io.lettuce.core.dynamic.annotation.Param
 import nmnb.domain.post.Post
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -9,4 +10,7 @@ interface PostRepository : JpaRepository<Post, Long> {
     fun findAllPostId(): List<Long>
 
     fun findAllByIdIn(ids: Iterable<Long>): List<Post>
+
+    @Query("SELECT p.id FROM Post p WHERE p.user.id IN :userIds")
+    fun findPostIdsByUserIds(@Param("userIds") userIds: List<String>): List<Long>
 }
