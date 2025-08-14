@@ -8,11 +8,15 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import nmnb.domain.JpaBaseEntity
 import nmnb.domain.user.User
 
 @Entity
-@Table(name = "blocks")
+@Table(
+    name = "blocks",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["blocker_id", "blocked_id"])],
+)
 class Block(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocker_id", nullable = false)
