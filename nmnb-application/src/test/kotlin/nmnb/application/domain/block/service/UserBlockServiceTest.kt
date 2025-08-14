@@ -4,6 +4,7 @@ import nmnb.application.IntegrationTestSupport
 import nmnb.application.domain.block.service.dto.request.UserBlockServiceRequest
 import nmnb.common.response.exception.UserException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.domain.block.Block
 import nmnb.domain.block.repository.BlockRepository
 import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
@@ -61,5 +62,28 @@ class UserBlockServiceTest : IntegrationTestSupport() {
 
         // then
         assertThat(exception.getCode()).isEqualTo(ErrorStatus.USER_NOT_FOUND)
+    }
+
+    @DisplayName("사용자 차단 해제에 성공한다.")
+    @Test
+    fun unblock() {
+        // given
+        val blocker = User.fixture()
+        val blockedUser = User.fixture()
+        userRepository.saveAll(listOf(blocker, blockedUser))
+
+        blockRepository.save(Block.fixture(blocker, blockedUser))
+
+        // then
+        assertThat(blockRepository.findByBlockerId(blocker.id!!)).hasSize(1)
+
+        // given
+        val request = UserBlockServiceRequest(blockedUser.id!!)
+
+        // when
+        userBlockService.unBlock(blocker, request)
+
+        // then
+        assertThat(blockRepository.findByBlockerId(blocker.id!!)).isEmpty()
     }
 }
