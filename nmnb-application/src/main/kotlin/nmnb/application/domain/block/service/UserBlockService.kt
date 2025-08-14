@@ -20,9 +20,7 @@ class UserBlockService(
 ) {
     @Transactional
     fun block(user: User, request: UserBlockServiceRequest) {
-        val blockedUser = userRepository.findById(request.userId).orElseThrow {
-            UserException(ErrorStatus.USER_NOT_FOUND)
-        }
+        val blockedUser = getBlockedUser(request)
 
         try {
             blockRepository.save(Block(blocker = user, blockedUser = blockedUser))
@@ -33,12 +31,15 @@ class UserBlockService(
 
     @Transactional
     fun unBlock(user: User, request: UserBlockServiceRequest) {
-        val blockedUser = userRepository.findById(request.userId).orElseThrow {
-            UserException(ErrorStatus.USER_NOT_FOUND)
-        }
+        val blockedUser = getBlockedUser(request)
         blockRepository.findByBlockerAndBlockedUser(user, blockedUser)
             ?.let { block ->
                 blockRepository.delete(block)
             }
     }
+
+    private fun getBlockedUser(request: UserBlockServiceRequest): User =
+        userRepository.findById(request.userId).orElseThrow {
+            UserException(ErrorStatus.USER_NOT_FOUND)
+        }
 }
