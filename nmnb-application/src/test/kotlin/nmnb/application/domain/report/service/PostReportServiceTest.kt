@@ -13,6 +13,7 @@ import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -28,8 +29,12 @@ class PostReportServiceTest : IntegrationTestSupport() {
     @Autowired
     private lateinit var reportRepository: ReportRepository
 
-    @Autowired
     private lateinit var postReportService: PostReportService
+
+    @BeforeEach
+    fun setUp() {
+        postReportService = PostReportService(reportRepository, postRepository)
+    }
 
     @AfterEach
     fun tearDown() {
@@ -58,32 +63,6 @@ class PostReportServiceTest : IntegrationTestSupport() {
         assertThat(reportRepository.findAll()).hasSize(1)
     }
 
-    @DisplayName("중복 신고시 예외가 발생한다.")
-    @Test
-    fun postReportDuplicate() {
-        // given
-        val poster = User.fixture()
-        val reporter = User.fixture()
-        userRepository.saveAll(listOf(poster, reporter))
-
-        val post = Post.fixture(user = poster)
-        postRepository.save(post)
-
-        val report = PostReport.fixture(post.id!!, reporter)
-        reportRepository.save(report)
-
-        val request = PostReportServiceRequest(post.id!!, ContentType.SEXUAL)
-
-        // when
-        val exception = assertThrows<ReportException> {
-            postReportService.validateReport(reporter, request)
-        }
-
-        // then
-        assertThat(exception.getCode()).isEqualTo(ErrorStatus.ALREADY_REPORTED)
-        assertThat(reportRepository.findAll()).hasSize(1)
-    }
-
     @DisplayName("본인의 게시글을 신고할 시 예외가 발생한다.")
     @Test
     fun postReportSelf() {
@@ -103,5 +82,30 @@ class PostReportServiceTest : IntegrationTestSupport() {
 
         // then
         assertThat(exception.getCode()).isEqualTo(ErrorStatus.CANNOT_REPORT_SELF)
+    }
+
+    @DisplayName("중복 신고시 예외가 발생한다.")
+    @Test
+    fun postReportDuplicate() {
+        // given
+        val poster = User.fixture()
+        val reporter = User.fixture()
+        userRepository.saveAll(listOf(poster, reporter))
+
+        val post = Post.fixture(user = poster)
+        postRepository.save(post)
+
+        val report1 = PostReport.fixture(post.id!!, reporter)
+        val report2 = PostReport.fixture(post.id!!, reporter)
+        reportRepository.save(report1)
+
+        // when
+        val exception = assertThrows<ReportException> {
+            postReportService.save(report2)
+        }
+
+        // then
+        assertThat(exception.getCode()).isEqualTo(ErrorStatus.ALREADY_REPORTED)
+        assertThat(reportRepository.findAll()).hasSize(1)
     }
 }

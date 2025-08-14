@@ -11,6 +11,7 @@ import nmnb.domain.user.User
 import nmnb.domain.user.repository.UserRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,8 +24,12 @@ class UserReportServiceTest : IntegrationTestSupport() {
     @Autowired
     private lateinit var reportRepository: ReportRepository
 
-    @Autowired
     private lateinit var userReportService: UserReportService
+
+    @BeforeEach
+    fun setUp() {
+        userReportService = UserReportService(reportRepository, userRepository)
+    }
 
     @AfterEach
     fun tearDown() {
@@ -71,19 +76,17 @@ class UserReportServiceTest : IntegrationTestSupport() {
     @Test
     fun userReportDuplicate() {
         // given
-        // given
         val poster = User.fixture()
         val reporter = User.fixture()
         userRepository.saveAll(listOf(poster, reporter))
 
-        val report = UserReport.fixture(poster.id!!, reporter)
-        reportRepository.save(report)
-
-        val request = UserReportServiceRequest(poster.id!!, ContentType.SEXUAL)
+        val report1 = UserReport.fixture(poster.id!!, reporter)
+        val report2 = UserReport.fixture(poster.id!!, reporter)
+        reportRepository.save(report1)
 
         // when
         val exception = assertThrows<ReportException> {
-            userReportService.validateReport(reporter, request)
+            userReportService.save(report2)
         }
 
         // then
