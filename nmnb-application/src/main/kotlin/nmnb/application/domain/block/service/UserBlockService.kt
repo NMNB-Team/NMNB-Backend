@@ -23,4 +23,15 @@ class UserBlockService(
         }
         blockRepository.save(Block(blocker = user, blockedUser = blockedUser))
     }
+
+    @Transactional
+    fun unBlock(user: User, request: UserBlockServiceRequest) {
+        val blockedUser = userRepository.findById(request.userId).orElseThrow {
+            UserException(ErrorStatus.USER_NOT_FOUND)
+        }
+        blockRepository.findByBlockerAndBlockedUser(user, blockedUser)
+            ?.let { block ->
+                blockRepository.delete(block)
+            }
+    }
 }
