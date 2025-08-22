@@ -48,6 +48,8 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
+    // reactive
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 }
 
 tasks.bootJar {
