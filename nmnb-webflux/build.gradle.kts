@@ -34,6 +34,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    implementation("org.springframework.security:spring-security-oauth2-jose:6.2.5")
 
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
