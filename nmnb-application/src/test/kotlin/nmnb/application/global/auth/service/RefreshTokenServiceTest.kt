@@ -2,8 +2,8 @@ package nmnb.application.global.auth.service
 
 import nmnb.application.global.common.utils.DeviceIdUtils
 import nmnb.application.global.infrastructure.security.JwtProvider
-import nmnb.domain.auth.RefreshToken
-import nmnb.domain.auth.repository.RefreshTokenRepository
+import nmnb.common.auth.RefreshToken
+import nmnb.common.auth.repository.RefreshTokenRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
