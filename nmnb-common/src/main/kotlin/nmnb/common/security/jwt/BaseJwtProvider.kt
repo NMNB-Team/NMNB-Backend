@@ -8,8 +8,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import nmnb.common.auth.RefreshToken
-import nmnb.common.auth.repository.RefreshTokenRepository
 import nmnb.common.properties.JwtProperties
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
@@ -19,13 +17,10 @@ import org.springframework.stereotype.Component
 import java.security.SignatureException
 import java.sql.Date
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Component
 abstract class BaseJwtProvider(
-    private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtProperties: JwtProperties,
 ) {
 
@@ -35,29 +30,7 @@ abstract class BaseJwtProvider(
         generateJwt(now, email, jwtProperties.accessExpirationTime, deviceId)
 
     fun createRefreshToken(now: Instant, email: String, deviceId: String): String {
-        val refreshToken = generateJwt(now, email, jwtProperties.refreshExpirationTime)
-        saveRefreshToken(email, deviceId, refreshToken, now)
-        return refreshToken
-    }
-
-    private fun saveRefreshToken(
-        email: String,
-        deviceId: String,
-        refreshToken: String,
-        now: Instant?,
-    ) {
-        val redisKey = "$email:$deviceId"
-        val timeStamp = now?.atZone(ZoneId.systemDefault())?.toLocalDateTime()
-            ?: LocalDateTime.now()
-
-        val token = RefreshToken(
-            id = redisKey,
-            email = email,
-            refreshToken = refreshToken,
-            timeStamp = timeStamp,
-            deviceId = deviceId,
-        )
-        refreshTokenRepository.save(token)
+        return generateJwt(now, email, jwtProperties.refreshExpirationTime)
     }
 
     protected fun generateJwt(now: Instant, email: String, expirationTime: Long, deviceId: String? = null): String {
