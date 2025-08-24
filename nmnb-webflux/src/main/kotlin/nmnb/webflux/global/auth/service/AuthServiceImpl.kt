@@ -11,12 +11,12 @@ import nmnb.webflux.global.infrastructure.security.JwtProvider
 import nmnb.webflux.global.properties.AppleProperties
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.ReactiveTransactionManager
+import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.time.Instant
 
-@Transactional(readOnly = true)
 @Service
 class AuthServiceImpl(
     private val jwtProvider: JwtProvider,
@@ -25,9 +25,11 @@ class AuthServiceImpl(
     private val jwtDecoder: JwtDecoder,
     private val userRepository: R2dbcUserRepository,
     private val refreshTokenService: RefreshTokenService,
+    transactionalManager: ReactiveTransactionManager,
 ) : AuthService {
 
-    @Transactional
+    private val txOperator = TransactionalOperator.create(transactionalManager)
+
     override fun appleLogin(request: AppleLoginServiceRequest, deviceId: String): Mono<AuthUserResponse> {
         // 토큰 검증
         val claims = validateAppleIdToken(request.identityToken)
@@ -35,19 +37,22 @@ class AuthServiceImpl(
         val email = claims["email"] as String
 
         // 회원가입 & 로그인
-        return userRepository.findByEmail(email)
-            .switchIfEmpty { createUser(email) }
-            .flatMap { user ->
-                issueNewToken(email, deviceId)
-                    .map { (refreshToken, accessToken) ->
-                        AuthUserResponse(
-                            email = email,
-                            accessToken = accessToken,
-                            refreshToken = refreshToken,
-                            signUpStatus = user.signUpStatus,
-                        )
-                    }
-            }
+        return txOperator.execute { _ ->
+            userRepository.findByEmail(email)
+                .switchIfEmpty { createUser(email) }
+                .flatMap { user ->
+                    issueNewToken(email, deviceId)
+                        .map { (refreshToken, accessToken) ->
+                            AuthUserResponse(
+                                email = email,
+                                accessToken = accessToken,
+                                refreshToken = refreshToken,
+                                signUpStatus = user.signUpStatus,
+                            )
+                        }
+                }
+        }
+            .next()
     }
 
     private fun validateAppleIdToken(idToken: String): Map<String, Any> {
