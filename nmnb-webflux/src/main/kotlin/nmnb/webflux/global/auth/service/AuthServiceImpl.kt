@@ -84,6 +84,6 @@ class AuthServiceImpl(
         val refreshToken = jwtProvider.createRefreshToken(now, email, deviceId)
         return refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken)
             .then(refreshTokenService.removeOldestTokenIfLimitExceeded(email))
-            .map { refreshToken to accessToken }
+            .then(Mono.just(Pair(refreshToken, accessToken)))
     }
 }
