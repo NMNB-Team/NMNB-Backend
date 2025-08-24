@@ -11,5 +11,5 @@ data class AppleProperties(
     var keyId: String = "",
     var keyPath: String = "",
     var tokenExpiration: Long = 0L,
-    val jwtSetUrl: String = "",
+    var jwtSetUrl: String = "",
 )
