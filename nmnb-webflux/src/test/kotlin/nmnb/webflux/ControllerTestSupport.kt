@@ -4,6 +4,8 @@ import nmnb.common.auth.repository.RefreshTokenRepository
 import nmnb.r2dbc.user.R2dbcUserRepository
 import nmnb.webflux.domain.post.controller.PostController
 import nmnb.webflux.domain.post.service.PostUploadService
+import nmnb.webflux.global.auth.controller.AuthController
+import nmnb.webflux.global.auth.service.AuthService
 import nmnb.webflux.global.config.SecurityConfig
 import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
 import nmnb.webflux.global.handler.resolver.ExtractDeviceIdArgumentResolver
@@ -18,7 +20,12 @@ import org.springframework.context.annotation.Import
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.test.web.reactive.server.WebTestClient
 
-@WebFluxTest(controllers = [PostController::class])
+@WebFluxTest(
+    controllers = [
+        PostController::class,
+        AuthController::class,
+    ],
+)
 @Import(SecurityConfig::class, AuthUserArgumentResolver::class, ExtractDeviceIdArgumentResolver::class)
 abstract class ControllerTestSupport {
     @Autowired
@@ -47,4 +54,7 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var blacklistService: BlacklistService
+
+    @MockBean
+    protected lateinit var authService: AuthService
 }
