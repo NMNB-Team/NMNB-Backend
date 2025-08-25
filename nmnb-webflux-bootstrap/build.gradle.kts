@@ -6,9 +6,6 @@ dependencies {
 
     // Webflux
     implementation ("org.springframework.boot:spring-boot-starter-webflux")
-
-    // R2dbc Redis
-    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
 }
 
 tasks.bootJar {

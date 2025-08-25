@@ -1,6 +1,5 @@
 dependencies {
     implementation(project(":nmnb-application"))
-    implementation(project(":nmnb-domain"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -9,9 +8,6 @@ dependencies {
 
     // Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-
-    // Redis
-    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 tasks.bootJar {
