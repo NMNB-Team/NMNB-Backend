@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 
@@ -58,6 +59,9 @@ abstract class ControllerTestSupport {
 
     @Autowired
     protected lateinit var objectMapper: ObjectMapper
+
+    @MockBean
+    lateinit var redisTemplate: StringRedisTemplate
 
     @MockBean
     protected lateinit var userService: UserService
