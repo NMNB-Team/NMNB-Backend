@@ -87,17 +87,14 @@ class AuthServiceImpl(
     private fun issueNewToken(email: String, deviceId: String): Mono<Pair<String, String>> {
         val now = Instant.now()
         val accessToken = jwtProvider.createAccessToken(now, email, deviceId)
-        val refreshToken = jwtProvider.createRefreshToken(now, email, deviceId)
-
-        val saveRefreshToken =
-            Mono.fromCallable { refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken) }
-                .subscribeOn(Schedulers.boundedElastic())
-
-        val cleanupRefreshToken = Mono.fromCallable { refreshTokenService.removeOldestTokenIfLimitExceeded(email) }
+        val refreshTokenMono = jwtProvider.createRefreshToken(now, email, deviceId)
             .subscribeOn(Schedulers.boundedElastic())
 
-        return saveRefreshToken
-            .then(cleanupRefreshToken)
-            .then(Mono.just(Pair(refreshToken, accessToken)))
+        return refreshTokenMono.flatMap { refreshToken ->
+            refreshTokenService
+                .upsertRefreshToken(email, deviceId, refreshToken)
+                .then(refreshTokenService.removeOldestTokenIfLimitExceeded(email))
+                .thenReturn(Pair(refreshToken, accessToken))
+        }.subscribeOn(Schedulers.boundedElastic())
     }
 }

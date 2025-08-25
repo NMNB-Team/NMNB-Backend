@@ -6,6 +6,8 @@ import nmnb.common.properties.JwtProperties
 import nmnb.common.security.jwt.BaseJwtProvider
 import nmnb.common.utils.JwtConstants.EMAIL_CLAIM_KEY
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -15,10 +17,10 @@ class JwtProvider(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtProperties: JwtProperties,
 ) : BaseJwtProvider(jwtProperties) {
-    override fun createRefreshToken(now: Instant, email: String, deviceId: String): String {
+    override fun createRefreshToken(now: Instant, email: String, deviceId: String): Mono<String> {
         val refreshToken = generateJwt(now, email, jwtProperties.refreshExpirationTime)
-        saveRefreshToken(email, deviceId, refreshToken, now)
-        return refreshToken
+        return saveRefreshToken(email, deviceId, refreshToken, now)
+            .thenReturn(refreshToken)
     }
 
     private fun saveRefreshToken(
@@ -26,7 +28,7 @@ class JwtProvider(
         deviceId: String,
         refreshToken: String,
         now: Instant?,
-    ) {
+    ): Mono<Void> {
         val redisKey = "$email:$deviceId"
         val timeStamp = now?.atZone(ZoneId.systemDefault())?.toLocalDateTime()
             ?: LocalDateTime.now()
@@ -38,7 +40,9 @@ class JwtProvider(
             timeStamp = timeStamp,
             deviceId = deviceId,
         )
-        refreshTokenRepository.save(token)
+        return Mono.fromCallable { refreshTokenRepository.save(token) }
+            .subscribeOn(Schedulers.boundedElastic())
+            .then()
     }
 
     fun isValidToken(token: String): Boolean {

@@ -29,7 +29,7 @@ abstract class BaseJwtProvider(
     fun createAccessToken(now: Instant, email: String, deviceId: String) =
         generateJwt(now, email, jwtProperties.accessExpirationTime, deviceId)
 
-    fun createRefreshToken(now: Instant, email: String, deviceId: String): String {
+    fun createRefreshToken(now: Instant, email: String, deviceId: String): Any {
         return generateJwt(now, email, jwtProperties.refreshExpirationTime)
     }
 
