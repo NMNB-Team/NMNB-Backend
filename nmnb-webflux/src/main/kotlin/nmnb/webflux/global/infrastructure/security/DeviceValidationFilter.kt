@@ -62,6 +62,6 @@ class DeviceValidationFilter(
             }
         }
 
-        return Mono.error(GeneralException(ErrorStatus.AUTH_INVALID_TOKEN))
+        return chain.filter(exchange)
     }
 }
