@@ -1,5 +1,6 @@
 package nmnb.webflux
 
+import nmnb.common.auth.repository.RefreshTokenRepository
 import nmnb.r2dbc.user.R2dbcUserRepository
 import nmnb.webflux.domain.post.controller.PostController
 import nmnb.webflux.domain.post.service.PostUploadService
@@ -29,6 +30,9 @@ abstract class ControllerTestSupport {
 
     @MockBean
     protected lateinit var userRepository: R2dbcUserRepository
+
+    @MockBean
+    protected lateinit var refreshTokenRepository: RefreshTokenRepository
 
     @MockBean
     protected lateinit var postUploadService: PostUploadService

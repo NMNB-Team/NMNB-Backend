@@ -1,6 +1,7 @@
 package nmnb.webflux.domain.post.service
 
 import kotlinx.coroutines.test.runTest
+import nmnb.common.auth.repository.RefreshTokenRepository
 import nmnb.common.domain.AccessStrategy
 import nmnb.r2dbc.post.R2dbcPost
 import nmnb.r2dbc.post.R2dbcPostRepository
@@ -27,6 +28,9 @@ class PostUploadServiceImplTest : IntegrationTestSupport() {
 
     @MockBean
     lateinit var s3Service: S3Service
+
+    @MockBean
+    lateinit var refreshTokenRepository: RefreshTokenRepository
 
     @Autowired
     lateinit var postUploadService: PostUploadService
