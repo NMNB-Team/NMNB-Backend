@@ -9,11 +9,13 @@ import nmnb.webflux.global.handler.resolver.AuthUserArgumentResolver
 import nmnb.webflux.global.handler.resolver.ExtractDeviceIdArgumentResolver
 import nmnb.webflux.global.infrastructure.security.BlacklistService
 import nmnb.webflux.global.infrastructure.security.JwtProvider
+import nmnb.webflux.global.utils.ResponseUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Import
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @WebFluxTest(controllers = [PostController::class])
@@ -24,6 +26,12 @@ abstract class ControllerTestSupport {
 
     @Autowired
     protected lateinit var context: ApplicationContext
+
+    @MockBean
+    protected lateinit var responseUtils: ResponseUtils
+
+    @MockBean
+    lateinit var redisTemplate: RedisTemplate<String, String>
 
     @MockBean
     protected lateinit var jwtProvider: JwtProvider
