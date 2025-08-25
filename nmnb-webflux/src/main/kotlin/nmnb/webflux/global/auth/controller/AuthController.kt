@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono
 
 @RestController
 @Tag(name = "Auth 🔐", description = "인증 관련 API")
-@RequestMapping("/v1/api/auth")
+@RequestMapping("/netty/v1/api/auth")
 class AuthController(
     val authService: AuthService,
 ) {
