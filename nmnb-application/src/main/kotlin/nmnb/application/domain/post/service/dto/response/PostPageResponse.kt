@@ -20,6 +20,7 @@ data class PostPageResponse(
 }
 
 data class PostInfoResponse(
+    val userId: String?,
     val postId: Long?,
     val url: String,
     val thumbnailUrl: String,
@@ -29,6 +30,7 @@ data class PostInfoResponse(
     companion object {
         fun of(post: Post): PostInfoResponse {
             return PostInfoResponse(
+                userId = post.user.id,
                 postId = post.id,
                 url = post.url,
                 thumbnailUrl = post.thumbnailUrl,

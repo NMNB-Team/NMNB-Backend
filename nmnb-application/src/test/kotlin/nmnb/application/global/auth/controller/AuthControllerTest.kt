@@ -3,7 +3,6 @@ package nmnb.application.global.auth.controller
 import nmnb.application.ControllerTestSupport
 import nmnb.application.global.auth.service.dto.response.AuthTokenResponse
 import nmnb.common.response.status.SuccessStatus
-import nmnb.common.utils.JwtConstants.DEVICE_ID_CLAIM_KEY
 import nmnb.domain.user.User
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -114,11 +113,5 @@ class AuthControllerTest() : ControllerTestSupport() {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
-    }
-
-    private fun mockUserAuthentication(user: User, accessToken: String, deviceId: String) {
-        whenever(jwtProvider.getEmailWithValidation(accessToken)).thenReturn(user.email)
-        whenever(userRepository.findByEmail(user.email)).thenReturn(user)
-        whenever(jwtProvider.getClaimFromToken(accessToken, DEVICE_ID_CLAIM_KEY)).thenReturn(deviceId)
     }
 }

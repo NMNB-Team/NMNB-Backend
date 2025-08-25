@@ -42,6 +42,14 @@ enum class ErrorStatus(
     PET_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "PET400", "반려동물 이름은 필수입니다."),
     PET_REGISTRATION_REQUIRED(HttpStatus.BAD_REQUEST, "PET401", "반려동물 등록이 필요합니다."),
     INVALID_PET_STATUS(HttpStatus.BAD_REQUEST, "PET402", "반려동물 상태 값이 유효하지 않습니다."),
+
+    // REPORT
+    INVALID_POST_TARGET_ID(HttpStatus.NOT_FOUND, "REPORT401", "유효한 Post 아이디가 아닙니다."),
+    CANNOT_REPORT_SELF(HttpStatus.BAD_REQUEST, "REPORT402", "본인을 신고할 수 없습니다."),
+    ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "REPORT403", "이미 신고한적이 있습니다."),
+
+    // BLOCK
+    ALREADY_BLOCKED(HttpStatus.BAD_REQUEST, "BLOCK400", "이미 차단한적이 있습니다."),
     ;
 
     override fun getReasonHttpStatus(): ErrorReasonDTO {
