@@ -22,6 +22,10 @@ class SecurityConfig(
         "/netty/v1/api/upload",
     )
 
+    val allowedUrl: Array<String> = arrayOf(
+        "/netty/v1/api/auth/login/apple",
+    )
+
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         http.csrf { it.disable() }
@@ -36,6 +40,8 @@ class SecurityConfig(
             it.pathMatchers(*SecurityConstants.SWAGGER_PATHS.map { path -> "$path/**" }.toTypedArray()).permitAll()
                 .pathMatchers(*userUrl)
                 .hasRole("USER")
+                .pathMatchers(*allowedUrl)
+                .permitAll()
                 .anyExchange().authenticated()
         }
 
