@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.ReactiveTransactionManager
 import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.time.Instant
 
@@ -87,8 +88,16 @@ class AuthServiceImpl(
         val now = Instant.now()
         val accessToken = jwtProvider.createAccessToken(now, email, deviceId)
         val refreshToken = jwtProvider.createRefreshToken(now, email, deviceId)
-        return refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken)
-            .then(refreshTokenService.removeOldestTokenIfLimitExceeded(email))
+
+        val saveRefreshToken =
+            Mono.fromCallable { refreshTokenService.upsertRefreshToken(email, deviceId, refreshToken) }
+                .subscribeOn(Schedulers.boundedElastic())
+
+        val cleanupRefreshToken = Mono.fromCallable { refreshTokenService.removeOldestTokenIfLimitExceeded(email) }
+            .subscribeOn(Schedulers.boundedElastic())
+
+        return saveRefreshToken
+            .then(cleanupRefreshToken)
             .then(Mono.just(Pair(refreshToken, accessToken)))
     }
 }
