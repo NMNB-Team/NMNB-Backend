@@ -1,6 +1,7 @@
 package nmnb.webflux.global.infrastructure.external.s3
 
 import kotlinx.coroutines.test.runTest
+import nmnb.common.auth.repository.RefreshTokenRepository
 import nmnb.common.domain.AccessStrategy
 import nmnb.webflux.IntegrationTestSupport
 import org.assertj.core.api.Assertions.assertThat
@@ -10,6 +11,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
@@ -19,6 +21,9 @@ import java.io.File
 class S3ServiceTest(
     @Autowired private val s3Service: S3Service,
 ) : IntegrationTestSupport() {
+    @MockBean
+    private lateinit var refreshTokenRepository: RefreshTokenRepository
+
     @DisplayName("게시글을 S3에 업로드한 후, Url을 응답하는데 성공한다")
     @Test
     fun upload() = runTest {

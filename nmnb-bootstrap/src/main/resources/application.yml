@@ -22,6 +22,14 @@ cloud:
 jwt:
   secret: ${JWT_SECRET_KEY}
 
+apple:
+  client-id: ${APPLE_CLIENT_ID}
+  team-id: ${APPLE_TEAM_ID}
+  key-id: ${APPLE_KEY_ID}
+  key-path: ${APPLE_KEY_PATH}
+  token-expiration: ${APPLE_TOKEN_EXPIRATION_TIME}
+  jwt-set-url: ${JWT_SET_URL}
+
 springdoc:
   swagger-ui:
     tagsSorter: alpha

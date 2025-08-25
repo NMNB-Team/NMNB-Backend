@@ -8,7 +8,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 
-@EnableRedisRepositories(basePackages = ["nmnb.domain"])
+@EnableRedisRepositories(basePackages = ["nmnb.common.auth.repository"])
 @Configuration
 class RedisConfig(
     @Value("\${spring.data.redis.host}")

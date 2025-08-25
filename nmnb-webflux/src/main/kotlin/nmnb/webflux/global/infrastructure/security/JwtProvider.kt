@@ -1,24 +1,49 @@
 package nmnb.webflux.global.infrastructure.security
 
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.UnsupportedJwtException
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
-import nmnb.common.response.exception.AuthException
-import nmnb.common.response.status.ErrorStatus
+import nmnb.common.auth.RefreshToken
+import nmnb.common.auth.repository.RefreshTokenRepository
+import nmnb.common.properties.JwtProperties
+import nmnb.common.security.jwt.BaseJwtProvider
 import nmnb.common.utils.JwtConstants.EMAIL_CLAIM_KEY
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.security.SignatureException
+import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Component
 class JwtProvider(
-    @Value("\${jwt.secret}") private val secret: String,
-) {
-    private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)) }
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val jwtProperties: JwtProperties,
+) : BaseJwtProvider(jwtProperties) {
+    override fun createRefreshToken(now: Instant, email: String, deviceId: String): Mono<String> {
+        val refreshToken = generateJwt(now, email, jwtProperties.refreshExpirationTime)
+        return saveRefreshToken(email, deviceId, refreshToken, now)
+            .thenReturn(refreshToken)
+    }
+
+    private fun saveRefreshToken(
+        email: String,
+        deviceId: String,
+        refreshToken: String,
+        now: Instant?,
+    ): Mono<Void> {
+        val redisKey = "$email:$deviceId"
+        val timeStamp = now?.atZone(ZoneId.systemDefault())?.toLocalDateTime()
+            ?: LocalDateTime.now()
+
+        val token = RefreshToken(
+            id = redisKey,
+            email = email,
+            refreshToken = refreshToken,
+            timeStamp = timeStamp,
+            deviceId = deviceId,
+        )
+        return Mono.fromCallable { refreshTokenRepository.save(token) }
+            .subscribeOn(Schedulers.boundedElastic())
+            .then()
+    }
 
     fun isValidToken(token: String): Boolean {
         val claims = parseClaims(token)
@@ -28,29 +53,5 @@ class JwtProvider(
 
     fun getEmail(token: String): String {
         return parseClaims(token).get(EMAIL_CLAIM_KEY, String::class.java)
-    }
-
-    fun getClaimFromToken(token: String, claimKey: String): Any? {
-        val claims = parseClaims(token)
-        return claims[claimKey]
-    }
-    private fun parseClaims(token: String): Claims {
-        try {
-            return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .body
-        } catch (e: ExpiredJwtException) {
-            throw AuthException(ErrorStatus.AUTH_EXPIRED_TOKEN)
-        } catch (e: UnsupportedJwtException) {
-            throw AuthException(ErrorStatus.UNSUPPORTED_TOKEN)
-        } catch (e: MalformedJwtException) {
-            throw AuthException(ErrorStatus.AUTH_INVALID_TOKEN)
-        } catch (e: SignatureException) {
-            throw AuthException(ErrorStatus.AUTH_INVALID_TOKEN)
-        } catch (e: IllegalArgumentException) {
-            throw AuthException(ErrorStatus.AUTH_EMPTY_TOKEN)
-        }
     }
 }
