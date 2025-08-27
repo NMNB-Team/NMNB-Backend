@@ -51,7 +51,7 @@ class PostServiceImpl(
 
     private fun verifyPost(userId: String, post: Post) {
         if (post.userId != userId) {
-            throw PostException(ErrorStatus.POST_FORBIDDEN)
+            throw PostException(ErrorStatus.AUTHOR_MISMATCH)
         }
     }
 
