@@ -32,6 +32,9 @@ class Post(
     @Column(name = "post_id")
     val id: Long? = null
 
+    val userId: String?
+        get() = user.id
+
     companion object {
         fun fixture(
             url: String = "url",
