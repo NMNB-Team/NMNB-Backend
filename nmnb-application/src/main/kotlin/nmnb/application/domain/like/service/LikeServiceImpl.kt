@@ -2,6 +2,7 @@ package nmnb.application.domain.like.service
 
 import nmnb.application.domain.like.service.dto.request.PostLikeServiceRequest
 import nmnb.domain.like.LikeCacheKey
+import nmnb.domain.like.repository.LikeRepository
 import nmnb.domain.user.User
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 @Service
 class LikeServiceImpl(
+    private val likeRepository: LikeRepository,
     private val likeAsyncService: LikeAsyncService,
     private val redisTemplate: StringRedisTemplate,
 ) : LikeService {
@@ -25,6 +27,10 @@ class LikeServiceImpl(
             setLikeCache(likeCacheKey)
             likeAsyncService.saveLikeToDB(user, request.postId)
         }
+    }
+
+    override fun deleteByPostId(postId: Long) {
+        likeRepository.deleteAllByPostId(postId)
     }
 
     private fun setLikeCache(likeCacheKey: LikeCacheKey) {
