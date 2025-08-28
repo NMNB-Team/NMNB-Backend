@@ -1,12 +1,16 @@
 package nmnb.application.domain.post.service
 
+import nmnb.application.domain.like.service.LikeService
 import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
 import nmnb.application.domain.post.service.dto.response.PostInfoResponse
 import nmnb.application.domain.post.service.dto.response.PostPageResponse
 import nmnb.application.domain.post.utils.RandomSelector
+import nmnb.common.response.exception.PostException
+import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.block.repository.BlockRepository
 import nmnb.domain.post.Post
 import nmnb.domain.post.repository.PostRepository
+import nmnb.domain.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,6 +20,7 @@ class PostServiceImpl(
     private val postRepository: PostRepository,
     private val blockRepository: BlockRepository,
     private val postCacheService: PostCacheService,
+    private val likeService: LikeService,
 ) : PostService {
     override fun getPostPage(userId: String?, request: PostPageServiceRequest): PostPageResponse {
         postCacheService.refreshPostcache(request)
@@ -27,6 +32,28 @@ class PostServiceImpl(
         val extractedIds = RandomSelector.extractPageIds(shuffledPostIds, startIndex, request.size)
 
         return toPostPageResponse(extractedIds, shuffledPostIds, startIndex)
+    }
+
+    @Transactional
+    override fun deletePost(user: User, postId: Long) {
+        val post = getPost(postId)
+        verifyPost(user.id!!, post)
+
+        deletePostWithLike(postId, post)
+    }
+
+    private fun deletePostWithLike(postId: Long, post: Post) {
+        likeService.deleteByPostId(postId)
+        postRepository.delete(post)
+    }
+
+    private fun getPost(postId: Long): Post = postRepository.findById(postId)
+        .orElseThrow { throw PostException(ErrorStatus.POST_NOTFOUND) }
+
+    private fun verifyPost(userId: String, post: Post) {
+        if (post.userId != userId) {
+            throw PostException(ErrorStatus.AUTHOR_MISMATCH)
+        }
     }
 
     private fun getFilteredPostIds(userId: String?): List<Long> {

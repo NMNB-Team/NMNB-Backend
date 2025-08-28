@@ -13,7 +13,9 @@ import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -43,6 +45,26 @@ class PostController(
         return BaseResponse.onSuccess(
             SuccessStatus.OK,
             postService.getPostPage(user?.id, PostPageServiceRequest(seed, cursor, size)),
+        )
+    }
+
+    @Operation(
+        summary = "게시글 삭제 API",
+        description = "본인이 작성한 게시글을 삭제합니다.",
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "COMMON202", description = "요청 성공 및 반환할 콘텐츠가 없음"),
+        ApiResponse(responseCode = "POST400", description = "게시물을 찾을 수 없습니다."),
+        ApiResponse(responseCode = "POST401", description = "본인이 작성한 게시글이 아닙니다."),
+    )
+    @DeleteMapping("/videos/{postId}")
+    fun deletePost(
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+        @PathVariable(name = "postId") postId: Long,
+    ): BaseResponse<Any> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.NO_CONTENT,
+            postService.deletePost(user, postId),
         )
     }
 }
