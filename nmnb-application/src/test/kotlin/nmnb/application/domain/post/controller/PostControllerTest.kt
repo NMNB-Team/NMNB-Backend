@@ -86,7 +86,7 @@ class PostControllerTest : ControllerTestSupport() {
                 .header("Device-Id", deviceId)
                 .with(csrf()),
 
-            )
+        )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value(SuccessStatus.NO_CONTENT.code))
     }

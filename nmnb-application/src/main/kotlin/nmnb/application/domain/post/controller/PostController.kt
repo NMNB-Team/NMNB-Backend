@@ -29,9 +29,9 @@ class PostController(
     @Operation(
         summary = "게시글 랜덤 조회 API",
         description = "메인화면의 영상을 조회합니다. " +
-                "기본 7개가 조회되며, 마지막으로 조회된 cursor값을 request로 받습니다." +
-                "`seed` 값은 메인 화면에 처음 접근할 때 클라이언트가 랜덤으로 생성하여 사용해야 합니다. " +
-                "이후 이어지는 요청에서는 처음 생성한 동일한 `seed`값을 계속 사용하여, 랜덤 순서가 고정된 상태로 페이징 조회를 이어갈 수 있습니다._숙희",
+            "기본 7개가 조회되며, 마지막으로 조회된 cursor값을 request로 받습니다." +
+            "`seed` 값은 메인 화면에 처음 접근할 때 클라이언트가 랜덤으로 생성하여 사용해야 합니다. " +
+            "이후 이어지는 요청에서는 처음 생성한 동일한 `seed`값을 계속 사용하여, 랜덤 순서가 고정된 상태로 페이징 조회를 이어갈 수 있습니다._숙희",
     )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @TokenApiResponse
