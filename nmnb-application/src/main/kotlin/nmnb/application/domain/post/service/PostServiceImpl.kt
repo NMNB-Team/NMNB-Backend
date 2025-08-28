@@ -10,6 +10,7 @@ import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.block.repository.BlockRepository
 import nmnb.domain.post.Post
 import nmnb.domain.post.repository.PostRepository
+import nmnb.domain.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -34,9 +35,9 @@ class PostServiceImpl(
     }
 
     @Transactional
-    override fun deletePost(userId: String, postId: Long) {
+    override fun deletePost(user: User, postId: Long) {
         val post = getPost(postId)
-        verifyPost(userId, post)
+        verifyPost(user.id!!, post)
 
         deletePostWithLike(postId, post)
     }
