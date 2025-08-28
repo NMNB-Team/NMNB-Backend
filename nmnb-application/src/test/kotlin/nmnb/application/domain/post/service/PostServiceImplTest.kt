@@ -198,7 +198,7 @@ class PostServiceImplTest(
         assertThat(likeRepository.findAllByPostId(post.id!!)).size().isEqualTo(2)
 
         // when
-        postService.deletePost(writer.id!!, post.id!!)
+        postService.deletePost(writer, post.id!!)
 
         // then
         assertThat(postRepository.findById(post.id!!)).isEmpty
@@ -210,9 +210,10 @@ class PostServiceImplTest(
     fun deletePostFailsForNonAuthor() {
         // given
         val writer = User.fixture()
+        val writer2 = User.fixture()
         val likedBy1 = User.fixture()
         val likedBy2 = User.fixture()
-        userRepository.saveAll(listOf(writer, likedBy1, likedBy2))
+        userRepository.saveAll(listOf(writer, writer2, likedBy1, likedBy2))
 
         val post = Post.fixture(url = "url1", user = writer)
         postRepository.save(post)
@@ -229,7 +230,7 @@ class PostServiceImplTest(
 
         // when
         val exception = assertThrows<PostException> {
-            postService.deletePost(writer.id!!, post.id!!)
+            postService.deletePost(writer2, post.id!!)
         }
 
         // then
