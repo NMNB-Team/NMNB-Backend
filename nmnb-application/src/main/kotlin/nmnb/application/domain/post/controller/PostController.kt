@@ -73,7 +73,7 @@ class PostController(
 
     @Operation(
         summary = "내 게시글 조회 API",
-        description = "본인이 작성한 게시글을 조회합니다. cursorId가 -1일 경우 최초 조회에 해당합니다.",
+        description = "본인이 작성한 게시글을 조회합니다. cursorId가 -1일 경우 최초 조회에 해당합니다._숙희",
     )
     @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
     @GetMapping("/users/me/videos")
