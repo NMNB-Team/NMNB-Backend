@@ -6,12 +6,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.domain.post.service.PostService
+import nmnb.application.domain.post.service.dto.request.MyPostPageServiceRequest
 import nmnb.application.domain.post.service.dto.request.PostPageServiceRequest
+import nmnb.application.domain.post.service.dto.response.MyPostPageResponse
 import nmnb.application.domain.post.service.dto.response.PostPageResponse
 import nmnb.application.global.auth.generator.annotation.TokenApiResponse
 import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
+import nmnb.domain.post.SortType
 import nmnb.domain.user.User
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -65,6 +68,24 @@ class PostController(
         return BaseResponse.onSuccess(
             SuccessStatus.NO_CONTENT,
             postService.deletePost(user, postId),
+        )
+    }
+
+    @Operation(
+        summary = "내 게시글 조회 API",
+        description = "본인이 작성한 게시글을 조회합니다. cursorId가 -1일 경우 최초 조회에 해당합니다.",
+    )
+    @ApiResponses(ApiResponse(responseCode = "COMMON200", description = "성공입니다."))
+    @GetMapping("/users/me/videos")
+    fun getMyPosts(
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+        @RequestParam(required = false, defaultValue = "-1") cursorId: Long,
+        @RequestParam(required = false, defaultValue = "9") size: Int,
+        @RequestParam(required = false, defaultValue = "RECENT") sortType: SortType,
+    ): BaseResponse<MyPostPageResponse> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.OK,
+            postService.getMyPost(user, MyPostPageServiceRequest(cursorId, size, sortType)),
         )
     }
 }
