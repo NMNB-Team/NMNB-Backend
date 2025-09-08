@@ -90,4 +90,27 @@ class PostControllerTest : ControllerTestSupport() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value(SuccessStatus.NO_CONTENT.code))
     }
+
+    @WithMockUser
+    @DisplayName("내 게시글 조회 요청에 성공한다.")
+    @Test
+    fun getMyPost() {
+        val deviceId = "deviceId"
+        val accessToken = "access.token"
+        val user = User.fixture()
+
+        mockUserAuthentication(user, accessToken, deviceId)
+
+        doNothing().whenever(postService).deletePost(any(), anyLong())
+
+        mockMvc.perform(
+            get("/v1/api/users/me/videos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Access-Token", accessToken)
+                .header("Device-Id", deviceId)
+                .with(csrf()),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
+    }
 }

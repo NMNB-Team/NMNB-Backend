@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono
 class AuthController(
     val authService: AuthService,
 ) {
-    @Operation(summary = "Apple 소셜 로그인 API", description = "Apple 로그인 또는 회원가입을 수행합니다._예림")
+    @Operation(summary = "Apple 소셜 로그인 API", description = "Apple 로그인 또는 회원가입을 수행합니다._숙희")
     @ApiResponses(
         ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
         ApiResponse(responseCode = "AUTH413", description = "애플 ID 토큰에 이메일 정보가 없습니다."),
