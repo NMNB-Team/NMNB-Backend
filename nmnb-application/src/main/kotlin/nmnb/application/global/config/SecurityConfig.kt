@@ -34,6 +34,7 @@ class SecurityConfig(
         "/v1/api/reports",
         "/v1/api/users/blocks",
         "/v1/api/videos/**",
+        "/v1/api/users/me/videos",
     )
 
     @Bean
