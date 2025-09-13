@@ -29,6 +29,8 @@ data class R2dbcUser(
     @Column("sign_up_status")
     var signUpStatus: SignUpStatus = SignUpStatus.IN_PROGRESS,
 ) : R2dbcBaseEntity() {
+    var deleted: Boolean = false
+
     companion object {
         fun fixture(
             email: String = "${UUID.randomUUID()}@example.com",

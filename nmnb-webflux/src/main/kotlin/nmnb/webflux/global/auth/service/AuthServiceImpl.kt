@@ -3,12 +3,14 @@ package nmnb.webflux.global.auth.service
 import nmnb.common.properties.S3Properties
 import nmnb.common.response.exception.AuthException
 import nmnb.common.response.status.ErrorStatus
+import nmnb.r2dbc.user.CustomIdGenerator
 import nmnb.r2dbc.user.R2dbcUser
 import nmnb.r2dbc.user.R2dbcUserRepository
 import nmnb.webflux.global.auth.service.dto.request.AppleLoginServiceRequest
 import nmnb.webflux.global.auth.service.dto.response.AuthUserResponse
 import nmnb.webflux.global.infrastructure.security.JwtProvider
 import nmnb.webflux.global.properties.AppleProperties
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.ReactiveTransactionManager
@@ -27,6 +29,7 @@ class AuthServiceImpl(
     private val userRepository: R2dbcUserRepository,
     private val refreshTokenService: RefreshTokenService,
     transactionalManager: ReactiveTransactionManager,
+    private val r2dbcEntityTemplate: R2dbcEntityTemplate,
 ) : AuthService {
 
     private val txOperator = TransactionalOperator.create(transactionalManager)
@@ -62,8 +65,15 @@ class AuthServiceImpl(
         claims["email"] as? String
             ?: throw AuthException(ErrorStatus.MISSING_EMAIL_CLAIM)
 
-        if (claims["aud"] as? String != appleProperties.clientId) {
-            throw AuthException(ErrorStatus.INVALID_ID_TOKEN_AUDIENCE)
+        val aud = claims["aud"]
+        if (aud is Array<*>) {
+            if (!aud.contains(appleProperties.clientId)) {
+                throw AuthException(ErrorStatus.INVALID_ID_TOKEN_AUDIENCE)
+            }
+        } else if (aud is String) {
+            if (aud != appleProperties.clientId) {
+                throw AuthException(ErrorStatus.INVALID_ID_TOKEN_AUDIENCE)
+            }
         }
         if (claims["iss"] as? String != "https://appleid.apple.com") {
             throw AuthException(ErrorStatus.INVALID_ID_TOKEN_ISSUER)
@@ -76,12 +86,13 @@ class AuthServiceImpl(
     }
 
     private fun createUser(email: String): Mono<R2dbcUser> {
-        return userRepository.save(
-            R2dbcUser(
-                email = email,
-                profileImage = s3Properties.s3.defaultProfileImageUrl,
-            ),
+        val newUser = R2dbcUser(
+            id = CustomIdGenerator.generateId(),
+            email = email,
+            profileImage = s3Properties.s3.defaultProfileImageUrl,
         )
+        return r2dbcEntityTemplate.insert(R2dbcUser::class.java)
+            .using(newUser)
     }
 
     private fun issueNewToken(email: String, deviceId: String): Mono<Pair<String, String>> {
