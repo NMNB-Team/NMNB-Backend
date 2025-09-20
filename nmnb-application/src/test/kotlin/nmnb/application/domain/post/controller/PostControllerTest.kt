@@ -5,13 +5,18 @@ import nmnb.application.domain.post.service.dto.response.PostPageResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.Mockito.doNothing
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.whenever
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -60,5 +65,52 @@ class PostControllerTest : ControllerTestSupport() {
             .andExpect(jsonPath("$.result.postInfo").isArray)
             .andExpect(jsonPath("$.result.hasNext").value(false))
             .andExpect(jsonPath("$.result.nextCursor").value(1))
+    }
+
+    @WithMockUser
+    @DisplayName("게시글 삭제 요청에 성공한다.")
+    @Test
+    fun deletePost() {
+        val deviceId = "deviceId"
+        val accessToken = "access.token"
+        val user = User.fixture()
+
+        mockUserAuthentication(user, accessToken, deviceId)
+
+        doNothing().whenever(postService).deletePost(any(), anyLong())
+
+        mockMvc.perform(
+            delete("/v1/api/videos/{postId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Access-Token", accessToken)
+                .header("Device-Id", deviceId)
+                .with(csrf()),
+
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.NO_CONTENT.code))
+    }
+
+    @WithMockUser
+    @DisplayName("내 게시글 조회 요청에 성공한다.")
+    @Test
+    fun getMyPost() {
+        val deviceId = "deviceId"
+        val accessToken = "access.token"
+        val user = User.fixture()
+
+        mockUserAuthentication(user, accessToken, deviceId)
+
+        doNothing().whenever(postService).deletePost(any(), anyLong())
+
+        mockMvc.perform(
+            get("/v1/api/users/me/videos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Access-Token", accessToken)
+                .header("Device-Id", deviceId)
+                .with(csrf()),
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(SuccessStatus.OK.code))
     }
 }

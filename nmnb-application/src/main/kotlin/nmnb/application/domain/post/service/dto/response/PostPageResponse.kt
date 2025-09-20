@@ -19,6 +19,26 @@ data class PostPageResponse(
     }
 }
 
+data class MyPostPageResponse(
+    val postInfo: List<PostInfoResponse>,
+    val hasNext: Boolean,
+    val nextCursorId: Long?,
+) {
+    companion object {
+        fun of(
+            postInfo: List<PostInfoResponse>,
+            hasNext: Boolean,
+            nextCursorId: Long?,
+        ): MyPostPageResponse {
+            return MyPostPageResponse(
+                postInfo = postInfo,
+                hasNext = hasNext,
+                nextCursorId = nextCursorId,
+            )
+        }
+    }
+}
+
 data class PostInfoResponse(
     val userId: String?,
     val postId: Long?,

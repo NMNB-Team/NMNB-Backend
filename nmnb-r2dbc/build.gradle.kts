@@ -10,6 +10,9 @@ dependencies {
     // r2dbc-mysql
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("io.asyncer:r2dbc-mysql:1.4.0")
+
+    // Nanoid
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 }
 
 tasks.bootJar {

@@ -28,11 +28,15 @@ enum class ErrorStatus(
     DEVICE_ID_MISSING(HttpStatus.UNAUTHORIZED, "AUTH409", "디바이스 기기 정보가 요청에 포함되어 있지 않습니다."),
     AUTH_REFRESH_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "AUTH410", "Refresh Token이 요청에 포함되어 있지 않습니다."),
     TOKEN_LOGGED_OUT(HttpStatus.FORBIDDEN, "AUTH411", "이미 로그아웃되어 무효화된 토큰입니다."),
+    MISSING_EMAIL_CLAIM(HttpStatus.BAD_REQUEST, "AUTH412", "애플 ID 토큰에 이메일 정보가 없습니다."),
+    INVALID_ID_TOKEN_ISSUER(HttpStatus.BAD_REQUEST, "AUTH413", "애플 ID 토큰의 발행자가 유효하지 않습니다."),
+    INVALID_ID_TOKEN_AUDIENCE(HttpStatus.BAD_REQUEST, "AUTH414", "애플 ID 토큰의 수신자가 유효하지 않습니다."),
 
     // POST
     POST_NOTFOUND(HttpStatus.NOT_FOUND, "POST400", "게시물을 찾을 수 없습니다."),
     POST_THUMBNAIL_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST500", "영상 썸네일 생성 중 오류가 발생했습니다."),
     S3_DOWNLOAD_POST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST501", "영상을 다운로드하는 데 실패했습니다"),
+    AUTHOR_MISMATCH(HttpStatus.FORBIDDEN, "POST401", "본인이 작성한 게시글이 아닙니다."),
 
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER400", "사용자를 찾을 수 없습니다."),

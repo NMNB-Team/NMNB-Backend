@@ -1,6 +1,6 @@
-package nmnb.domain.auth.repository
+package nmnb.common.auth.repository
 
-import nmnb.domain.auth.RefreshToken
+import nmnb.common.auth.RefreshToken
 import org.springframework.data.repository.CrudRepository
 
 interface RefreshTokenRepository : CrudRepository<RefreshToken, String>
