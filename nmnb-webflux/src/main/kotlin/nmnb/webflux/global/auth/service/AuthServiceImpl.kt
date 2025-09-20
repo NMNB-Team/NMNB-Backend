@@ -89,7 +89,9 @@ class AuthServiceImpl(
             profileImage = s3Properties.s3.defaultProfileImageUrl,
         )
         return r2dbcEntityTemplate.insert(newUser)
-    }
+            .onErrorMap { throwable ->
+                AuthException(ErrorStatus.USER_CREATION_FAILED)
+            } }
 
     private fun issueNewToken(email: String, deviceId: String): Mono<Pair<String, String>> {
         val now = Instant.now()

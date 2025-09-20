@@ -31,6 +31,7 @@ enum class ErrorStatus(
     MISSING_EMAIL_CLAIM(HttpStatus.BAD_REQUEST, "AUTH412", "애플 ID 토큰에 이메일 정보가 없습니다."),
     INVALID_ID_TOKEN_ISSUER(HttpStatus.BAD_REQUEST, "AUTH413", "애플 ID 토큰의 발행자가 유효하지 않습니다."),
     INVALID_ID_TOKEN_AUDIENCE(HttpStatus.BAD_REQUEST, "AUTH414", "애플 ID 토큰의 수신자가 유효하지 않습니다."),
+    USER_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH501", "사용자 생성 중 오류가 발생했습니다."),
 
     // POST
     POST_NOTFOUND(HttpStatus.NOT_FOUND, "POST400", "게시물을 찾을 수 없습니다."),
