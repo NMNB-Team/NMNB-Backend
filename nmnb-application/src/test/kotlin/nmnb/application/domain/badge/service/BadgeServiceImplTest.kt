@@ -1,6 +1,7 @@
 package nmnb.application.domain.badge.service
 
 import nmnb.application.IntegrationTestSupport
+import nmnb.common.response.exception.BadgeException
 import nmnb.domain.badge.Badge
 import nmnb.domain.badge.UserBadge
 import nmnb.domain.badge.repository.BadgeRepository
@@ -11,6 +12,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -116,5 +118,60 @@ class BadgeServiceImplTest : IntegrationTestSupport() {
 
         // then
         assertThat(result.badgeInfos).isEmpty()
+    }
+
+    @DisplayName("특정 배지 조회 - 미구매 상태로 반환")
+    @Test
+    fun getBadge_notPurchased() {
+        // given
+        val user = User.fixture()
+        userRepository.save(user)
+
+        val badge = Badge.fixture("단일 배지", 150, true)
+        badgeRepository.save(badge)
+
+        // when
+        val result = badgeService.getBadge(user.id!!, badge.id!!)
+
+        // then
+        assertThat(result.id).isEqualTo(badge.id)
+        assertThat(result.name).isEqualTo("단일 배지")
+        assertThat(result.price).isEqualTo(150)
+        assertThat(result.isPurchased).isFalse
+        assertThat(result.purchasedAt).isNull()
+    }
+
+    @DisplayName("특정 배지 조회 - 구매한 경우 구매 상태 및 구매일 포함")
+    @Test
+    fun getBadge_purchased() {
+        // given
+        val user = User.fixture()
+        userRepository.save(user)
+
+        val badge = Badge.fixture("단일 배지", 200, true)
+        badgeRepository.save(badge)
+
+        userBadgeRepository.save(UserBadge(user, badge, LocalDateTime.now().minusDays(1)))
+
+        // when
+        val result = badgeService.getBadge(user.id!!, badge.id!!)
+
+        // then
+        assertThat(result.id).isEqualTo(badge.id)
+        assertThat(result.isPurchased).isTrue
+        assertThat(result.purchasedAt).isNotNull
+    }
+
+    @DisplayName("특정 배지 조회 - 배지가 없으면 예외 발생")
+    @Test
+    fun getBadge_notFound() {
+        // given
+        val user = User.fixture()
+        userRepository.save(user)
+
+        // when & then
+        assertThrows<BadgeException> {
+            badgeService.getBadge(user.id!!, 9999L)
+        }
     }
 }
