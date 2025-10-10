@@ -35,7 +35,7 @@ class SecurityConfig(
         "/v1/api/users/blocks",
         "/v1/api/videos/**",
         "/v1/api/users/me/videos",
-        "/v1/api/badge",
+        "/v1/api/badge/**",
     )
 
     @Bean
