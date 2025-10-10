@@ -55,6 +55,9 @@ enum class ErrorStatus(
 
     // BLOCK
     ALREADY_BLOCKED(HttpStatus.BAD_REQUEST, "BLOCK400", "이미 차단한적이 있습니다."),
+
+    // BADGE
+    BADGE_NOTFOUND(HttpStatus.NOT_FOUND, "BADGE400", "뱃지를 찾을 수 없습니다."),
     ;
 
     override fun getReasonHttpStatus(): ErrorReasonDTO {
