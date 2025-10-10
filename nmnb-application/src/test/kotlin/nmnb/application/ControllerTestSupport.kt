@@ -1,6 +1,8 @@
 package nmnb.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import nmnb.application.domain.badge.controller.BadgeController
+import nmnb.application.domain.badge.service.BadgeService
 import nmnb.application.domain.block.controller.BlockController
 import nmnb.application.domain.block.service.UserBlockService
 import nmnb.application.domain.like.controller.LikeController
@@ -33,6 +35,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.servlet.MockMvc
 
 @WebMvcTest(
@@ -43,6 +46,7 @@ import org.springframework.test.web.servlet.MockMvc
         AuthController::class,
         ReportController::class,
         BlockController::class,
+        BadgeController::class,
     ],
 )
 @Import(
@@ -88,6 +92,9 @@ abstract class ControllerTestSupport {
     lateinit var userBlockService: UserBlockService
 
     @MockBean
+    lateinit var badgeService: BadgeService
+
+    @MockBean
     protected lateinit var userRepository: UserRepository
 
     @MockBean
@@ -101,6 +108,8 @@ abstract class ControllerTestSupport {
 
     fun mockUserAuthentication(user: User, accessToken: String, deviceId: String) {
         whenever(jwtProvider.getEmailWithValidation(accessToken)).thenReturn(user.email)
+        whenever(blacklistService.isBlacklisted(accessToken)).thenReturn(false)
+        ReflectionTestUtils.setField(user, "id", "test-user-id")
         whenever(userRepository.findByEmail(user.email)).thenReturn(user)
         whenever(jwtProvider.getClaimFromToken(accessToken, JwtConstants.DEVICE_ID_CLAIM_KEY)).thenReturn(deviceId)
     }
