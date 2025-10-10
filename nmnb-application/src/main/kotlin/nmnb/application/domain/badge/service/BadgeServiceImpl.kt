@@ -2,6 +2,8 @@ package nmnb.application.domain.badge.service
 
 import nmnb.application.domain.badge.controller.dto.response.BadgeInfoListResponse
 import nmnb.application.domain.badge.controller.dto.response.BadgeInfoResponse
+import nmnb.common.response.exception.BadgeException
+import nmnb.common.response.status.ErrorStatus
 import nmnb.domain.badge.Badge
 import nmnb.domain.badge.UserBadge
 import nmnb.domain.badge.repository.BadgeRepository
@@ -23,6 +25,29 @@ class BadgeServiceImpl(
         return createBadgeInfoListResponse(badges, userBadges)
     }
 
+    override fun getBadge(userId: String, badgeId: Long): BadgeInfoResponse {
+        val badge = badgeRepository.findById(badgeId)
+            .orElseThrow { BadgeException(ErrorStatus.BADGE_NOTFOUND) }
+
+        val userBadges = userBadgeService.findByUserId(userId)
+            .associateBy { it.badge.id }
+
+        return createBadgeInfoResponse(badge, userBadges)
+    }
+
+    private fun createBadgeInfoResponse(
+        badge: Badge,
+        userBadges: Map<Long?, UserBadge>,
+    ): BadgeInfoResponse {
+        val userBadge = userBadges[badge.id]
+
+        return BadgeInfoResponse.of(
+            badge = badge,
+            isPurchased = userBadge != null,
+            purchasedAt = userBadge?.purchasedAt,
+        )
+    }
+
     private fun createBadgeInfoListResponse(
         badges: List<Badge>,
         userBadges: Map<Long?, UserBadge>,
@@ -35,11 +60,6 @@ class BadgeServiceImpl(
         badges: List<Badge>,
         userBadges: Map<Long?, UserBadge>,
     ) = badges.map { badge ->
-        val userBadge = userBadges[badge.id]
-        BadgeInfoResponse.of(
-            badge = badge,
-            isPurchased = userBadge != null,
-            purchasedAt = userBadge?.purchasedAt,
-        )
+        createBadgeInfoResponse(badge, userBadges)
     }
 }
