@@ -30,4 +30,22 @@ class Badge(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "badge_id")
     val id: Long? = null
+
+    companion object {
+        fun fixture(
+            name: String = "Test Badge",
+            price: Int = 100,
+            active: Boolean = true,
+            description: String = "test badge",
+            imageUrl: String = "test.png",
+        ): Badge {
+            return Badge(
+                name = name,
+                description = description,
+                price = price,
+                imageUrl = imageUrl,
+                active = active,
+            )
+        }
+    }
 }
