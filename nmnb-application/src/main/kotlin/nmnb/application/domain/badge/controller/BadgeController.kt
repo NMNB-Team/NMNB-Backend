@@ -6,12 +6,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import nmnb.application.domain.badge.controller.dto.response.BadgeInfoListResponse
+import nmnb.application.domain.badge.controller.dto.response.BadgeInfoResponse
 import nmnb.application.domain.badge.service.BadgeService
 import nmnb.common.handler.annotation.AuthUser
 import nmnb.common.response.base.BaseResponse
 import nmnb.common.response.status.SuccessStatus
 import nmnb.domain.user.User
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -31,6 +33,22 @@ class BadgeController(
         return BaseResponse.onSuccess(
             SuccessStatus.OK,
             badgeService.getBadges(user.id!!),
+        )
+    }
+
+    @Operation(summary = "특정 뱃지 조회 API", description = "특정한 뱃지의 정보를 조회합니다._숙희")
+    @ApiResponses(
+        ApiResponse(responseCode = "COMMON200", description = "성공입니다."),
+        ApiResponse(responseCode = "BADGE400", description = "뱃지를 찾을 수 없습니다."),
+    )
+    @GetMapping("/badge/{badgeId}")
+    fun getBadge(
+        @PathVariable(name = "badgeId") badgeId: Long,
+        @Parameter(name = "user", hidden = true) @AuthUser user: User,
+    ): BaseResponse<BadgeInfoResponse> {
+        return BaseResponse.onSuccess(
+            SuccessStatus.OK,
+            badgeService.getBadge(user.id!!, badgeId),
         )
     }
 }
