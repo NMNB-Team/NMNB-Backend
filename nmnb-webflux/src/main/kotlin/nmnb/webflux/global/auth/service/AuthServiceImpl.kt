@@ -14,11 +14,11 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.ReactiveTransactionManager
-import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.time.Instant
+import java.time.LocalDateTime
 
 @Service
 class AuthServiceImpl(
@@ -31,9 +31,6 @@ class AuthServiceImpl(
     transactionalManager: ReactiveTransactionManager,
     private val r2dbcEntityTemplate: R2dbcEntityTemplate,
 ) : AuthService {
-
-    private val txOperator = TransactionalOperator.create(transactionalManager)
-
     override fun appleLogin(request: AppleLoginServiceRequest, deviceId: String): Mono<AuthUserResponse> {
         // 토큰 검증
         val claims = validateAppleIdToken(request.identityToken)
@@ -83,11 +80,15 @@ class AuthServiceImpl(
     }
 
     private fun createUser(email: String): Mono<R2dbcUser> {
+        val now = LocalDateTime.now()
         val newUser = R2dbcUser(
             id = CustomIdGenerator.generateId(),
             email = email,
             profileImage = s3Properties.s3.defaultProfileImageUrl,
-        )
+        ).apply {
+            createdAt = now
+            modifiedAt = now
+        }
         return r2dbcEntityTemplate.insert(newUser)
             .onErrorMap { throwable ->
                 AuthException(ErrorStatus.USER_CREATION_FAILED)
