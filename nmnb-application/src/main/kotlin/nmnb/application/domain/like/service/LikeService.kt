@@ -6,4 +6,5 @@ import nmnb.domain.user.User
 interface LikeService {
     fun likeOrUnlike(user: User, request: PostLikeServiceRequest)
     fun deleteByPostId(postId: Long)
+    fun isLikedByUser(userId: String, postId: Long): Boolean
 }
