@@ -33,6 +33,11 @@ class LikeServiceImpl(
         likeRepository.deleteAllByPostId(postId)
     }
 
+    override fun isLikedByUser(userId: String, postId: Long): Boolean {
+        val likeCacheKey = LikeCacheKey(userId, postId)
+        return redisTemplate.hasKey(likeCacheKey.key)
+    }
+
     private fun setLikeCache(likeCacheKey: LikeCacheKey) {
         redisTemplate.opsForValue().set(likeCacheKey.key, "1")
     }

@@ -34,7 +34,7 @@ class PostServiceImpl(
         val startIndex = request.cursor + 1
         val extractedIds = RandomSelector.extractPageIds(shuffledPostIds, startIndex, request.size)
 
-        return toPostPageResponse(extractedIds, shuffledPostIds, startIndex)
+        return toPostPageResponse(extractedIds, shuffledPostIds, startIndex, userId)
     }
 
     @Transactional
@@ -85,7 +85,7 @@ class PostServiceImpl(
         val content = if (hasNext) posts.dropLast(1) else posts
         val nextCursorId = if (hasNext) content.lastOrNull()?.id else -1
 
-        val postsResponse = content.map { post -> PostInfoResponse.of(post) }
+        val postsResponse = content.map { post -> PostInfoResponse.of(post, false) }
         return MyPostPageResponse.of(postsResponse, hasNext, nextCursorId)
     }
 
@@ -126,18 +126,21 @@ class PostServiceImpl(
         pageIds: List<Long>,
         shuffledPostIds: List<Long>,
         startIndex: Int,
+        userId: String?,
     ): PostPageResponse {
-        val postsInfoResponse = mapPostsToResponse(pageIds)
+        val postsInfoResponse = mapPostsToResponse(pageIds, userId)
         val hasNext = shuffledPostIds.size > (startIndex + pageIds.size)
         val nextCursor = if (!hasNext) INITIAL_CURSOR else startIndex + pageIds.size - 1
 
         return PostPageResponse.of(postsInfoResponse, hasNext, nextCursor)
     }
 
-    private fun mapPostsToResponse(pageIds: List<Long>): List<PostInfoResponse> {
+    private fun mapPostsToResponse(pageIds: List<Long>, userId: String?): List<PostInfoResponse> {
         val postsMap = fetchPostsByIds(pageIds)
         return pageIds.map { id ->
-            PostInfoResponse.of(postsMap[id]!!)
+            val post = postsMap[id]!!
+            val isLiked = userId?.let { likeService.isLikedByUser(it, id) } ?: false
+            PostInfoResponse.of(post, isLiked)
         }
     }
 

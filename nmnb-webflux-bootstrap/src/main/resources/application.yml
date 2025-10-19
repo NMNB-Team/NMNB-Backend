@@ -21,6 +21,9 @@ cloud:
       secret-key: ${AWS_SECRET_KEY}
     region:
       static: ${AWS_REGION}
+    s3:
+      urlPrefix: ${S3_URL_PREFIX}
+      defaultProfileImagePath: ${S3_DEFAULT_PROFILE_IMAGE_PATH}
 
 jwt:
   secret: ${JWT_SECRET_KEY}

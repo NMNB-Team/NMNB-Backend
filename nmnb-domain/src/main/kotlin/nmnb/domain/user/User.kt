@@ -12,6 +12,7 @@ import jakarta.persistence.Table
 import nmnb.common.domain.PetOwnershipStatus
 import nmnb.common.domain.SignUpStatus
 import nmnb.domain.JpaBaseEntity
+import nmnb.domain.badge.UserBadge
 import nmnb.domain.post.Post
 import nmnb.domain.user.generator.annotation.UserId
 import org.hibernate.annotations.SQLDelete
@@ -46,6 +47,9 @@ class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var posts: MutableList<Post> = mutableListOf()
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var userBadges: MutableList<UserBadge> = mutableListOf()
 
     val nickName: String
         get() = petName?.let { petName -> "$petName-$id" } ?: id.toString()

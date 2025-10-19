@@ -41,22 +41,19 @@ class AuthServiceImpl(
         val email = claims["email"] as String
 
         // 회원가입 & 로그인
-        return txOperator.execute { _ ->
-            userRepository.findByEmail(email)
-                .switchIfEmpty { createUser(email) }
-                .flatMap { user ->
-                    issueNewToken(email, deviceId)
-                        .map { (refreshToken, accessToken) ->
-                            AuthUserResponse(
-                                email = email,
-                                accessToken = accessToken,
-                                refreshToken = refreshToken,
-                                signUpStatus = user.signUpStatus,
-                            )
-                        }
-                }
-        }
-            .next()
+        return userRepository.findByEmail(email)
+            .switchIfEmpty { createUser(email) }
+            .flatMap { user ->
+                issueNewToken(email, deviceId)
+                    .map { (refreshToken, accessToken) ->
+                        AuthUserResponse(
+                            email = email,
+                            accessToken = accessToken,
+                            refreshToken = refreshToken,
+                            signUpStatus = user.signUpStatus,
+                        )
+                    }
+            }
     }
 
     private fun validateAppleIdToken(idToken: String): Map<String, Any> {
@@ -91,9 +88,10 @@ class AuthServiceImpl(
             email = email,
             profileImage = s3Properties.s3.defaultProfileImageUrl,
         )
-        return r2dbcEntityTemplate.insert(R2dbcUser::class.java)
-            .using(newUser)
-    }
+        return r2dbcEntityTemplate.insert(newUser)
+            .onErrorMap { throwable ->
+                AuthException(ErrorStatus.USER_CREATION_FAILED)
+            } }
 
     private fun issueNewToken(email: String, deviceId: String): Mono<Pair<String, String>> {
         val now = Instant.now()
