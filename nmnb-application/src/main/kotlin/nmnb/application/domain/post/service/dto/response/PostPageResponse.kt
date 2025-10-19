@@ -46,9 +46,10 @@ data class PostInfoResponse(
     val thumbnailUrl: String,
     val description: String?,
     val userInfo: UserInfoResponse,
+    val isLiked: Boolean,
 ) {
     companion object {
-        fun of(post: Post): PostInfoResponse {
+        fun of(post: Post, isLiked: Boolean = false): PostInfoResponse {
             return PostInfoResponse(
                 userId = post.user.id,
                 postId = post.id,
@@ -56,6 +57,7 @@ data class PostInfoResponse(
                 thumbnailUrl = post.thumbnailUrl,
                 description = post.description,
                 userInfo = UserInfoResponse.of(post.user),
+                isLiked = isLiked,
             )
         }
     }
